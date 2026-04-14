@@ -33,11 +33,12 @@ export function VoiceRecorder({
   const startRecording = useCallback(async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
-          ? "audio/webm;codecs=opus"
-          : "audio/webm",
-      });
+      const mimeType = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
+        ? "audio/webm;codecs=opus"
+        : MediaRecorder.isTypeSupported("audio/webm")
+        ? "audio/webm"
+        : "audio/mp4";
+      const mediaRecorder = new MediaRecorder(stream, { mimeType });
 
       chunksRef.current = [];
       mediaRecorderRef.current = mediaRecorder;
@@ -49,7 +50,7 @@ export function VoiceRecorder({
       mediaRecorder.onstop = async () => {
         stream.getTracks().forEach((track) => track.stop());
 
-        const audioBlob = new Blob(chunksRef.current, { type: "audio/webm" });
+        const audioBlob = new Blob(chunksRef.current, { type: mediaRecorder.mimeType });
 
         if (audioBlob.size < 5000) {
           toast.error("Recording too short. Hold the button longer.");
@@ -101,9 +102,16 @@ export function VoiceRecorder({
       size="sm"
       className="gap-1.5"
       disabled={state === "transcribing"}
-      onPointerDown={state === "idle" ? startRecording : undefined}
+      onPointerDown={(e) => {
+        if (state === "idle") {
+          e.preventDefault();
+          startRecording();
+        }
+      }}
       onPointerUp={state === "recording" ? stopRecording : undefined}
       onPointerLeave={state === "recording" ? stopRecording : undefined}
+      onContextMenu={(e) => e.preventDefault()}
+      style={{ touchAction: "none", WebkitTouchCallout: "none", userSelect: "none" }}
     >
       {state === "idle" && (
         <>
