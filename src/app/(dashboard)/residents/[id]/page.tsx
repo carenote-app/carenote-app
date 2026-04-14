@@ -108,15 +108,13 @@ export default async function ResidentDetailPage({
       )}
 
       {/* Family contacts */}
-      {familyContacts.length > 0 && (
-        <div className="mb-4">
-          <FamilyContactList
-            contacts={familyContacts}
-            residentId={id}
-            isAdmin={isAdmin}
-          />
-        </div>
-      )}
+      <div className="mb-4">
+        <FamilyContactList
+          contacts={familyContacts}
+          residentId={id}
+          isAdmin={isAdmin}
+        />
+      </div>
 
       <Separator className="my-6" />
 

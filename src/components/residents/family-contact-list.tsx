@@ -53,6 +53,11 @@ export function FamilyContactList({
           </Dialog>
         )}
       </div>
+      {contacts.length === 0 && (
+        <p className="text-sm text-muted-foreground">
+          No family contacts yet.{isAdmin ? " Add one above." : ""}
+        </p>
+      )}
       <div className="space-y-2">
         {contacts.map((contact) => (
           <div
