@@ -54,7 +54,7 @@ export default async function ResidentDetailPage({
   const isAdmin = user.role === "admin";
 
   return (
-    <div className="px-4 py-6">
+    <div className="mx-auto max-w-2xl px-4 py-5">
       {/* Resident header */}
       <div className="mb-4 flex items-start justify-between">
         <div>
@@ -73,7 +73,7 @@ export default async function ResidentDetailPage({
           </div>
         </div>
         {isAdmin && (
-          <div className="flex gap-2">
+          <div className="flex gap-1.5">
             <Link href={`/family/${id}/new`}>
               <Button variant="outline" size="sm">
                 <Mail className="mr-1 h-3 w-3" />
@@ -92,7 +92,7 @@ export default async function ResidentDetailPage({
 
       {/* Conditions & Preferences */}
       {(resident.conditions || resident.preferences) && (
-        <div className="mb-4 rounded-lg bg-muted/50 p-3 text-sm space-y-1">
+        <div className="mb-4 rounded-xl border bg-card p-3 text-sm space-y-1">
           {resident.conditions && (
             <p>
               <span className="font-medium">Conditions:</span>{" "}
@@ -109,20 +109,16 @@ export default async function ResidentDetailPage({
       )}
 
       {/* Family contacts */}
-      <div className="mb-4">
-        <FamilyContactList
-          contacts={familyContacts}
-          residentId={id}
-          isAdmin={isAdmin}
-        />
-      </div>
-
-      <Separator className="my-6" />
+      <FamilyContactList
+        contacts={familyContacts}
+        residentId={id}
+        isAdmin={isAdmin}
+      />
 
       {/* Note input */}
-      <div className="mb-6">
-        <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-lg font-medium">Add Note</h3>
+      <div className="mt-6 mb-6">
+        <div className="mb-2 flex items-center justify-between">
+          <h3 className="text-base font-medium">Add Note</h3>
           <VoiceCallButton residentId={id} />
         </div>
         <NoteInputForm
@@ -131,11 +127,11 @@ export default async function ResidentDetailPage({
         />
       </div>
 
-      <Separator className="my-6" />
+      <Separator />
 
       {/* Note timeline */}
-      <div>
-        <h3 className="mb-3 text-lg font-medium">Notes</h3>
+      <div className="mt-5">
+        <h3 className="mb-3 text-base font-medium">Notes</h3>
         {!notes || notes.length === 0 ? (
           <p className="text-sm text-muted-foreground">
             No notes for this resident yet.

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Loader2, AlertTriangle, Check, Pencil } from "lucide-react";
-import { VoiceRecorder } from "./voice-recorder";
 
 const MAX_CHARS = 2000;
 
@@ -50,13 +49,6 @@ export function NoteInputForm({
   const [incidentPromptOpen, setIncidentPromptOpen] = useState(false);
   const router = useRouter();
   const supabase = createClient();
-
-  const handleVoiceTranscript = useCallback((transcript: string) => {
-    setRawInput((prev) => {
-      const combined = prev ? prev + " " + transcript : transcript;
-      return combined.slice(0, MAX_CHARS);
-    });
-  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -202,7 +194,7 @@ export function NoteInputForm({
   return (
     <>
       {step === "input" || isProcessing ? (
-        <form onSubmit={handleSubmit} className="space-y-3">
+        <form onSubmit={handleSubmit} className="space-y-2">
           <div className="flex gap-2">
             <Select value={noteType} onValueChange={(v) => v && setNoteType(v)}>
               <SelectTrigger className="w-[150px]">
@@ -236,11 +228,11 @@ export function NoteInputForm({
 
           <div className="relative">
             <Textarea
-              placeholder="Describe what you observed... e.g., 'Dorothy was in good spirits today, ate all her lunch, went for a walk in the garden.'"
+              placeholder="Describe what you observed..."
               value={rawInput}
               onChange={(e) => setRawInput(e.target.value.slice(0, MAX_CHARS))}
-              rows={4}
-              className="resize-none"
+              rows={3}
+              className="resize-none text-sm"
               disabled={isProcessing}
             />
             <span className="absolute bottom-2 right-2 text-xs text-muted-foreground">
@@ -248,28 +240,25 @@ export function NoteInputForm({
             </span>
           </div>
 
-          <div className="flex gap-2">
-            <VoiceRecorder onTranscript={handleVoiceTranscript} />
-            <Button
-              type="submit"
-              disabled={isProcessing || !rawInput.trim()}
-              className="flex-1"
-            >
-              {step === "classifying" && (
-                <>
-                  <Loader2 className="mr-1 h-4 w-4 animate-spin" />
-                  Checking...
-                </>
-              )}
-              {step === "structuring" && (
-                <>
-                  <Loader2 className="mr-1 h-4 w-4 animate-spin" />
-                  Structuring with AI...
-                </>
-              )}
-              {step === "input" && "Save Note"}
-            </Button>
-          </div>
+          <Button
+            type="submit"
+            size="sm"
+            disabled={isProcessing || !rawInput.trim()}
+          >
+            {step === "classifying" && (
+              <>
+                <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+                Checking...
+              </>
+            )}
+            {step === "structuring" && (
+              <>
+                <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+                Structuring...
+              </>
+            )}
+            {step === "input" && "Save Note"}
+          </Button>
         </form>
       ) : step === "review" ? (
         <div className="space-y-3">
