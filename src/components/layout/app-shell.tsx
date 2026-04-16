@@ -19,6 +19,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import type { User, Organization } from "@/types/database";
@@ -62,10 +63,12 @@ export function AppShell({
           <h1 className="text-lg font-semibold">
             {user.organizations.name}
           </h1>
-          <Sheet>
-            <SheetTrigger
-              className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-            >
+          <div className="flex items-center gap-1">
+            <ThemeToggle />
+            <Sheet>
+              <SheetTrigger
+                className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+              >
               <Menu className="h-5 w-5" />
             </SheetTrigger>
             <SheetContent>
@@ -112,6 +115,7 @@ export function AppShell({
               </nav>
             </SheetContent>
           </Sheet>
+          </div>
         </div>
       </header>
 

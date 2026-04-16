@@ -2,6 +2,7 @@
 
 import { Activity, Menu, X, LogIn } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { useState } from "react"
 import Link from "next/link"
 
@@ -39,6 +40,7 @@ export function LandingHeader() {
           >
             How it Works
           </a>
+          <ThemeToggle />
           <Link href="/login">
             <Button variant="outline" size="sm" className="gap-2">
               <LogIn className="h-4 w-4" />

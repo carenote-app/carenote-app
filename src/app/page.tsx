@@ -13,8 +13,7 @@ export default function Home() {
   const [selectedRole, setSelectedRole] = useState<"caretaker" | "doctor" | null>(null)
 
   return (
-    <div className="dark">
-      <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground">
         <LandingHeader />
 
         <main className="container mx-auto px-4 py-8 md:py-12">
@@ -36,7 +35,6 @@ export default function Home() {
           onClose={() => setIsConsultOpen(false)}
           selectedRole={selectedRole}
         />
-      </div>
     </div>
   )
 }
