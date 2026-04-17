@@ -4,11 +4,12 @@ test.describe("Navigation", () => {
   // These tests run against the login/signup pages which are public
   // Full navigation tests require auth setup which will be added with Supabase integration
 
-  test("root redirects appropriately", async ({ page }) => {
+  test("root shows landing page", async ({ page }) => {
     await page.goto("/");
-    // Should redirect to /login (unauthenticated) or /today (authenticated)
+    // Landing page is public — no redirect for unauthenticated users
     const url = page.url();
-    expect(url).toMatch(/\/(login|today)/);
+    expect(url).toMatch(/\/$/);
+    await expect(page.locator("text=Voice-First")).toBeVisible();
   });
 
   test("pages have proper meta tags", async ({ page }) => {
