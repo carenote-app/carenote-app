@@ -6,6 +6,7 @@ import { HeroSection } from "@/components/landing/hero-section"
 import { RoleSelection } from "@/components/landing/role-selection"
 import { ConsultModal } from "@/components/landing/consult-modal"
 import { Features } from "@/components/landing/features"
+import { FeatureDetails } from "@/components/landing/feature-details"
 import { Footer } from "@/components/landing/footer"
 
 export default function Home() {
@@ -26,6 +27,8 @@ export default function Home() {
           />
 
           <Features />
+
+          <FeatureDetails />
         </main>
 
         <Footer />

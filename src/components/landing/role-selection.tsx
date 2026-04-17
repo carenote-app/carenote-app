@@ -40,7 +40,7 @@ const roles = [
 
 export function RoleSelection({ selectedRole, onSelectRole, onStartConsult }: RoleSelectionProps) {
   return (
-    <section className="py-12 md:py-20">
+    <section id="how-it-works" className="py-12 md:py-20 scroll-mt-20">
       <div className="mx-auto max-w-4xl">
         {/* Section Header */}
         <div className="mb-10 text-center">
