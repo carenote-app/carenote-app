@@ -24,7 +24,7 @@ test.describe("Authentication", () => {
   test("signup page renders correctly", async ({ page }) => {
     await page.goto("/signup");
 
-    await expect(page.getByRole("heading", { name: "Create Account" })).toBeVisible();
+    await expect(page.locator("[data-slot='card-title']")).toContainText("Create Account");
     await expect(page.getByText("Start your 14-day free trial")).toBeVisible();
     await expect(page.getByLabel("Your Full Name")).toBeVisible();
     await expect(page.getByLabel("Email")).toBeVisible();
