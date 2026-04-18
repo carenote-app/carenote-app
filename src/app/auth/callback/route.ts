@@ -27,16 +27,15 @@ export async function GET(request: NextRequest) {
     }
   );
 
-  // Handle email confirmation (token_hash flow)
-  if (token_hash && type === "signup") {
+  // Handle email confirmation (PKCE token_hash flow)
+  if (token_hash && type) {
     const { error } = await supabase.auth.verifyOtp({
       token_hash,
-      type: "signup",
+      type: type as "signup" | "email",
     });
     if (error) {
       return NextResponse.redirect(`${origin}/login?error=confirmation_failed`);
     }
-    // User is now verified and authenticated — go straight to dashboard
     return NextResponse.redirect(`${origin}/today`);
   }
 
