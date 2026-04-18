@@ -9,26 +9,32 @@ test.describe("Authentication", () => {
   test("login page renders correctly", async ({ page }) => {
     await page.goto("/login");
 
-    await expect(page.getByText("CareNote")).toBeVisible();
-    await expect(page.getByText("Sign in to your account")).toBeVisible();
+    await expect(page.getByText("Welcome back")).toBeVisible();
     await expect(page.getByLabel("Email")).toBeVisible();
     await expect(page.getByLabel("Password")).toBeVisible();
-    await expect(page.getByRole("button", { name: "Sign In" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Sign In", exact: true })).toBeVisible();
     await expect(
       page.getByRole("button", { name: "Send Magic Link" })
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Sign in with Google" })
     ).toBeVisible();
   });
 
   test("signup page renders correctly", async ({ page }) => {
     await page.goto("/signup");
 
-    await expect(page.getByText("Create your facility account")).toBeVisible();
+    await expect(page.locator("[data-slot='card-title']")).toContainText("Create Account");
+    await expect(page.getByText("Start your 14-day free trial")).toBeVisible();
     await expect(page.getByLabel("Your Full Name")).toBeVisible();
     await expect(page.getByLabel("Email")).toBeVisible();
     await expect(page.getByLabel("Password")).toBeVisible();
     await expect(page.getByLabel("Facility Name")).toBeVisible();
     await expect(
       page.getByRole("button", { name: "Create Account" })
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Sign up with Google" })
     ).toBeVisible();
   });
 
@@ -53,7 +59,6 @@ test.describe("Authentication", () => {
   test("shows error for empty login submission", async ({ page }) => {
     await page.goto("/login");
 
-    // HTML5 validation should prevent submission with empty fields
     const emailInput = page.getByLabel("Email");
     await expect(emailInput).toHaveAttribute("required");
   });

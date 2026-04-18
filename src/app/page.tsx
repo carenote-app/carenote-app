@@ -7,6 +7,7 @@ import { RoleSelection } from "@/components/landing/role-selection"
 import { ConsultModal } from "@/components/landing/consult-modal"
 import { Features } from "@/components/landing/features"
 import { FeatureDetails } from "@/components/landing/feature-details"
+import { WaitlistForm } from "@/components/landing/waitlist-form"
 import { Footer } from "@/components/landing/footer"
 
 export default function Home() {
@@ -29,6 +30,20 @@ export default function Home() {
           <Features />
 
           <FeatureDetails />
+
+          {/* Waitlist capture */}
+          <section className="py-16 md:py-24">
+            <div className="mx-auto max-w-2xl text-center">
+              <h2 className="mb-3 text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
+                Get Early Access
+              </h2>
+              <p className="mb-8 text-muted-foreground">
+                Join caregivers who are transforming how they document patient care.
+                Be the first to know when new features launch.
+              </p>
+              <WaitlistForm />
+            </div>
+          </section>
         </main>
 
         <Footer />

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { buildAssistantOverrides } from "@/lib/vapi";
+import { checkQuotaAndIncrement } from "@/lib/quota";
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
@@ -25,6 +26,11 @@ export async function POST(request: NextRequest) {
 
   if (!appUser) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
+
+  const quota = await checkQuotaAndIncrement(appUser.organization_id, "voice");
+  if (!quota.allowed) {
+    return NextResponse.json({ error: quota.reason }, { status: 429 });
   }
 
   const { data: resident } = await supabase

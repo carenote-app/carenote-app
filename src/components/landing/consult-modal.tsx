@@ -1,9 +1,10 @@
 "use client"
 
 import { useEffect, useState, useRef, useCallback } from "react"
-import { X, Mic, Square, Loader2, FileText, Copy, Check, Volume2 } from "lucide-react"
+import { X, Mic, Square, Loader2, FileText, Copy, Check, Volume2, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import Link from "next/link"
 
 interface ConsultModalProps {
   isOpen: boolean
@@ -305,9 +306,23 @@ Caregiver Signature`
 
         {/* Footer */}
         <div className="border-t border-border bg-secondary/30 px-6 py-4">
-          <p className="text-center text-xs text-muted-foreground">
-            This is a demo. In production, voice recording would use Web Speech API or a dedicated transcription service.
-          </p>
+          {recordingState === "complete" ? (
+            <div className="flex flex-col items-center gap-2">
+              <p className="text-xs text-muted-foreground">
+                Ready to try CareNote with your own residents?
+              </p>
+              <Link href="/signup">
+                <Button className="gap-2">
+                  Start Your Free Trial
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          ) : (
+            <p className="text-center text-xs text-muted-foreground">
+              This is a demo showing how CareNote structures clinical documentation from voice input.
+            </p>
+          )}
         </div>
       </div>
     </div>

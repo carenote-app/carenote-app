@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { verifyVapiWebhook, type VapiWebhookEvent } from "@/lib/vapi";
 import { callClaude, parseJsonResponse } from "@/lib/claude";
+import { incrementUsage } from "@/lib/quota";
 import {
   SHIFT_NOTE_SYSTEM_PROMPT,
   buildShiftNoteUserPrompt,
@@ -189,6 +190,9 @@ export async function POST(request: NextRequest) {
 
       const structured = parseJsonResponse<StructuredNoteOutput>(raw);
       const hasFlags = structured.flags && structured.flags.length > 0;
+
+      // Track AI usage (fire-and-forget)
+      incrementUsage(session.organization_id, "ai").catch(() => {});
 
       await supabase
         .from("notes")

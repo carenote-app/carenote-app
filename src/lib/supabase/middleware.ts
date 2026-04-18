@@ -34,7 +34,7 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // Public routes that don't require auth
-  const publicPrefixes = ["/login", "/signup", "/verify", "/privacy", "/terms", "/hipaa", "/support"];
+  const publicPrefixes = ["/login", "/signup", "/verify", "/privacy", "/terms", "/hipaa", "/support", "/auth/callback"];
   const isPublicRoute =
     request.nextUrl.pathname === "/" ||
     publicPrefixes.some((route) =>
@@ -47,11 +47,27 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Redirect authenticated users away from auth pages (but not the landing page)
-  const isAuthPage = publicPrefixes.some((route) =>
+  // Enforce email verification — redirect unverified users to /verify
+  const isVerifyPage = request.nextUrl.pathname.startsWith("/verify");
+  if (user && !user.email_confirmed_at && !isPublicRoute) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/verify";
+    return NextResponse.redirect(url);
+  }
+
+  // Redirect authenticated users away from auth pages (not landing or public content pages)
+  const authPages = ["/login", "/signup"];
+  const isAuthPage = authPages.some((route) =>
     request.nextUrl.pathname.startsWith(route)
   );
-  if (user && isAuthPage) {
+  if (user && user.email_confirmed_at && isAuthPage) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/today";
+    return NextResponse.redirect(url);
+  }
+
+  // Verified users on /verify should go to dashboard
+  if (user && user.email_confirmed_at && isVerifyPage) {
     const url = request.nextUrl.clone();
     url.pathname = "/today";
     return NextResponse.redirect(url);

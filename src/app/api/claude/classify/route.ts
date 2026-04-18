@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { callClaude, parseJsonResponse } from "@/lib/claude";
+import { checkQuotaAndIncrement } from "@/lib/quota";
 import {
   INCIDENT_CLASSIFY_SYSTEM_PROMPT,
   INCIDENT_CLASSIFY_MODEL,
@@ -16,6 +17,19 @@ export async function POST(request: NextRequest) {
 
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { data: appUser } = await supabase
+    .from("users")
+    .select("organization_id")
+    .eq("id", user.id)
+    .single();
+
+  if (appUser) {
+    const quota = await checkQuotaAndIncrement(appUser.organization_id, "ai");
+    if (!quota.allowed) {
+      return NextResponse.json({ error: quota.reason }, { status: 429 });
+    }
   }
 
   const { rawInput } = await request.json();

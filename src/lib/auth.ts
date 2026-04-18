@@ -1,8 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import type { User } from "@/types/database";
+import type { User, Organization } from "@/types/database";
 
-export async function getAuthenticatedUser(): Promise<User> {
+export type AuthenticatedUser = User & {
+  organizations: Organization;
+};
+
+export async function getAuthenticatedUser(): Promise<AuthenticatedUser> {
   const supabase = await createClient();
 
   const {
@@ -13,17 +17,17 @@ export async function getAuthenticatedUser(): Promise<User> {
 
   const { data } = await supabase
     .from("users")
-    .select("*")
+    .select("*, organizations(*)")
     .eq("id", authUser.id)
     .single();
 
-  const appUser = data as User | null;
+  const appUser = data as AuthenticatedUser | null;
   if (!appUser) redirect("/login");
 
   return appUser;
 }
 
-export async function requireAdmin(): Promise<User> {
+export async function requireAdmin(): Promise<AuthenticatedUser> {
   const user = await getAuthenticatedUser();
   if (user.role !== "admin") redirect("/today");
   return user;
