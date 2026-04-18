@@ -5,11 +5,9 @@ import { cookies } from "next/headers";
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const code = searchParams.get("code");
+  const token_hash = searchParams.get("token_hash");
+  const type = searchParams.get("type");
   const origin = request.nextUrl.origin;
-
-  if (!code) {
-    return NextResponse.redirect(`${origin}/login?error=missing_code`);
-  }
 
   const cookieStore = await cookies();
   const supabase = createServerClient(
@@ -29,11 +27,26 @@ export async function GET(request: NextRequest) {
     }
   );
 
-  const { error } = await supabase.auth.exchangeCodeForSession(code);
-
-  if (error) {
-    return NextResponse.redirect(`${origin}/login?error=auth_failed`);
+  // Handle email confirmation (token_hash flow)
+  if (token_hash && type === "signup") {
+    const { error } = await supabase.auth.verifyOtp({
+      token_hash,
+      type: "signup",
+    });
+    if (error) {
+      return NextResponse.redirect(`${origin}/login?error=confirmation_failed`);
+    }
+    return NextResponse.redirect(`${origin}/login?confirmed=true`);
   }
 
-  return NextResponse.redirect(`${origin}/today`);
+  // Handle OAuth callback (code flow)
+  if (code) {
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    if (error) {
+      return NextResponse.redirect(`${origin}/login?error=auth_failed`);
+    }
+    return NextResponse.redirect(`${origin}/today`);
+  }
+
+  return NextResponse.redirect(`${origin}/login?error=missing_code`);
 }
