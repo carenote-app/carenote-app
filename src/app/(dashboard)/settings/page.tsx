@@ -23,6 +23,7 @@ export default function SettingsPage() {
   const [emailFromName, setEmailFromName] = useState("");
   const [emailReplyTo, setEmailReplyTo] = useState("");
   const [familyAuthRequired, setFamilyAuthRequired] = useState(false);
+  const [retainTranscripts, setRetainTranscripts] = useState(true);
   const [settingsJson, setSettingsJson] = useState<Record<string, unknown>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -68,6 +69,9 @@ export default function SettingsPage() {
         const current = o.settings ?? {};
         setSettingsJson(current);
         setFamilyAuthRequired(current.family_auth_required === true);
+        // Default retain_transcripts to true when not explicitly set so
+        // legacy behavior is preserved.
+        setRetainTranscripts(current.retain_transcripts !== false);
       }
       setLoading(false);
     }
@@ -90,6 +94,7 @@ export default function SettingsPage() {
     const mergedSettings = {
       ...settingsJson,
       family_auth_required: familyAuthRequired,
+      retain_transcripts: retainTranscripts,
     };
 
     const { error } = await supabase
@@ -207,6 +212,30 @@ export default function SettingsPage() {
                 representative, or signed authorization) and a non-expired
                 authorization. Off by default to keep legacy flows working
                 during migration.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3 rounded-md border p-3">
+            <Switch
+              id="retain-transcripts"
+              checked={retainTranscripts}
+              onCheckedChange={setRetainTranscripts}
+            />
+            <div className="flex-1">
+              <Label
+                htmlFor="retain-transcripts"
+                className="text-sm font-medium cursor-pointer"
+              >
+                Retain voice call transcripts
+              </Label>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                When off, the Vapi webhook deletes the turn-by-turn
+                transcript and nulls the full transcript after the note is
+                structured. The raw transcript stays on the note (source of
+                truth); the separate voice_transcripts table is cleaned up.
+                Existing historical transcripts aren&apos;t touched — this
+                only affects new calls. On by default.
               </p>
             </div>
           </div>

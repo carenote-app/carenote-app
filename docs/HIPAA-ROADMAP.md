@@ -20,7 +20,7 @@ The legal analysis behind this roadmap still needs review by qualified healthcar
 | 6 | Role expansion & minimum-necessary | **Shipped** (commit 31d1cab) | — | No |
 | 7 | Session controls & rate limiting | **Shipped** (commit 3c152c9) | — | Yes |
 | 8 | Data subject rights (export + deletion) | **Shipped** (commit eb0664d) | — | Yes |
-| 9 | Voice & transcript retention | Planned | 1-2 days | No |
+| 9 | Voice & transcript retention | **Shipped** (commit dfb0821) | — | No |
 | 10 | Compliance ops (BAAs, runbook, counsel) | Ongoing | Non-code | **Yes** |
 
 Remaining dev time: ~19-28 days. Phase 10 runs in parallel throughout.
@@ -520,24 +520,50 @@ pnpm dev
 
 ---
 
-## Phase 9 — Voice & transcript retention controls
+## Phase 9 — Voice & transcript retention controls ✅
 
-**Goal:** orgs can opt out of transcript retention; voice pipeline warns on over-capture.
+**Shipped.** Orgs can opt out of transcript retention via a new settings toggle; the Vapi webhook cleans up `voice_transcripts` rows and nulls `voice_sessions.full_transcript` after structuring. A Haiku-backed sanity check runs alongside the structurer and stashes any over-capture warnings on the note metadata so the timeline can surface them as informational banners.
 
-### Scope
+This is the last code phase. Phase 10 (BAAs + counsel + NPP) is non-code and runs in parallel with customer conversations.
 
-**Retention toggle** — `organizations.settings.retain_transcripts BOOLEAN DEFAULT true`. When false: Vapi webhook writes the structured note, then **deletes** rows from `voice_transcripts` and nulls `voice_sessions.full_transcript`. Raw note's `raw_input` keeps the transcript (source of truth per CLAUDE.md).
+### What was built
 
-**Over-capture warning** — new Haiku prompt `src/lib/prompts/voice-sanity.ts` flags potential over-share patterns (financial details, unrelated personal commentary, references to other residents). Surfaces on the review screen as informational — does not block save.
+**New prompt — `src/lib/prompts/voice-sanity.ts`**
+Haiku 4.5 classifier that flags clearly off-topic content in a raw transcript. Categories: `financial`, `unrelated_personal`, `other_resident`, `non_care_gossip`. Returns `{ has_concerns, categories[], excerpts[] }`. Prompt instructs conservative flagging — err on NOT flagging for ambiguous content so the warning stays high-signal.
 
-**Note on Cekura timing** (see dedicated section below): if Cekura is adopted, the over-capture detector in this phase is redundant. Skip the voice-sanity prompt and use Cekura's evaluators instead. The retention toggle is still needed either way.
+**Voice webhook — `src/app/api/voice/webhook/route.ts`**
+- Structuring and voice-sanity now run in parallel via `Promise.allSettled`. Sanity failure never blocks the note; structuring failure still produces an unstructured row as before.
+- Sanity result (when `has_concerns=true`) is persisted to `notes.metadata.over_capture_warning`.
+- After successful structuring, reads `organizations.settings.retain_transcripts`. If explicitly `false`, deletes rows from `voice_transcripts` for this session and nulls `voice_sessions.full_transcript`. The note's `raw_input` (source of truth) is preserved regardless.
+- Opportunistically brought the voice webhook's metadata population in line with the Phase 3 v2 structured-output shape that the `/api/claude/structure` route already used. Voice-created notes now correctly carry `sensitive_flag`, `sensitive_category`, and category names derived from the v2 sections array (they were previously empty / incorrect for voice-originated notes).
 
-### Verification
-- Toggle off → after a voice call, `voice_transcripts` rows gone.
-- Call mentioning unrelated personal info → review screen shows over-capture warning.
+**Settings — `/settings`**
+Added a new Switch for "Retain voice call transcripts" in the Compliance section. Defaults to `true` (legacy behavior). Help copy explains what flipping it off does and that the setting applies only to new calls.
 
-### Not blocking prod PHI
-Audio is already never persisted (`src/app/api/transcribe/route.ts:57`), so the voice layer already meets the spec's core requirement. This phase is about extending that posture to transcripts.
+**Timeline — `note-timeline.tsx`**
+When a note carries `metadata.over_capture_warning.has_concerns === true`, the card renders an amber informational banner with the flagged category badges and up to three verbatim excerpts. Informational only — nothing blocks the note's display or sharing.
+
+### Known limitations to carry forward
+
+- **No historical cleanup.** Flipping `retain_transcripts` to `false` does NOT retroactively delete transcripts from prior calls. A one-time backfill cron or a SQL script can handle that when a customer asks; not shipped here to avoid accidental mass deletion on a misconfigured rollout.
+- **Voice-only scope for the sanity check.** Text-mode notes (`NoteInputForm`) go straight to the shift-note structurer which already filters unrelated content — no secondary sanity pass. If voice-specific over-capture stays high, extend `voice-sanity` to text input.
+- **Sanity is Claude-judged, not rule-enforced.** False positives and false negatives are possible. The warning is informational so the cost of either is low, but don't rely on it for compliance gating.
+- **Cekura AI not integrated.** The Phase 9 sanity check is our own implementation. If Cekura is adopted later (see the dedicated section below), retire `voice-sanity.ts` and point timeline rendering at whatever Cekura delivers via its webhook.
+- **Metadata shape is free-form JSON.** `over_capture_warning` lives inside `notes.metadata`; there's no dedicated column or CHECK constraint. A future phase that indexes or queries warnings at scale would want to promote it to a typed column.
+- **The Phase 3 structured-output version fix in the voice path is a catch-up** — voice notes between Phase 3 landing and this commit carry broken `metadata.categories` (indices rather than section names). A one-time re-structure cron can repair them if anyone cares; they still render correctly on the timeline because the timeline reads `structured_output` directly, not `metadata.categories`.
+
+### How to verify
+
+```bash
+pnpm dev
+```
+
+1. As admin, flip `/settings → Retain voice call transcripts` to off. Save.
+2. Trigger a voice call via a resident's Voice Call Button → let it end → wait for the webhook to land.
+3. In Supabase Studio: `SELECT * FROM voice_transcripts WHERE session_id = '<session>'` → 0 rows. `SELECT full_transcript FROM voice_sessions WHERE id = '<session>'` → null. `SELECT raw_input FROM notes WHERE id = '<note>'` → transcript still present.
+4. Record a voice call where the caregiver mentions something clearly off-topic (e.g. "I need to call my bank", "Margaret in Room 5 was complaining"). The resulting note card in the timeline carries an amber "Possible over-capture in transcript" banner with categories + excerpts.
+5. Normal-content voice calls produce no warning banner (`metadata.over_capture_warning` is absent).
+6. Flip the toggle back to on → new calls retain transcripts.
 
 ---
 

@@ -3,7 +3,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { formatDistanceToNow } from "date-fns";
-import { AlertTriangle, ShieldAlert } from "lucide-react";
+import { AlertTriangle, ShieldAlert, AlertCircle } from "lucide-react";
 import type { Note } from "@/types/database";
 import {
   parseStructuredOutput,
@@ -13,6 +13,39 @@ import type {
   DisclosureClass,
   StructuredNoteSection,
 } from "@/lib/prompts/shift-note";
+
+type OverCaptureWarning = {
+  has_concerns: boolean;
+  categories: string[];
+  excerpts: string[];
+};
+
+function extractOverCaptureWarning(
+  metadata: unknown
+): OverCaptureWarning | null {
+  if (!metadata || typeof metadata !== "object") return null;
+  const w = (metadata as { over_capture_warning?: unknown })
+    .over_capture_warning;
+  if (!w || typeof w !== "object") return null;
+  const warn = w as Partial<OverCaptureWarning>;
+  if (warn.has_concerns !== true) return null;
+  return {
+    has_concerns: true,
+    categories: Array.isArray(warn.categories)
+      ? warn.categories.filter((x) => typeof x === "string")
+      : [],
+    excerpts: Array.isArray(warn.excerpts)
+      ? warn.excerpts.filter((x) => typeof x === "string")
+      : [],
+  };
+}
+
+const WARNING_CATEGORY_LABELS: Record<string, string> = {
+  financial: "Financial detail",
+  unrelated_personal: "Unrelated personal",
+  other_resident: "Mentions another resident",
+  non_care_gossip: "Non-care gossip",
+};
 
 type NoteWithRelations = Note & {
   residents: { first_name: string; last_name: string } | null;
@@ -48,6 +81,7 @@ export function NoteTimeline({
       )}
       {notes.map((note) => {
         const isSensitive = note.sensitive_flag === true;
+        const overCapture = extractOverCaptureWarning(note.metadata);
         return (
           <Card
             key={note.id}
@@ -98,6 +132,34 @@ export function NoteTimeline({
                 <p className="text-xs text-amber-700 dark:text-amber-400 mt-1">
                   Sensitive — restricted from routine sharing
                 </p>
+              )}
+              {overCapture && (
+                <div className="mt-2 rounded-md border border-amber-500/40 bg-amber-50/60 dark:bg-amber-950/20 p-2 text-xs space-y-1">
+                  <div className="flex items-center gap-1.5 font-medium text-amber-800 dark:text-amber-300">
+                    <AlertCircle className="h-3 w-3" />
+                    Possible over-capture in transcript
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    {overCapture.categories.map((c) => (
+                      <Badge key={c} variant="outline" className="text-[10px]">
+                        {WARNING_CATEGORY_LABELS[c] ?? c}
+                      </Badge>
+                    ))}
+                  </div>
+                  {overCapture.excerpts.length > 0 && (
+                    <ul className="list-disc ml-4 text-muted-foreground">
+                      {overCapture.excerpts.map((e, i) => (
+                        <li key={i} className="italic">
+                          &ldquo;{e}&rdquo;
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  <p className="text-muted-foreground">
+                    Informational only. Review the note before sharing
+                    externally.
+                  </p>
+                </div>
               )}
             </CardHeader>
             <CardContent>
