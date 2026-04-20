@@ -57,6 +57,7 @@ export async function POST(request: NextRequest) {
   const noteIds: string[] | undefined = body.noteIds;
   const dateRangeStart: string | undefined = body.dateRangeStart;
   const dateRangeEnd: string | undefined = body.dateRangeEnd;
+  const includeSensitive: boolean = body.includeSensitive === true;
   const expiresInDays: number =
     typeof body.expiresInDays === "number" && body.expiresInDays > 0
       ? Math.min(body.expiresInDays, 90)
@@ -214,7 +215,9 @@ export async function POST(request: NextRequest) {
     .map((n) => {
       const parsed = parseStructuredOutput(n.structured_output);
       if (!parsed) return null;
-      const allowed = filterSectionsForClinician(parsed.sections);
+      const allowed = filterSectionsForClinician(parsed.sections, {
+        includeSensitive,
+      });
       if (allowed.length === 0) return null;
       return {
         id: n.id,
@@ -328,6 +331,7 @@ export async function POST(request: NextRequest) {
     source_note_ids: filteredNotes.map((n) => n.id),
     delivery_method: "magic_link_portal",
     share_link_id: typedShareRow.id,
+    sensitive_override: includeSensitive,
   });
 
   // Portal URL

@@ -49,6 +49,15 @@ export default async function ResidentDetailPage({
     .order("created_at", { ascending: false })
     .limit(50);
 
+  // Phase 4: count sensitive notes the caller can't see (admins and authors
+  // see them directly; everyone else gets a placeholder count).
+  const { data: hiddenCountData } = await supabase.rpc(
+    "count_hidden_sensitive_notes",
+    { p_resident_id: id }
+  );
+  const hiddenSensitiveCount =
+    typeof hiddenCountData === "number" ? hiddenCountData : 0;
+
   const { data: contactsData } = await supabase
     .from("family_contacts")
     .select("*")
@@ -185,12 +194,15 @@ export default async function ResidentDetailPage({
       {/* Note timeline */}
       <div className="mt-5">
         <h3 className="mb-3 text-base font-medium">Notes</h3>
-        {!notes || notes.length === 0 ? (
+        {(!notes || notes.length === 0) && hiddenSensitiveCount === 0 ? (
           <p className="text-sm text-muted-foreground">
             No notes for this resident yet.
           </p>
         ) : (
-          <NoteTimeline notes={notes as Parameters<typeof NoteTimeline>[0]["notes"]} />
+          <NoteTimeline
+            notes={(notes ?? []) as Parameters<typeof NoteTimeline>[0]["notes"]}
+            hiddenSensitiveCount={hiddenSensitiveCount}
+          />
         )}
       </div>
     </div>

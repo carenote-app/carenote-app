@@ -15,7 +15,7 @@ The legal analysis behind this roadmap still needs review by qualified healthcar
 | 1 | Clinician directory + secure sharing | **Shipped** (commit d907d25) | — | Not blocking but highest value |
 | 2 | Family authorization & consent | **Shipped** (commit d4b61e7) | — | Yes |
 | 3 | Disclosure classification tags | **Shipped** (commit 14f654c) | — | Yes |
-| 4 | Sensitive-data segmentation (42 CFR Part 2) | Planned | 2-3 days | Yes |
+| 4 | Sensitive-data segmentation (42 CFR Part 2) | **Shipped** (commit 3b50726) | — | Yes |
 | 5 | Audit events | Planned | 3-4 days | Yes |
 | 6 | Role expansion & minimum-necessary | Planned | 3-5 days | No |
 | 7 | Session controls & rate limiting | Planned | 2-3 days | Yes |
@@ -220,28 +220,58 @@ pnpm dev
 
 ---
 
-## Phase 4 — Sensitive-data segmentation (42 CFR Part 2 + psychotherapy)
+## Phase 4 — Sensitive-data segmentation (42 CFR Part 2 + psychotherapy) ✅
 
-**Goal:** sensitive notes are behind an explicit per-user access gate with confirmation warnings.
+**Shipped.** Sensitive notes (substance-use + psychotherapy content, set by the Phase 3 structurer) are now hidden from the general org view via RLS. Only the note author, admins, and users with an explicit per-resident grant can read them. Clinician shares stay sensitive-free by default but can be unlocked with an explicit override that's recorded on the disclosure audit.
 
-### Scope
+### What was built
 
-**Migration `00008_sensitive_segmentation.sql`**:
-- `notes_sensitive_access (id, user_id, resident_id, granted_by, granted_at, expires_at, reason)` — per-user grants.
-- Stricter RLS on notes: sensitive rows (`sensitive_flag=true`) only visible if user has an active grant OR is the note's author OR is `compliance_admin` (Phase 6 role).
+**Migration — `supabase/migrations/00008_sensitive_access_grants.sql`**
+- `notes_sensitive_access` — per-user-per-resident grant rows (`user_id`, `resident_id`, `granted_by`, `granted_at`, `expires_at`, `reason`). UNIQUE on (user_id, resident_id). Indexes on both the join key and the "active grants" partial set.
+- Drops the existing `"Users can view org notes"` SELECT policy and replaces it: org-scoped AND (not sensitive OR author OR admin OR has-active-grant).
+- Adds `disclosure_events.sensitive_override BOOLEAN DEFAULT false` so the audit row captures clinician-share overrides.
+- `count_hidden_sensitive_notes(p_resident_id)` RPC — `SECURITY DEFINER` with pinned search_path, returns the number of sensitive notes the caller can't see. Used by the timeline for the placeholder.
 
-**UI**
-- Red banner on any sensitive note in timeline and detail view.
-- Share flows: unlock confirmation dialog listing category + legal rationale. Unlock writes an audit event.
-- `/settings/sensitive-access` admin page to grant/revoke.
+Policies on `notes_sensitive_access`: users see their own grants (required by the notes RLS EXISTS subquery); admins see and manage grants for residents in their org.
 
-### Verification
-- Caregiver who didn't write a sensitive note can't see it; timeline shows "[sensitive — restricted]".
-- Grant access → visible with banner.
-- Share with unlock → `disclosure_events.metadata.sensitive_override=true`.
+**Admin UI — `/sensitive-access`**
+New top-level admin page listing all grants for the org, with an "Access" nav entry in the hamburger. Form to create a grant: pick user (non-admin, active), pick resident (active), optional expiry, required reason. Expired grants fade; revoke is a single click.
 
-### Depends on
-- Phase 3 (`sensitive_flag` on notes)
+**Clinician share unlock — `share-with-clinician-dialog.tsx`**
+On entering the preview step, the dialog client-side queries sensitive notes in scope (admins can see them via RLS). If any exist, an amber "Sensitive content detected" card appears with categories listed and an explicit checkbox: "Include sensitive sections in this share (explicit override)". Checking it sends `includeSensitive: true` to `/api/share/clinician`.
+
+The API: `filterSectionsForClinician` grows an `{ includeSensitive }` option — default behavior still drops sensitive_restricted; override keeps them. `disclosure_events.sensitive_override` is set accordingly.
+
+**Timeline placeholder — `note-timeline.tsx`**
+Accepts a new `hiddenSensitiveCount` prop. When > 0, renders an amber placeholder card at the top of the timeline: "N sensitive notes hidden — contact an admin". The resident page calls the RPC server-side and passes the count down.
+
+**Weekly summary cron**
+`/api/cron/weekly-summaries` now filters `sensitive_flag=false`. The weekly summary is distributed org-wide to a pending-review queue and isn't an appropriate surface for 42 CFR Part 2 content. Admins who want a compliance-admin summary that includes sensitive material can use the clinician-share flow with override.
+
+**Types** — augmented `database.ts` with `notes_sensitive_access`, `disclosure_events.sensitive_override`, and the new RPC signature.
+
+### Known limitations to carry forward
+
+- **Incident reports still leak sensitive content.** If a sensitive note triggers an incident, the `incident_reports.report_text` is org-readable through the existing incident RLS. Not touched in this phase to keep scope tight. Fix in Phase 4.5 or fold into Phase 5 (audit) — either tighten incident RLS parallel to notes, or prompt the incident generator to redact sensitive observations.
+- **Grants are resident-scoped, not note-scoped.** Once granted, a user sees every sensitive note on that resident including future ones. If per-note granularity is ever needed, add a `note_id` column to `notes_sensitive_access`. Not expected to be necessary.
+- **Portal shares of sensitive content aren't re-labeled.** When `includeSensitive=true`, the clinician's portal view doesn't visually distinguish sensitive sections from routine ones. Phase 5's audit log will surface every override; a cleaner UX treatment (e.g., marking sensitive paragraphs in the portal) is deferred.
+- **Family-share has no unlock path.** Intentional. Sensitive content can never reach the family flow; there's no UI to override. Family members who legitimately need sensitive information should receive it through a dedicated process, not this product.
+- **Admin bypass is blanket, not audited.** Admins see every sensitive note without leaving a trail. Phase 5 will add per-access audit events that capture even admin reads.
+
+### How to verify
+
+```bash
+supabase db reset        # applies 00001-00008
+pnpm dev
+```
+
+1. As a caregiver who didn't author the note: `/residents/[id]` — sensitive notes are absent from the list, amber placeholder appears at the top with the count.
+2. As admin: `/sensitive-access` → Grant Access → pick that caregiver, pick that resident → submit. Reload the resident page as the caregiver → the sensitive notes now appear with the Phase 3 amber ShieldAlert styling.
+3. Revoke the grant → sensitive notes disappear again, placeholder returns.
+4. As admin: Share with a clinician on a resident who has sensitive notes in the date range → dialog shows the "Sensitive content detected" card with categories → leave unchecked → Confirm → `disclosure_events.sensitive_override=false`, sensitive sections excluded from the rendered summary.
+5. Redo with checkbox ticked → `sensitive_override=true`, sensitive sections included.
+6. Run the weekly-summary cron (manually against a resident with sensitive notes) → summary_text contains no sensitive content; `source_note_ids` excludes sensitive notes.
+7. Try to INSERT into `notes_sensitive_access` as a caregiver → RLS denies.
 
 ---
 

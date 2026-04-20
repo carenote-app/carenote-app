@@ -891,6 +891,7 @@ export type Database = {
           recipient_id: string | null
           recipient_type: string
           resident_id: string
+          sensitive_override: boolean
           share_link_id: string | null
           source_note_ids: string[]
         }
@@ -905,6 +906,7 @@ export type Database = {
           recipient_id?: string | null
           recipient_type: string
           resident_id: string
+          sensitive_override?: boolean
           share_link_id?: string | null
           source_note_ids?: string[]
         }
@@ -919,6 +921,7 @@ export type Database = {
           recipient_id?: string | null
           recipient_type?: string
           resident_id?: string
+          sensitive_override?: boolean
           share_link_id?: string | null
           source_note_ids?: string[]
         }
@@ -953,6 +956,58 @@ export type Database = {
           },
         ]
       }
+      notes_sensitive_access: {
+        Row: {
+          expires_at: string | null
+          granted_at: string
+          granted_by: string
+          id: string
+          reason: string
+          resident_id: string
+          user_id: string
+        }
+        Insert: {
+          expires_at?: string | null
+          granted_at?: string
+          granted_by: string
+          id?: string
+          reason: string
+          resident_id: string
+          user_id: string
+        }
+        Update: {
+          expires_at?: string | null
+          granted_at?: string
+          granted_by?: string
+          id?: string
+          reason?: string
+          resident_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notes_sensitive_access_granted_by_fkey"
+            columns: ["granted_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notes_sensitive_access_resident_id_fkey"
+            columns: ["resident_id"]
+            isOneToOne: false
+            referencedRelation: "residents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notes_sensitive_access_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -960,6 +1015,10 @@ export type Database = {
     Functions: {
       get_user_org_id: { Args: never; Returns: string }
       is_admin: { Args: never; Returns: boolean }
+      count_hidden_sensitive_notes: {
+        Args: { p_resident_id: string }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never

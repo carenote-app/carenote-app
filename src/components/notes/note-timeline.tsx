@@ -19,9 +19,33 @@ type NoteWithRelations = Note & {
   users: { full_name: string } | null;
 };
 
-export function NoteTimeline({ notes }: { notes: NoteWithRelations[] }) {
+export function NoteTimeline({
+  notes,
+  hiddenSensitiveCount = 0,
+}: {
+  notes: NoteWithRelations[];
+  hiddenSensitiveCount?: number;
+}) {
   return (
     <div className="space-y-3">
+      {hiddenSensitiveCount > 0 && (
+        <Card className="border-amber-500/40 bg-amber-50/40 dark:bg-amber-950/20">
+          <CardContent className="py-3 flex items-start gap-2">
+            <ShieldAlert className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
+            <div className="text-sm">
+              <p className="font-medium">
+                {hiddenSensitiveCount} sensitive note
+                {hiddenSensitiveCount === 1 ? "" : "s"} hidden
+              </p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                These notes contain federally protected content (42 CFR Part
+                2 or psychotherapy). Contact an admin if you need access for
+                care purposes.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
       {notes.map((note) => {
         const isSensitive = note.sensitive_flag === true;
         return (

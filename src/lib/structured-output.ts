@@ -94,16 +94,21 @@ export function parseStructuredOutput(
   return normalizeV1(v1);
 }
 
-// Filter for clinician sharing: include everything EXCEPT billing_ops_only
-// and sensitive_restricted. Sensitive unlock is Phase 4.
+// Filter for clinician sharing. By default excludes billing_ops_only and
+// sensitive_restricted. When { includeSensitive: true } is passed, keeps
+// sensitive_restricted — this is the Phase 4 explicit-override path and
+// must be paired with a sensitive_override=true disclosure_event row.
 export function filterSectionsForClinician(
-  sections: StructuredNoteSection[]
+  sections: StructuredNoteSection[],
+  options: { includeSensitive?: boolean } = {}
 ): StructuredNoteSection[] {
-  return sections.filter(
-    (s) =>
-      s.disclosure_class !== "billing_ops_only" &&
-      s.disclosure_class !== "sensitive_restricted"
-  );
+  return sections.filter((s) => {
+    if (s.disclosure_class === "billing_ops_only") return false;
+    if (s.disclosure_class === "sensitive_restricted") {
+      return options.includeSensitive === true;
+    }
+    return true;
+  });
 }
 
 export type FamilyAuthorization = {

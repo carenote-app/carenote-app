@@ -74,12 +74,17 @@ export async function GET(request: NextRequest) {
 
       if (existing) continue;
 
-      // Fetch notes for the week
+      // Fetch notes for the week. Exclude sensitive notes — the weekly
+      // summary is distributed org-wide and is not an appropriate surface
+      // for 42 CFR Part 2 / psychotherapy content. Admins wanting a
+      // compliance summary that includes sensitive material should use
+      // the clinician share flow with explicit override.
       const { data: notes } = await supabase
         .from("notes")
         .select("id, created_at, structured_output, author_id, shift")
         .eq("resident_id", resident.id)
         .eq("is_structured", true)
+        .eq("sensitive_flag", false)
         .gte("created_at", weekStartStr)
         .lte("created_at", weekEndStr + "T23:59:59Z")
         .order("created_at", { ascending: true });

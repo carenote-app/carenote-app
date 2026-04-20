@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -13,7 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Send, ShieldCheck, FileText } from "lucide-react";
+import { Send, ShieldCheck, FileText, ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 
 const DEFAULT_RANGE_DAYS = 7;
@@ -30,6 +33,8 @@ function isoDateToday(): string {
 
 type Step = "scope" | "preview" | "sent";
 
+type SensitiveHit = { id: string; sensitive_category: string | null };
+
 export function ShareWithClinicianDialog({
   residentId,
   clinicianId,
@@ -40,6 +45,7 @@ export function ShareWithClinicianDialog({
   clinicianName: string;
 }) {
   const router = useRouter();
+  const supabase = createClient();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<Step>("scope");
   const [dateRangeStart, setDateRangeStart] = useState(
@@ -47,6 +53,9 @@ export function ShareWithClinicianDialog({
   );
   const [dateRangeEnd, setDateRangeEnd] = useState(isoDateToday());
   const [loading, setLoading] = useState(false);
+  const [sensitiveHits, setSensitiveHits] = useState<SensitiveHit[]>([]);
+  const [scanningSensitive, setScanningSensitive] = useState(false);
+  const [includeSensitive, setIncludeSensitive] = useState(false);
   const [result, setResult] = useState<{
     expiresAt: string;
     emailSent: boolean;
@@ -59,7 +68,41 @@ export function ShareWithClinicianDialog({
     setResult(null);
     setDateRangeStart(isoDateDaysAgo(DEFAULT_RANGE_DAYS));
     setDateRangeEnd(isoDateToday());
+    setSensitiveHits([]);
+    setIncludeSensitive(false);
   }
+
+  // When the user enters the preview step, scan for sensitive notes in the
+  // chosen scope. Admins can see sensitive rows via RLS; the scan runs
+  // client-side against the same data Claude would receive.
+  useEffect(() => {
+    if (step !== "preview") return;
+    let cancelled = false;
+    (async () => {
+      setScanningSensitive(true);
+      const { data } = await supabase
+        .from("notes")
+        .select("id, sensitive_category")
+        .eq("resident_id", residentId)
+        .eq("is_structured", true)
+        .eq("sensitive_flag", true)
+        .gte("created_at", dateRangeStart)
+        .lte("created_at", dateRangeEnd + "T23:59:59Z");
+      if (cancelled) return;
+      setSensitiveHits(
+        (data ?? []) as Array<{ id: string; sensitive_category: string | null }>
+      );
+      setIncludeSensitive(false);
+      setScanningSensitive(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [step, residentId, dateRangeStart, dateRangeEnd, supabase]);
+
+  const sensitiveCategories = [...new Set(
+    sensitiveHits.map((h) => h.sensitive_category).filter(Boolean) as string[]
+  )];
 
   async function handleSend() {
     setLoading(true);
@@ -72,6 +115,7 @@ export function ShareWithClinicianDialog({
           clinicianId,
           dateRangeStart,
           dateRangeEnd,
+          includeSensitive: sensitiveHits.length > 0 ? includeSensitive : false,
         }),
       });
 
@@ -193,6 +237,63 @@ export function ShareWithClinicianDialog({
                 <li>Link expires after 14 days; every open is logged</li>
               </ul>
             </div>
+
+            {scanningSensitive && (
+              <p className="text-xs text-muted-foreground">
+                Checking for sensitive content…
+              </p>
+            )}
+
+            {!scanningSensitive && sensitiveHits.length > 0 && (
+              <div className="rounded-md border border-amber-500/40 bg-amber-50 dark:bg-amber-950/30 p-3 text-sm space-y-2">
+                <p className="font-medium flex items-center gap-2">
+                  <ShieldAlert className="h-4 w-4 text-amber-600" />
+                  Sensitive content detected
+                </p>
+                <p className="text-xs">
+                  {sensitiveHits.length} note
+                  {sensitiveHits.length === 1 ? "" : "s"} in this range
+                  {sensitiveHits.length === 1 ? " is" : " are"} flagged
+                  sensitive (
+                  {sensitiveCategories.length > 0 ? (
+                    <span className="inline-flex gap-1 flex-wrap items-baseline">
+                      {sensitiveCategories.map((c) => (
+                        <Badge
+                          key={c}
+                          variant="outline"
+                          className="text-[10px] h-4 px-1"
+                        >
+                          {c.replace(/_/g, " ")}
+                        </Badge>
+                      ))}
+                    </span>
+                  ) : (
+                    "category unknown"
+                  )}
+                  ). By default these sections are excluded from the share.
+                </p>
+                <label className="flex items-start gap-2 text-xs pt-1 cursor-pointer">
+                  <Checkbox
+                    checked={includeSensitive}
+                    onCheckedChange={(c) =>
+                      setIncludeSensitive(c === true)
+                    }
+                    className="mt-0.5"
+                  />
+                  <span>
+                    <span className="font-medium">
+                      Include sensitive sections in this share (explicit override)
+                    </span>
+                    <span className="block text-muted-foreground mt-0.5">
+                      Only check this if the disclosure is both clinically
+                      necessary and permitted under the applicable rules
+                      (e.g. 42 CFR Part 2 re-disclosure requirements). The
+                      override is recorded on the disclosure audit row.
+                    </span>
+                  </span>
+                </label>
+              </div>
+            )}
 
             <div className="rounded-md bg-muted/30 p-3 text-xs">
               <p className="text-muted-foreground">

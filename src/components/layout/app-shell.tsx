@@ -13,6 +13,7 @@ import {
   LogOut,
   Mic,
   Stethoscope,
+  ShieldAlert,
 } from "lucide-react";
 import {
   Sheet,
@@ -97,6 +98,13 @@ export function AppShell({
                     >
                       <Stethoscope className="h-4 w-4" />
                       Clinicians
+                    </Link>
+                    <Link
+                      href="/sensitive-access"
+                      className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-accent"
+                    >
+                      <ShieldAlert className="h-4 w-4" />
+                      Sensitive Access
                     </Link>
                     <Link
                       href="/settings"
