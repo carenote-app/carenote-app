@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "node:crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { logAudit } from "@/lib/audit";
 
 // Unauthenticated endpoint. Uses the service-role client because clinicians
 // don't have accounts — the magic-link token IS the auth. Validates the
 // token, records the open event, and returns the frozen rendered summary.
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ token: string }> }
 ) {
   const { token } = await params;
@@ -57,7 +58,8 @@ export async function GET(
   }
 
   // Record open. first_opened_at is set once; last_opened_at + open_count on
-  // every access. A Phase 5 audit_events row will be added here later.
+  // every access. Also write an audit_events row (no user_id — the portal
+  // is unauthenticated; IP + UA identify the opener).
   const now = new Date().toISOString();
   await admin
     .from("clinician_share_links")
@@ -67,6 +69,21 @@ export async function GET(
       open_count: row.open_count + 1,
     })
     .eq("id", row.id);
+
+  await logAudit({
+    organizationId: row.organization_id,
+    userId: null,
+    eventType: "share_open",
+    objectType: "share_link",
+    objectId: row.id,
+    request,
+    metadata: {
+      clinician_id: row.clinician_id,
+      resident_id: row.resident_id,
+      open_count_after: row.open_count + 1,
+      first_open: row.first_opened_at === null,
+    },
+  });
 
   // Resolve facility + resident + clinician display info for the portal view.
   const [{ data: org }, { data: resident }, { data: clinician }] =

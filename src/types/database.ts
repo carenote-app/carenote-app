@@ -956,6 +956,63 @@ export type Database = {
           },
         ]
       }
+      audit_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          ip_address: string | null
+          metadata: Json
+          object_id: string | null
+          object_type: string | null
+          organization_id: string
+          result: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json
+          object_id?: string | null
+          object_type?: string | null
+          organization_id: string
+          result?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json
+          object_id?: string | null
+          object_type?: string | null
+          organization_id?: string
+          result?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_events_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notes_sensitive_access: {
         Row: {
           expires_at: string | null

@@ -14,6 +14,7 @@ import {
   Mic,
   Stethoscope,
   ShieldAlert,
+  ScrollText,
 } from "lucide-react";
 import {
   Sheet,
@@ -105,6 +106,13 @@ export function AppShell({
                     >
                       <ShieldAlert className="h-4 w-4" />
                       Sensitive Access
+                    </Link>
+                    <Link
+                      href="/audit-log"
+                      className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-accent"
+                    >
+                      <ScrollText className="h-4 w-4" />
+                      Audit Log
                     </Link>
                     <Link
                       href="/settings"

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { sendFamilyEmail } from "@/lib/resend";
+import { logAudit } from "@/lib/audit";
 
 type LegalBasis =
   | "personal_representative"
@@ -175,6 +176,21 @@ export async function POST(request: NextRequest) {
           : ["wellbeing_summary"],
       source_note_ids: typedComm.source_note_ids ?? [],
       delivery_method: "email",
+    });
+
+    await logAudit({
+      organizationId: typedComm.organization_id,
+      userId: user.id,
+      eventType: "family_send",
+      objectType: "family_contact",
+      objectId: typedComm.recipient_contact_id,
+      request,
+      metadata: {
+        resident_id: typedComm.resident_id,
+        communication_id: typedComm.id,
+        legal_basis: legalBasis ?? "patient_agreement",
+        enforcement_on: familyAuthRequired,
+      },
     });
 
     return NextResponse.json({ success: true });
