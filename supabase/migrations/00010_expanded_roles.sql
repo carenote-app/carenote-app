@@ -73,9 +73,12 @@ CREATE INDEX idx_caregiver_assignments_caregiver
   ON caregiver_assignments (caregiver_id);
 CREATE INDEX idx_caregiver_assignments_resident
   ON caregiver_assignments (resident_id);
+-- Composite index that supports the "active assignment" EXISTS check without
+-- a non-IMMUTABLE predicate. Postgres rejects CURRENT_DATE in index
+-- predicates (only IMMUTABLE functions allowed), so we fold end_date into
+-- the index columns and let query-time filtering take over.
 CREATE INDEX idx_caregiver_assignments_active
-  ON caregiver_assignments (caregiver_id, resident_id)
-  WHERE end_date IS NULL OR end_date >= CURRENT_DATE;
+  ON caregiver_assignments (caregiver_id, resident_id, end_date);
 
 -- Everyone in the org can see assignments (admins need the list; caregivers
 -- want to know what they're assigned to). Admin-only writes.
