@@ -15,6 +15,7 @@ import {
   Stethoscope,
   ShieldAlert,
   ScrollText,
+  ClipboardList,
 } from "lucide-react";
 import {
   Sheet,
@@ -28,19 +29,35 @@ import { Logo } from "@/components/logo";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import type { User, Organization } from "@/types/database";
+import type { LucideIcon } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 
 type UserWithOrg = User & {
   organizations: Organization;
 };
 
-import { AlertTriangle } from "lucide-react";
+// If a nav item has a `visibleTo` predicate, that controls visibility.
+// Otherwise it's shown to everyone (subject to downstream RLS).
+type NavItem = {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+  visibleTo?: (role: string) => boolean;
+};
 
-const navItems = [
-  { href: "/today", label: "Today", icon: CalendarDays, adminOnly: false },
-  { href: "/residents", label: "Residents", icon: Users, adminOnly: false },
-  { href: "/voice-sessions", label: "Calls", icon: Mic, adminOnly: false },
-  { href: "/incidents", label: "Incidents", icon: AlertTriangle, adminOnly: true },
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, adminOnly: true },
+const isAdminRole = (role: string) =>
+  role === "admin" || role === "compliance_admin";
+const isClinicalRole = (role: string) =>
+  role !== "ops_staff" && role !== "billing_staff";
+const isBillingCapable = (role: string) =>
+  isAdminRole(role) || role === "billing_staff";
+
+const navItems: NavItem[] = [
+  { href: "/today", label: "Today", icon: CalendarDays, visibleTo: isClinicalRole },
+  { href: "/residents", label: "Residents", icon: Users },
+  { href: "/voice-sessions", label: "Calls", icon: Mic, visibleTo: isClinicalRole },
+  { href: "/incidents", label: "Incidents", icon: AlertTriangle, visibleTo: isAdminRole },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, visibleTo: isAdminRole },
 ];
 
 export function AppShell({
@@ -53,7 +70,8 @@ export function AppShell({
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
-  const isAdmin = user.role === "admin";
+  const role = user.role;
+  const isAdmin = isAdminRole(role);
 
   async function handleSignOut() {
     await supabase.auth.signOut();
@@ -79,8 +97,8 @@ export function AppShell({
               <SheetHeader>
                 <SheetTitle>{user.full_name}</SheetTitle>
                 <p className="text-sm text-muted-foreground">{user.email}</p>
-                <p className="text-xs text-muted-foreground capitalize">
-                  {user.role}
+                <p className="text-xs text-muted-foreground">
+                  {formatRole(role)}
                 </p>
               </SheetHeader>
               <nav className="mt-6 flex flex-col gap-1">
@@ -99,6 +117,13 @@ export function AppShell({
                     >
                       <Stethoscope className="h-4 w-4" />
                       Clinicians
+                    </Link>
+                    <Link
+                      href="/assignments"
+                      className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-accent"
+                    >
+                      <ClipboardList className="h-4 w-4" />
+                      Assignments
                     </Link>
                     <Link
                       href="/sensitive-access"
@@ -121,14 +146,16 @@ export function AppShell({
                       <Settings className="h-4 w-4" />
                       Settings
                     </Link>
-                    <Link
-                      href="/billing"
-                      className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-accent"
-                    >
-                      <CreditCard className="h-4 w-4" />
-                      Billing
-                    </Link>
                   </>
+                )}
+                {isBillingCapable(role) && (
+                  <Link
+                    href="/billing"
+                    className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-accent"
+                  >
+                    <CreditCard className="h-4 w-4" />
+                    Billing
+                  </Link>
                 )}
                 <button
                   onClick={handleSignOut}
@@ -151,7 +178,7 @@ export function AppShell({
       <nav className="fixed bottom-0 left-0 right-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="flex h-16 items-center justify-around">
           {navItems.map((item) => {
-            if (item.adminOnly && !isAdmin) return null;
+            if (item.visibleTo && !item.visibleTo(role)) return null;
 
             const isActive =
               pathname === item.href || pathname.startsWith(item.href + "/");
@@ -174,4 +201,23 @@ export function AppShell({
       </nav>
     </div>
   );
+}
+
+function formatRole(role: string): string {
+  switch (role) {
+    case "admin":
+      return "Admin";
+    case "compliance_admin":
+      return "Compliance admin";
+    case "caregiver":
+      return "Caregiver";
+    case "nurse_reviewer":
+      return "Nurse reviewer";
+    case "ops_staff":
+      return "Operations";
+    case "billing_staff":
+      return "Billing";
+    default:
+      return role;
+  }
 }

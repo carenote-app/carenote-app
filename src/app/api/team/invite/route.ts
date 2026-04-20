@@ -24,11 +24,23 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const { email, fullName, organizationId } = await request.json();
+  const { email, fullName, organizationId, role } = await request.json();
 
   if (!email || !fullName || organizationId !== typedUser.organization_id) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
+
+  const INVITABLE_ROLES = [
+    "caregiver",
+    "nurse_reviewer",
+    "ops_staff",
+    "billing_staff",
+  ] as const;
+  const safeRole: (typeof INVITABLE_ROLES)[number] =
+    typeof role === "string" &&
+    (INVITABLE_ROLES as readonly string[]).includes(role)
+      ? (role as (typeof INVITABLE_ROLES)[number])
+      : "caregiver";
 
   // Use admin client to invite user via Supabase Auth
   const adminClient = createAdminClient(
@@ -41,7 +53,7 @@ export async function POST(request: NextRequest) {
       data: {
         full_name: fullName,
         organization_id: organizationId,
-        role: "caregiver",
+        role: safeRole,
         invited: true,
       },
     });
@@ -60,7 +72,7 @@ export async function POST(request: NextRequest) {
       organization_id: organizationId,
       email,
       full_name: fullName,
-      role: "caregiver",
+      role: safeRole,
     });
   }
 

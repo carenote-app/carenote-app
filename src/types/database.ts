@@ -956,6 +956,58 @@ export type Database = {
           },
         ]
       }
+      caregiver_assignments: {
+        Row: {
+          caregiver_id: string
+          created_at: string
+          created_by: string
+          end_date: string | null
+          id: string
+          resident_id: string
+          start_date: string
+        }
+        Insert: {
+          caregiver_id: string
+          created_at?: string
+          created_by: string
+          end_date?: string | null
+          id?: string
+          resident_id: string
+          start_date?: string
+        }
+        Update: {
+          caregiver_id?: string
+          created_at?: string
+          created_by?: string
+          end_date?: string | null
+          id?: string
+          resident_id?: string
+          start_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "caregiver_assignments_caregiver_id_fkey"
+            columns: ["caregiver_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "caregiver_assignments_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "caregiver_assignments_resident_id_fkey"
+            columns: ["resident_id"]
+            isOneToOne: false
+            referencedRelation: "residents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_events: {
         Row: {
           created_at: string
@@ -1072,6 +1124,10 @@ export type Database = {
     Functions: {
       get_user_org_id: { Args: never; Returns: string }
       is_admin: { Args: never; Returns: boolean }
+      has_role: {
+        Args: { p_role: string }
+        Returns: boolean
+      }
       count_hidden_sensitive_notes: {
         Args: { p_resident_id: string }
         Returns: number

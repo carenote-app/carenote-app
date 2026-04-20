@@ -17,7 +17,7 @@ The legal analysis behind this roadmap still needs review by qualified healthcar
 | 3 | Disclosure classification tags | **Shipped** (commit 14f654c) | — | Yes |
 | 4 | Sensitive-data segmentation (42 CFR Part 2) | **Shipped** (commit 3b50726) | — | Yes |
 | 5 | Audit events | **Shipped** (commit 77a2acc) | — | Yes |
-| 6 | Role expansion & minimum-necessary | Planned | 3-5 days | No |
+| 6 | Role expansion & minimum-necessary | **Shipped** (commit 31d1cab) | — | No |
 | 7 | Session controls & rate limiting | Planned | 2-3 days | Yes |
 | 8 | Data subject rights (export + deletion) | Planned | 3-4 days | Yes |
 | 9 | Voice & transcript retention | Planned | 1-2 days | No |
@@ -346,40 +346,68 @@ pnpm dev
 
 ---
 
-## Phase 6 — Role expansion & minimum-necessary gating
+## Phase 6 — Role expansion & minimum-necessary gating ✅
 
-**Goal:** roles beyond admin/caregiver, with per-role access matrices matching the compliance spec.
+**Shipped.** Three new roles (nurse_reviewer, ops_staff, billing_staff) plus a reserved compliance_admin role now exist alongside admin + caregiver. ops_staff and billing_staff are blocked from clinical content at both the RLS layer and the navigation layer. The invite flow lets admins pick the right role up-front.
 
-### Scope
+### Design calls that trimmed the original plan
 
-**Migration `00010_expanded_roles.sql`**
-- `users.role` enum adds: `nurse_reviewer | ops_staff | billing_staff | compliance_admin`.
-- Seed-migrate: current `admin` → `compliance_admin` (keeps all powers). Decide whether a narrower `admin` role still exists or the old one is fully replaced.
-- Rewrite `is_admin()` helper as `has_role(role_name text)`. Keep old `is_admin()` as alias for backwards compatibility.
-- Update every RLS policy using `is_admin()` to the role check appropriate for that operation.
+The roadmap's Phase 6 scope was ambitious — rename admin to compliance_admin, migrate every `is_admin()` callsite to a role-aware check, and enforce caregiver_assignments via RLS. The shipped phase intentionally narrower on three axes:
 
-**Caregiver assignment** — new `caregiver_assignments (id, caregiver_id, resident_id, start_date, end_date, created_by)`. Extend notes RLS: caregivers only see notes for assigned residents.
+1. **Did NOT rename admin → compliance_admin.** Cascading through every callsite and RLS policy is risky and offers no immediate benefit. `admin` stays as the catch-all top tier. `compliance_admin` is reserved as a valid role value; callsites that check admin already accept both.
+2. **caregiver_assignments table exists but is NOT RLS-enforced.** A 6-20 bed home usually has caregivers rotating across all residents. Defaulting on per-assignment visibility would break the existing flow. The table is ready so admins can start populating assignments; a future sub-phase adds the opt-in enforcement behind a settings flag.
+3. **Only clinical tables tightened, not a full per-role matrix.** notes, voice_sessions, incident_reports, and weekly_summaries now block ops_staff and billing_staff. Other tables (residents demographics, family_contacts operational data) stay readable because those are legitimately needed by ops and billing. Column-level redaction for clinical columns on residents (conditions, care_notes_context) is a future hardening if reviewers ask.
 
-**Per-role matrix**
-| Role | Clinical notes | Sharing | Admin | Audit log | Billing |
-|------|---------------|---------|-------|-----------|---------|
-| caregiver | Assigned residents (read/write) | No | No | No | No |
-| nurse_reviewer | All notes (read, edit flags) | Create shares | No | No | No |
-| ops_staff | Demographics + schedules only | No | No | No | No |
-| billing_staff | Demographics + service dates | No | No | No | Full |
-| compliance_admin | All | All | All | Full | No |
+### What was built
 
-**Code updates**
-- `src/lib/auth.ts` — `requireRole(roles: Role[])`.
-- Every `requireAdmin()` call migrated to `requireRole([...])`.
-- Navigation becomes role-aware in `src/components/layout/app-shell.tsx`.
+**Migration — `supabase/migrations/00010_expanded_roles.sql`**
+- Relaxes the `users.role` CHECK constraint to include: `admin | caregiver | nurse_reviewer | ops_staff | billing_staff | compliance_admin`.
+- Adds `has_role(p_role TEXT)` helper — SECURITY DEFINER with pinned search_path, returns true iff the calling user's role matches exactly. Doesn't imply admin; callsites compose `is_admin() OR has_role(...)`.
+- Creates `caregiver_assignments` table with unique(caregiver_id, resident_id), indexes for caregiver and resident lookups plus an "active" partial index, and admin-only write policies.
+- Drops and recreates the SELECT policies on `notes`, `incident_reports`, `weekly_summaries`, and `voice_sessions` to add `AND NOT has_role('ops_staff') AND NOT has_role('billing_staff')`. The Phase 4 sensitive-content logic on notes is preserved unchanged.
 
-### Verification
+**Auth helpers — `src/lib/auth.ts`**
+- `Role` union type covering all six roles.
+- `requireAdmin()` now accepts either `admin` or `compliance_admin` so the reserved role works transparently.
+- `requireRole(roles, { allowAdmin })` — server-page guard that admits the listed roles (plus admin by default).
+- `NON_CLINICAL_ROLES` constant + `isClinicalRole(role)` helper for UI-layer gating that mirrors the RLS decisions.
 
-Per-role smoke test matrix. Critical: verify RLS blocks at DB layer, not just the app layer — attempt operations via direct Supabase client calls to confirm defense-in-depth.
+**Navigation — `src/components/layout/app-shell.tsx`**
+- Bottom nav items carry an optional `visibleTo(role)` predicate. Today / Calls are hidden from ops + billing (they'd hit empty-state or RLS denials). Incidents and Dashboard remain admin-only. Residents is visible to everyone (demographics only).
+- Hamburger menu shows admin-only links (Team, Clinicians, Assignments, Sensitive Access, Audit Log, Settings) unchanged. Billing now also shows for billing_staff — ops and caregiver still don't see it. Role label under the user name is humanized via `formatRole()`.
 
-### Not blocking prod PHI
-This is a scale/multi-tenant concern. Admin + caregiver works fine for 6-20 bed home rollout. Defer if market signals don't demand it.
+**Invite flow — `/api/team/invite` and `InviteCaregiverForm`**
+- Invite payload now accepts a `role` field; API validates against the four invitable roles (caregiver, nurse_reviewer, ops_staff, billing_staff) and defaults to caregiver on anything else. Admin cannot invite another admin through this flow (intentional — admin creation stays tied to signup).
+- Form now includes a role dropdown with short descriptions per role.
+
+**Assignments admin — `/assignments`**
+- Admin-only page listing all caregiver assignments in the org. Form to create a new assignment (pick caregiver or nurse_reviewer, pick resident, pick start date). "End assignment" sets end_date to today. Active vs ended shown via badge + opacity.
+- Linked from the admin nav with a ClipboardList icon.
+
+**Types** — augmented `database.ts` with `caregiver_assignments` and the `has_role` RPC signature.
+
+### Known limitations to carry forward
+
+- **Caregiver assignments aren't enforced.** The table exists; the RLS gate doesn't. Every caregiver still sees every resident's notes in their org. When you're ready to flip this on, add a settings flag `caregiver_assignments_required` and a small RLS tightening that ANDs an EXISTS check on active assignments. Don't flip on without admin populating assignments first.
+- **admin and compliance_admin are behaviorally identical.** The latter is a reserved name for when/if a separate compliance-only tier is needed (e.g., audit access without signup authority). Until then, `requireAdmin()` accepts either.
+- **No role-change UI.** Admins can invite with a role but can't change an existing user's role from the Team page yet. Workaround is a direct SQL update. Add a dropdown on the Team page when a customer asks.
+- **residents table still exposes clinical columns.** `conditions` and `care_notes_context` are readable by ops_staff / billing_staff via the residents table (row-level RLS is org-wide). Column-level security in Postgres is awkward; a view + revoke + recreate is the cleanest fix. Defer until needed.
+- **Existing admin-authored code paths still use `requireAdmin()`, not `requireRole()`.** `requireAdmin()` now correctly admits compliance_admin, so no existing page breaks. Migrating individual admin pages to the more precise `requireRole()` can happen as those pages are touched; it's not required.
+
+### How to verify
+
+```bash
+supabase db reset        # applies 00001-00010
+pnpm dev
+```
+
+1. Sign in as admin → invite a caregiver, nurse_reviewer, ops_staff, and billing_staff (four test invites).
+2. Log in as ops_staff → bottom nav shows Residents only (no Today, no Calls, no Incidents). Visit `/today` directly → rendering shows empty state because RLS returns 0 notes. Visit `/residents/[id]` → demographics render but note timeline is empty.
+3. Log in as billing_staff → same as ops + has a Billing link in the hamburger.
+4. Log in as nurse_reviewer → sees clinical pages like a caregiver; can share with clinician; can't see admin pages.
+5. As admin: `/assignments` → assign a caregiver to a resident → row appears; end the assignment → strikethrough.
+6. `SELECT * FROM notes` as ops_staff via Supabase client → 0 rows (RLS enforced). Same for incident_reports, weekly_summaries, voice_sessions.
+7. `SELECT * FROM residents` as ops_staff → rows visible (no clinical tightening on this table).
 
 ---
 
