@@ -16,7 +16,7 @@ The legal analysis behind this roadmap still needs review by qualified healthcar
 | 2 | Family authorization & consent | **Shipped** (commit d4b61e7) | — | Yes |
 | 3 | Disclosure classification tags | **Shipped** (commit 14f654c) | — | Yes |
 | 4 | Sensitive-data segmentation (42 CFR Part 2) | **Shipped** (commit 3b50726) | — | Yes |
-| 5 | Audit events | Planned | 3-4 days | Yes |
+| 5 | Audit events | **Shipped** (commit TBD) | — | Yes |
 | 6 | Role expansion & minimum-necessary | Planned | 3-5 days | No |
 | 7 | Session controls & rate limiting | Planned | 2-3 days | Yes |
 | 8 | Data subject rights (export + deletion) | Planned | 3-4 days | Yes |
@@ -275,35 +275,74 @@ pnpm dev
 
 ---
 
-## Phase 5 — Audit events
+## Phase 5 — Audit events ✅
 
-**Goal:** every PHI access, edit, disclosure, and failed access attempt is logged immutably. This is the "accounting of disclosures" HIPAA requires.
+**Shipped.** An append-only `audit_events` table now captures security-relevant actions: logins, note create/update/delete, clinician-share creation and portal opens, share revokes, family sends, and sensitive-access grants/revokes. Admins read the log at `/audit-log` with filters and CSV export. This complements `disclosure_events` (patient-centric "who received PHI") with actor-centric "who did what in the system".
 
-### Scope
+### Design calls that trimmed the original plan
 
-**Migration `00009_audit_events.sql`**:
-- `audit_events (id, organization_id, user_id, event_type, object_type, object_id, result, ip_address, user_agent, metadata, created_at)`
-- Event types: `login_success | login_failure | logout | session_expired | note_view | note_create | note_update | note_delete | audio_capture_start | audio_capture_end | transcript_create | transcript_edit | share_create | share_open | share_revoke | authorization_create | authorization_update | authorization_revoke | permission_change | export | sensitive_access_grant | sensitive_access_revoke | failed_access`
-- RLS: compliance_admin SELECT within org; INSERT from service-role; NO UPDATE/DELETE policies → append-only.
+The roadmap called for triggers on every PHI table, a wrapped typed client for SELECT auditing, and middleware-level failed-access tracking. Phase 5 does a narrower slice on purpose:
 
-**Trigger strategy**
-- `BEFORE INSERT/UPDATE/DELETE` triggers on every PHI table insert into `audit_events`. Wrap in `SET search_path = ''`.
-- View/read events can't be triggered on SELECT. Wrap reads in `src/lib/supabase/audited-query.ts` that batches audit inserts.
-- Middleware catches 401/403 on `/api/*` → `failed_access` event.
+- **Triggers on `notes` and `notes_sensitive_access` only.** These are the highest-volume PHI tables and cover the create/update/delete events compliance reviewers actually ask about. Other PHI tables (residents, family_contacts, clinicians, etc.) log only the high-value actions from the API layer.
+- **No SELECT audit.** A wrapped typed client that logs every read would be a firehose of noise for small-home deployments. Defer until a compliance reviewer explicitly asks. If it's needed later, a targeted trigger on a `note_reads` staging table or a ClickHouse sink is cleaner than instrumenting every query path.
+- **No `login_failure` or middleware-level `failed_access`.** Supabase auth UI handles failed logins client-side; hooking the failures would require custom webhook plumbing. Middleware 401/403s rarely represent interesting events (most are unauth users hitting protected routes). Real cross-org attempts get blocked by RLS and return empty results without a clear signal. Skipping both and relying on `logout` + positive events is a defensible simplification.
 
-**Retrofits required**
-- `/api/portal/clinician/[token]/route.ts` → audit each open as `share_open`.
-- `/api/share/clinician/[id]/revoke/route.ts` → audit as `share_revoke`.
-- Login flow (Supabase auth callback + middleware) → `login_success` / `login_failure` / `logout`.
+### What was built
 
-**UI**
-- `/audit-log` — compliance_admin filterable table (date range, user, event_type, resident, object). CSV export.
+**Migration — `supabase/migrations/00009_audit_events.sql`**
+- `audit_events` table with `organization_id`, `user_id` (nullable — portal opens are unauth), `event_type` (text; app-level enum in TypeScript), `object_type`/`object_id`, `result` (`success | denied | error`), `ip_address`, `user_agent`, `metadata JSONB`, `created_at`. Four indexes: `(org, created_at DESC)`, `(org, event_type, created_at DESC)`, `(org, user_id, created_at DESC)`, `(object_type, object_id)`.
+- RLS: admin `SELECT` within org. No INSERT / UPDATE / DELETE policies — service-role is the only insert path and the table is effectively append-only.
+- `log_notes_audit()` trigger function + `AFTER INSERT/UPDATE/DELETE` trigger on `notes`. Records note_create/update/delete with useful metadata (note_type, sensitive_flag, is_edited).
+- `log_sensitive_access_audit()` trigger function + `AFTER INSERT/DELETE` trigger on `notes_sensitive_access`. Records grant/revoke with grantee and reason.
+- Both triggers are `SECURITY DEFINER SET search_path = ''` per project convention.
 
-### Verification
-- Login → `login_success` with IP + UA.
-- Open a clinician share link → `share_open`.
-- Cross-org access attempt → `failed_access`.
-- `UPDATE audit_events SET ...` as admin → 0 rows affected (RLS blocks).
+**Helper — `src/lib/audit.ts`**
+- `logAudit()` — service-role write. Takes `organizationId`, `userId`, `eventType`, `objectType`/`objectId`, `result`, `metadata`, and an optional `request` for IP + user-agent extraction. Fire-and-forget: errors log to console and never block the caller.
+- Union type `AuditEventType` constrains event strings at the TS layer so typos don't silently diverge.
+- IP extraction reads `x-forwarded-for` (first hop) or `x-real-ip`. Both Vercel and standard reverse proxies populate these.
+
+**Retrofits into existing routes**
+- `/auth/callback` — logs `login_success` after successful `verifyOtp` / `exchangeCodeForSession`.
+- `/api/share/clinician` (POST) — logs `share_create` with metadata `{ recipient_type, clinician_id, resident_id, sensitive_override, source_note_count }`.
+- `/api/portal/clinician/[token]` (GET) — logs `share_open` with `user_id=null`, metadata `{ clinician_id, resident_id, open_count_after, first_open }`.
+- `/api/share/clinician/[id]/revoke` (POST) — logs `share_revoke`.
+- `/api/family/send` (POST) — logs `family_send` with metadata `{ resident_id, communication_id, legal_basis, enforcement_on }`.
+
+Sensitive-access grants/revokes are covered by the DB trigger, not API-layer calls. Note create/update/delete same — the trigger runs regardless of who wrote the row.
+
+**UI — `/audit-log`**
+- Admin-only page listing the most recent 100 events. Filters: event type (dropdown of common types), user (dropdown of org users), date range. Filters are URL params so they persist and are shareable.
+- Each event card shows event_type, object_type badge, result badge if non-success, actor display (name + email, or "unauthenticated" for portal opens), IP, timestamp, and a collapsible metadata JSON block.
+- "Export CSV" button → `/api/audit-log/export` which applies the same filters server-side and streams a CSV capped at 10k rows. Admin-only; non-admin callers get 403.
+- Added to the admin nav in the hamburger.
+
+**Types** — augmented `database.ts` with the `audit_events` shape.
+
+### Known limitations to carry forward
+
+- **No SELECT audit.** Reads aren't logged anywhere. A compliance reviewer who asks "who accessed resident X's chart on date Y" can only infer from write events. If this comes up, add a targeted log on the resident page and note detail page via the same `logAudit()` helper — don't build the full wrapped client.
+- **No `login_failure` or unauth-middleware tracking.** Supabase auth UI owns the failure surface. If a client asks for login-failure tracking, use a Supabase database webhook on `auth.audit_log_entries`.
+- **Admin reads of sensitive content still aren't audited.** Phase 4 noted this; still open. The fix is either (a) a SELECT audit on the notes table gated on `sensitive_flag=true`, or (b) log-on-API for specific routes that return sensitive content. Leaning toward (b) when it's needed.
+- **CSV export is capped at 10k rows.** Per-query cap, not per-org-lifetime. Orgs that exceed this size need a date-filtered export or a paginated approach. Not expected for 6-20 bed homes.
+- **Audit writes happen fire-and-forget.** If the service-role INSERT fails (e.g., transient Supabase error), the event is lost. Acceptable for Phase 5; Phase 10 compliance ops could add a retry queue if availability becomes a compliance concern.
+- **No built-in retention / deletion of old audit events.** HIPAA asks for 6 years minimum retention. Default Postgres retains indefinitely, which is fine; if storage becomes an issue, a cron that archives rows older than 7 years is straightforward.
+
+### How to verify
+
+```bash
+supabase db reset        # applies 00001-00009
+pnpm dev
+```
+
+1. Log in as admin → a `login_success` row appears in `/audit-log` with correct IP + user-agent.
+2. Create a note → `note_create` row with metadata including note_type and resident_id.
+3. Edit the note within the 1-hour window → `note_update` row with `is_structured` / `sensitive_flag` in metadata.
+4. Share with a clinician → `share_create` row; open the magic link in an incognito tab → `share_open` with `user_id=null`.
+5. Revoke the share → `share_revoke` row.
+6. Send a family update → `family_send` row with `legal_basis` + `enforcement_on`.
+7. Grant sensitive access via `/sensitive-access` → `sensitive_access_grant` row (from the DB trigger, not the API call). Revoke → `sensitive_access_revoke`.
+8. Filter by event_type in the UI → list narrows. Click Export CSV → downloads a file matching the filter.
+9. Try `UPDATE audit_events SET result='success' WHERE id=...` as admin in SQL → 0 rows affected (RLS blocks). Same for DELETE.
 
 ---
 

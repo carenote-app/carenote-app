@@ -8,6 +8,7 @@ import {
   filterSectionsForClinician,
   serializeSectionsForPrompt,
 } from "@/lib/structured-output";
+import { logAudit } from "@/lib/audit";
 import { checkQuotaAndIncrement } from "@/lib/quota";
 import { sendClinicianPortalLink } from "@/lib/resend";
 import {
@@ -332,6 +333,22 @@ export async function POST(request: NextRequest) {
     delivery_method: "magic_link_portal",
     share_link_id: typedShareRow.id,
     sensitive_override: includeSensitive,
+  });
+
+  await logAudit({
+    organizationId: typedResident.organization_id,
+    userId: user.id,
+    eventType: "share_create",
+    objectType: "share_link",
+    objectId: typedShareRow.id,
+    request,
+    metadata: {
+      recipient_type: "clinician",
+      clinician_id: clinicianId,
+      resident_id: residentId,
+      sensitive_override: includeSensitive,
+      source_note_count: filteredNotes.length,
+    },
   });
 
   // Portal URL

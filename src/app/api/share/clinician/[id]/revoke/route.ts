@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { logAudit } from "@/lib/audit";
 
 export async function POST(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
@@ -23,7 +24,7 @@ export async function POST(
     .update({ revoked_at: new Date().toISOString() })
     .eq("id", id)
     .is("revoked_at", null)
-    .select("id")
+    .select("id, organization_id")
     .maybeSingle();
 
   if (error) {
@@ -39,6 +40,17 @@ export async function POST(
       { status: 404 }
     );
   }
+
+  const typedData = data as { id: string; organization_id: string };
+
+  await logAudit({
+    organizationId: typedData.organization_id,
+    userId: user.id,
+    eventType: "share_revoke",
+    objectType: "share_link",
+    objectId: typedData.id,
+    request,
+  });
 
   return NextResponse.json({ success: true });
 }
