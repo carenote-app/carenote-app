@@ -1,10 +1,10 @@
-# CareNote HIPAA Compliance Roadmap
+# Kinroster HIPAA Compliance Roadmap
 
 ## Why this exists
 
-CareNote creates, stores, transmits, and routes electronic protected health information (ePHI). Before it can be used with real patient data, the app needs the compliance primitives that HIPAA (treatment/payment/operations rules, minimum-necessary standard, narrower family-sharing rules) and 42 CFR Part 2 (substance-use records) require.
+Kinroster creates, stores, transmits, and routes electronic protected health information (ePHI). Before it can be used with real patient data, the app needs the compliance primitives that HIPAA (treatment/payment/operations rules, minimum-necessary standard, narrower family-sharing rules) and 42 CFR Part 2 (substance-use records) require.
 
-This document is the engineering source of truth for that work. It was written from a comprehensive compliance spec that outlined the full target state, adapted to what CareNote already has and what it needs to build. Every phase below is scoped as a standalone slice that can ship independently; the order reflects dependency and risk, not feature priority.
+This document is the engineering source of truth for that work. It was written from a comprehensive compliance spec that outlined the full target state, adapted to what Kinroster already has and what it needs to build. Every phase below is scoped as a standalone slice that can ship independently; the order reflects dependency and risk, not feature priority.
 
 The legal analysis behind this roadmap still needs review by qualified healthcare counsel before any org uses the app with real PHI. The code gets you ready; the BAAs and legal review get you live.
 
@@ -584,14 +584,14 @@ pnpm dev
 
 ## Cekura AI — third-party integration timing
 
-Cekura is an automated QA + observability platform for conversational AI agents. It integrates with Vapi (the voice provider CareNote already uses), detects hallucinations, runs simulated test conversations, and evaluates calls for compliance violations. Advertises HIPAA, SOC, GDPR.
+Cekura is an automated QA + observability platform for conversational AI agents. It integrates with Vapi (the voice provider Kinroster already uses), detects hallucinations, runs simulated test conversations, and evaluates calls for compliance violations. Advertises HIPAA, SOC, GDPR.
 
 ### What it addresses
 
 - **Vapi voice agent quality** — today testing is manual; Cekura runs thousands of simulated scenarios.
-- **Hallucination detection** in the transcript → structured-note pipeline. Directly addresses CareNote's core safety promise ("never invent observations").
+- **Hallucination detection** in the transcript → structured-note pipeline. Directly addresses Kinroster's core safety promise ("never invent observations").
 - **Over-capture detection** — replaces the Haiku voice-sanity prompt planned in Phase 9.
-- **Production observability** — latency, sentiment, interruption, gibberish detection. CareNote has none today.
+- **Production observability** — latency, sentiment, interruption, gibberish detection. Kinroster has none today.
 - **Compliance verification** — checks that the Vapi assistant doesn't diagnose, recommend treatment, or reference other residents on every call.
 
 ### What it doesn't address
@@ -634,5 +634,5 @@ These are flagged-but-not-blocked items. A future session can proceed without th
 
 - The original Perplexity spec that drove this roadmap lives in your Messages attachments (you shared it once as `caregiver-app-update-spec.md`). If you need the full spec for edge cases, ask the user to re-share or point to where they saved it.
 - The detailed Phase 1 implementation plan is at `/Users/pouyajavadi/.claude/plans/i-have-recently-talked-vast-clarke.md` (the user's personal plans folder, not in the repo).
-- The CLAUDE.md at the repo root describes CareNote's architecture and conventions — read that first.
+- The CLAUDE.md at the repo root describes Kinroster's architecture and conventions — read that first.
 - Each phase's migration is one file, numbered sequentially. Starting point for Phase 2: `supabase/migrations/00006_family_authorizations.sql`.

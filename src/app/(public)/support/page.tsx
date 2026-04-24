@@ -2,8 +2,8 @@ import type { Metadata } from "next"
 import Link from "next/link"
 
 export const metadata: Metadata = {
-  title: "Support - CareNote",
-  description: "Get help with CareNote. Find answers to common questions and contact our support team.",
+  title: "Support - Kinroster",
+  description: "Get help with Kinroster. Find answers to common questions and contact our support team.",
 }
 
 export default function SupportPage() {
@@ -12,7 +12,7 @@ export default function SupportPage() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight text-foreground">Support</h1>
         <p className="mt-2 text-muted-foreground leading-relaxed">
-          We are here to help you get the most out of CareNote. Find answers to common questions
+          We are here to help you get the most out of Kinroster. Find answers to common questions
           below, or reach out to our support team directly.
         </p>
       </div>
@@ -24,8 +24,8 @@ export default function SupportPage() {
         </p>
         <p className="text-muted-foreground">
           Email:{" "}
-          <a href="mailto:support@carenote.app" className="text-primary underline hover:no-underline">
-            support@carenote.app
+          <a href="mailto:support@kinroster.app" className="text-primary underline hover:no-underline">
+            support@kinroster.app
           </a>
         </p>
         <p className="text-muted-foreground leading-relaxed">
@@ -52,7 +52,7 @@ export default function SupportPage() {
             Why was my note flagged as an incident?
           </h3>
           <p className="text-muted-foreground leading-relaxed">
-            CareNote&apos;s AI automatically analyzes care notes for potential incidents such as falls,
+            Kinroster&apos;s AI automatically analyzes care notes for potential incidents such as falls,
             behavioral changes, skin integrity concerns, medication issues, or other events that may
             require follow-up. When the AI detects language or descriptions that match incident
             criteria, it flags the note for review. This is an advisory feature designed to help
@@ -83,7 +83,7 @@ export default function SupportPage() {
         <div className="space-y-3">
           <h3 className="text-lg font-medium text-foreground">Is my data secure?</h3>
           <p className="text-muted-foreground leading-relaxed">
-            Yes. CareNote implements multiple layers of security to protect your data, including
+            Yes. Kinroster implements multiple layers of security to protect your data, including
             encryption at rest and in transit, row-level security policies that isolate organization
             data, role-based access controls, and secure authentication. For detailed information
             about our security practices, please visit our{" "}
@@ -97,7 +97,7 @@ export default function SupportPage() {
         <div className="space-y-3">
           <h3 className="text-lg font-medium text-foreground">How does the AI work?</h3>
           <p className="text-muted-foreground leading-relaxed">
-            CareNote uses a multi-step AI pipeline to transform your voice into structured
+            Kinroster uses a multi-step AI pipeline to transform your voice into structured
             documentation. First, your speech is transcribed into text using advanced speech
             recognition. Then, the AI analyzes the transcript to extract clinical observations,
             care activities, and other relevant details, organizing them into a standardized care
@@ -111,14 +111,14 @@ export default function SupportPage() {
       <section className="space-y-3">
         <h2 className="text-xl font-semibold text-foreground">Learn More</h2>
         <p className="text-muted-foreground leading-relaxed">
-          Explore more about what CareNote offers:
+          Explore more about what Kinroster offers:
         </p>
         <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
           <li>
             <Link href="/#features" className="text-primary underline hover:no-underline">
               Features
             </Link>{" "}
-            -- See all the ways CareNote helps streamline care documentation.
+            -- See all the ways Kinroster helps streamline care documentation.
           </li>
           <li>
             <Link href="/#how-it-works" className="text-primary underline hover:no-underline">

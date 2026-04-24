@@ -1,4 +1,4 @@
-# CareNote — Market Analysis
+# Kinroster — Market Analysis
 
 ## Target Market
 
@@ -100,7 +100,7 @@ Companies employing 5–30 home-care aides who visit clients in their homes.
 | Age | 52 |
 | Pain | Worries about her mother, calls the facility 2–3x/week, feels she's "bothering" the staff |
 | What she wants | Regular, proactive updates — not just hearing when something goes wrong |
-| Interaction with CareNote | Receives family update emails (read-only, no login in V1) |
+| Interaction with Kinroster | Receives family update emails (read-only, no login in V1) |
 
 ## Competitive Landscape
 
@@ -124,9 +124,9 @@ Companies employing 5–30 home-care aides who visit clients in their homes.
 | **ChatGPT / Claude.ai** | AI text generation | No workflow, no resident context, no storage, no compliance |
 | **Homebase / When I Work** | Scheduling | Doesn't touch documentation at all |
 
-### CareNote's Competitive Advantage
+### Kinroster's Competitive Advantage
 
-| Dimension | CareNote's Position |
+| Dimension | Kinroster's Position |
 |-----------|-------------------|
 | **Price** | $149/month flat — 3–10x cheaper than enterprise tools |
 | **Complexity** | Single-purpose: documentation. No scheduling, billing, pharmacy, or EHR bloat |
@@ -167,7 +167,7 @@ Companies employing 5–30 home-care aides who visit clients in their homes.
 
 ### Recession Resilience
 
-Elder care is non-discretionary. Key factors that make CareNote recession-resistant:
+Elder care is non-discretionary. Key factors that make Kinroster recession-resistant:
 
 1. **Demand for small care homes increases during recessions.** Families move elderly relatives from expensive nursing homes ($8–12K/month) to cheaper residential care ($3–5K/month).
 2. **Documentation requirements don't pause.** State licensing and survey schedules continue regardless of economic conditions.

@@ -355,7 +355,7 @@ export async function POST(request: NextRequest) {
   const origin =
     process.env.NEXT_PUBLIC_APP_URL ||
     request.headers.get("origin") ||
-    `https://${request.headers.get("host") || "carenote.app"}`;
+    `https://${request.headers.get("host") || "kinroster.app"}`;
   const portalUrl = `${origin}/portal/clinician/${unsignedToken}`;
 
   // Send email (best-effort — if it fails, the share row still exists so the
@@ -365,8 +365,8 @@ export async function POST(request: NextRequest) {
     const result = await sendClinicianPortalLink({
       to: typedClinician.email,
       clinicianName: typedClinician.full_name,
-      fromName: typedOrg?.email_from_name || typedOrg?.name || "CareNote",
-      replyTo: typedOrg?.email_reply_to || "noreply@carenote.app",
+      fromName: typedOrg?.email_from_name || typedOrg?.name || "Kinroster",
+      replyTo: typedOrg?.email_reply_to || "noreply@kinroster.app",
       facilityName: typedOrg?.name || "Our Facility",
       residentDisplay: `${typedResident.first_name} ${typedResident.last_name}`,
       portalUrl,

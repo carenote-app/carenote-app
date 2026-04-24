@@ -1,4 +1,4 @@
-# CareNote — 30-Day Build Plan
+# Kinroster — 30-Day Build Plan
 
 ## Overview
 
@@ -19,7 +19,7 @@ Complete these before Day 1:
 - [ ] Stripe account created (test mode)
 - [ ] Vercel account created
 - [ ] GitHub repository created
-- [ ] Domain purchased (carenote.app or similar)
+- [ ] Domain purchased (kinroster.app or similar)
 - [ ] Figma or paper sketches of key screens (optional but helpful)
 
 ---

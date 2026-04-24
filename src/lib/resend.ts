@@ -26,7 +26,7 @@ export async function sendFamilyEmail({
   const html = buildEmailHtml(body, fromName);
 
   const { data, error } = await resend.emails.send({
-    from: `${fromName} <updates@${process.env.RESEND_DOMAIN || "carenote.app"}>`,
+    from: `${fromName} <updates@${process.env.RESEND_DOMAIN || "kinroster.app"}>`,
     replyTo,
     to,
     subject,
@@ -83,7 +83,7 @@ export async function sendClinicianPortalLink({
   });
 
   const { data, error } = await resend.emails.send({
-    from: `${fromName} <updates@${process.env.RESEND_DOMAIN || "carenote.app"}>`,
+    from: `${fromName} <updates@${process.env.RESEND_DOMAIN || "kinroster.app"}>`,
     replyTo,
     to,
     subject,
@@ -112,7 +112,7 @@ function buildEmailHtml(body: string, facilityName: string): string {
   </div>
   ${paragraphs}
   <div style="border-top: 1px solid #e5e5e5; padding-top: 16px; margin-top: 24px; font-size: 12px; color: #666;">
-    <p style="margin: 0;">This update was sent by ${facilityName} using CareNote.</p>
+    <p style="margin: 0;">This update was sent by ${facilityName} using Kinroster.</p>
   </div>
 </body>
 </html>`;
@@ -139,7 +139,7 @@ function buildPortalLinkHtml(params: {
   </p>
   <p style="margin: 0 0 16px 0; line-height: 1.6; font-size: 14px; color: #555;">This link expires on <strong>${params.expiresDisplay}</strong>. Opens are logged for compliance.</p>
   <div style="border-top: 1px solid #e5e5e5; padding-top: 16px; margin-top: 24px; font-size: 12px; color: #666;">
-    <p style="margin: 0 0 6px 0;">Sent by ${params.facilityName} using CareNote.</p>
+    <p style="margin: 0 0 6px 0;">Sent by ${params.facilityName} using Kinroster.</p>
     <p style="margin: 0;">If you weren't expecting this, you can ignore this email. The link will expire on its own.</p>
   </div>
 </body>

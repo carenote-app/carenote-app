@@ -111,7 +111,7 @@ Landing → Select Role → Demo Modal → "Ready to try for real? Sign up" → 
 **It depends on the product vision.** Three options:
 
 **Option A — Doctors stay external (current model, simplest)**
-- CareNote is a caregiver tool, not a clinical platform
+- Kinroster is a caregiver tool, not a clinical platform
 - Admin can export/email relevant notes to a doctor manually
 - No code changes needed
 - Best for: RCFE-focused MVP

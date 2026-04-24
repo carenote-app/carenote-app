@@ -32,7 +32,7 @@ export function HeroSection({ onStartConsult }: HeroSectionProps) {
 
         {/* Subheadline */}
         <p className="mx-auto mb-8 max-w-2xl text-pretty text-lg text-muted-foreground md:text-xl">
-          Transform how you document patient care. CareNote uses AI to convert voice notes 
+          Transform how you document patient care. Kinroster uses AI to convert voice notes 
           into structured clinical documentation, saving time and improving accuracy.
         </p>
 

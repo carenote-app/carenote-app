@@ -105,8 +105,8 @@ export async function POST(request: NextRequest) {
   const firstName = resident.first_name;
   const conditions = resident.conditions;
   const firstMessage = conditions
-    ? `Hi ${appUser.full_name}, this is CareNote. Let's do ${firstName}'s shift note. I see ${firstName} has ${conditions} on file. How were they today?`
-    : `Hi ${appUser.full_name}, this is CareNote. Let's do ${firstName}'s shift note. How were they today?`;
+    ? `Hi ${appUser.full_name}, this is Kinroster. Let's do ${firstName}'s shift note. I see ${firstName} has ${conditions} on file. How were they today?`
+    : `Hi ${appUser.full_name}, this is Kinroster. Let's do ${firstName}'s shift note. How were they today?`;
 
   const assistantOverrides = {
     ...buildAssistantOverrides({

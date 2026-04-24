@@ -1,8 +1,8 @@
 # Vapi Live Voice Integration — Implementation Status
 
-Integrates live AI voice calls (Vapi + Deepgram + Claude) into carenote, allowing caregivers to speak to an AI assistant instead of typing shift notes. The call transcript feeds the existing note-structuring pipeline.
+Integrates live AI voice calls (Vapi + Deepgram + Claude) into kinroster, allowing caregivers to speak to an AI assistant instead of typing shift notes. The call transcript feeds the existing note-structuring pipeline.
 
-Feature originated as a prototype in a separate repo (`caretaker-note`, T3 stack) and was ported into carenote rather than merging repos.
+Feature originated as a prototype in a separate repo (`caretaker-note`, T3 stack) and was ported into kinroster rather than merging repos.
 
 ## Architecture at a Glance
 
@@ -140,7 +140,7 @@ Let caregivers and admins review past voice calls.
 ## Phase 7 — Production Deployment ⏳ PENDING
 
 - [ ] Migrate `00003_voice_sessions.sql` to production Supabase (currently local only)
-- [ ] Add Vapi env vars to Vercel (or wherever carenote deploys)
+- [ ] Add Vapi env vars to Vercel (or wherever kinroster deploys)
 - [ ] Replace ngrok webhook URL with production URL in Vapi org settings
 - [ ] Enable HIPAA add-on in Vapi (currently disabled — see dashboard Compliance section)
 - [ ] Configure Vapi PII redaction rules for transcripts containing medical details

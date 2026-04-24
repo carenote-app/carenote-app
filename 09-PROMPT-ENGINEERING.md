@@ -1,8 +1,8 @@
-# CareNote — Prompt Engineering Guide
+# Kinroster — Prompt Engineering Guide
 
 ## Overview
 
-CareNote uses Claude for four distinct tasks, each with its own system prompt, output format, and safety constraints. This document defines every prompt, the rationale behind each design decision, and the testing criteria.
+Kinroster uses Claude for four distinct tasks, each with its own system prompt, output format, and safety constraints. This document defines every prompt, the rationale behind each design decision, and the testing criteria.
 
 ---
 

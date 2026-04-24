@@ -82,7 +82,7 @@ export function WaitlistForm() {
           onCheckedChange={(checked) => setMarketingOptIn(checked === true)}
         />
         <Label htmlFor="waitlist-marketing" className="text-xs text-muted-foreground leading-tight cursor-pointer">
-          I agree to receive product updates from CareNote
+          I agree to receive product updates from Kinroster
         </Label>
       </div>
 

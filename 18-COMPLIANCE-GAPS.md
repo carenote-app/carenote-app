@@ -45,7 +45,7 @@ The legal pages make specific claims that are not backed by code. This creates l
 
 | Gap | Where | What's missing | Effort |
 |-----|-------|----------------|--------|
-| **support@carenote.app** | Support page | No domain, no email configured | Needs domain purchase first |
+| **support@kinroster.app** | Support page | No domain, no email configured | Needs domain purchase first |
 | **Incident response plan** | HIPAA page | Described but no actual runbook exists | 1 day (doc only) |
 
 ---
@@ -55,8 +55,8 @@ The legal pages make specific claims that are not backed by code. This creates l
 ### Option A — Quick Fix (20 minutes)
 
 Tone down legal pages to be aspirational rather than declarative:
-- Replace "we do X" with "CareNote is designed to support X"
-- Add banner: "CareNote is in active development. Contact us before processing real patient data."
+- Replace "we do X" with "Kinroster is designed to support X"
+- Add banner: "Kinroster is in active development. Contact us before processing real patient data."
 - Remove specific claims about audit logging and data deletion until implemented
 - Change HIPAA page to "HIPAA-Ready Architecture" instead of "HIPAA Compliance"
 

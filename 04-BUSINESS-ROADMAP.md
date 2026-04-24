@@ -1,8 +1,8 @@
-# CareNote — Business Roadmap
+# Kinroster — Business Roadmap
 
 ## Three-Phase Vision
 
-CareNote is not just a documentation tool. The long-term vision is a **data-informed platform that shapes how and where elder care facilities are built.** But the path to that vision runs through a focused MVP.
+Kinroster is not just a documentation tool. The long-term vision is a **data-informed platform that shapes how and where elder care facilities are built.** But the path to that vision runs through a focused MVP.
 
 ```
 Phase 1 (Month 0–6)          Phase 2 (Month 6–18)         Phase 3 (Month 18+)
@@ -118,13 +118,13 @@ All of the following use de-identified, aggregated data only:
 
 ### Objective
 
-Use aggregated CareNote data to advise elder housing developers on facility design, resident mix optimization, and market demand.
+Use aggregated Kinroster data to advise elder housing developers on facility design, resident mix optimization, and market demand.
 
 ### How It Works
 
-CareNote's data (fully de-identified) answers questions that developers and investors currently rely on expensive consultants to answer:
+Kinroster's data (fully de-identified) answers questions that developers and investors currently rely on expensive consultants to answer:
 
-| Developer Question | CareNote Data Answer |
+| Developer Question | Kinroster Data Answer |
 |-------------------|---------------------|
 | What type of facility should I build here? | Aggregate demand data: most common conditions, care levels, and unmet needs in the area |
 | What's the optimal bed count and layout? | Grouping data: which resident profiles coexist well, what common spaces matter |

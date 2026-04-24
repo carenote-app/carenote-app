@@ -1,8 +1,8 @@
-# CareNote — Go-to-Market Strategy
+# Kinroster — Go-to-Market Strategy
 
 ## GTM Philosophy
 
-CareNote's early growth is relationship-driven, not ad-driven. Small care home operators trust people they've met, operators they've talked to, and communities they belong to. The GTM strategy matches this: high-touch, community-first, earned trust.
+Kinroster's early growth is relationship-driven, not ad-driven. Small care home operators trust people they've met, operators they've talked to, and communities they belong to. The GTM strategy matches this: high-touch, community-first, earned trust.
 
 ## Channel Strategy (Ranked by Expected Conversion)
 
@@ -44,7 +44,7 @@ These groups typically have 2,000–15,000 members.
 - Join and observe for 1 week — understand the tone, common complaints, rules
 - Post genuinely: ask about documentation pain, share useful tips, don't pitch
 - Respond to posts where operators complain about paperwork, surveys, or family communication
-- After building credibility (2–3 weeks), offer to let a few operators try CareNote for free
+- After building credibility (2–3 weeks), offer to let a few operators try Kinroster for free
 - Operators in these groups refer each other constantly — one happy user becomes 3–5 referrals
 
 **Do NOT:** Post promotional content, use sales language, or violate group rules. You'll be removed.
@@ -135,7 +135,7 @@ Every licensed care home has a Google Business listing. For a given metro area, 
 | Week 1 | Join state association, request introductions | 3–5 warm leads |
 | Week 2 | Phone calls to 20 local facilities from licensing database | 5 demos scheduled |
 | Week 2 | DM engaged Facebook group members | 3 additional demos |
-| Week 3 | Demo CareNote to interested operators | 8–10 demos total |
+| Week 3 | Demo Kinroster to interested operators | 8–10 demos total |
 | Week 4 | Onboard first 5 facilities with free lifetime access | 5 active pilots |
 
 ### Pilot Incentive Structure
@@ -148,7 +148,7 @@ Every licensed care home has a Google Business listing. For a given metro area, 
 
 ### What Pilots Commit To
 
-- Use CareNote for all shift notes for at least 4 residents
+- Use Kinroster for all shift notes for at least 4 residents
 - Provide 15-minute weekly feedback call for the first 8 weeks
 - Allow anonymized usage data for product improvement
 - Provide a written testimonial or case study if satisfied
@@ -158,7 +158,7 @@ Every licensed care home has a Google Business listing. For a given metro area, 
 ### For First 10 Customers (Founder-Led Sales)
 
 1. **Discovery call** (15 min): Learn about their facility, documentation pain, current tools
-2. **Live demo** (20 min): Show CareNote with their actual resident scenario (use a made-up resident during demo)
+2. **Live demo** (20 min): Show Kinroster with their actual resident scenario (use a made-up resident during demo)
 3. **Trial setup** (10 min): Help them add their first 3 residents and enter a note
 4. **Check-in call** (15 min, day 3): How's it going? What's confusing?
 5. **Check-in call** (15 min, day 7): Review structured notes, gather feedback
@@ -169,8 +169,8 @@ Every licensed care home has a Google Business listing. For a given metro area, 
 | Objection | Response |
 |-----------|----------|
 | "I don't have time to learn new software" | "Enter your first note in 30 seconds. I'll show you right now on your phone." |
-| "My caregivers won't use it" | "If they can text, they can use CareNote. The notes they type here are shorter than a text message." |
-| "How is this different from ChatGPT?" | "ChatGPT doesn't remember your residents, doesn't store your notes, and won't pass a state survey. CareNote is built specifically for care documentation." |
+| "My caregivers won't use it" | "If they can text, they can use Kinroster. The notes they type here are shorter than a text message." |
+| "How is this different from ChatGPT?" | "ChatGPT doesn't remember your residents, doesn't store your notes, and won't pass a state survey. Kinroster is built specifically for care documentation." |
 | "Is it HIPAA compliant?" | "We follow healthcare data security best practices. All data is encrypted, access-controlled, and never shared. We're pursuing formal HIPAA certification." |
 | "What if the AI makes a mistake?" | "Every note is shown to the caregiver before saving. Nothing goes to families without the manager reviewing it first. You're always in control." |
 

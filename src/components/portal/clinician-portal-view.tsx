@@ -175,7 +175,7 @@ export function ClinicianPortalView({
             notes and is intended for clinical review. It is not a substitute
             for direct clinical assessment.
           </p>
-          <p className="mt-1">Sent by {facility_name} via CareNote.</p>
+          <p className="mt-1">Sent by {facility_name} via Kinroster.</p>
         </footer>
       </main>
     </div>

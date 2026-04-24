@@ -309,7 +309,7 @@ Caregiver Signature`
           {recordingState === "complete" ? (
             <div className="flex flex-col items-center gap-2">
               <p className="text-xs text-muted-foreground">
-                Ready to try CareNote with your own residents?
+                Ready to try Kinroster with your own residents?
               </p>
               <Link href="/signup">
                 <Button className="gap-2">
@@ -320,7 +320,7 @@ Caregiver Signature`
             </div>
           ) : (
             <p className="text-center text-xs text-muted-foreground">
-              This is a demo showing how CareNote structures clinical documentation from voice input.
+              This is a demo showing how Kinroster structures clinical documentation from voice input.
             </p>
           )}
         </div>

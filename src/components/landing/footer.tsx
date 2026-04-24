@@ -29,7 +29,7 @@ export function Footer() {
 
         <div className="mt-8 border-t border-border pt-8 text-center">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} CareNote. All rights reserved. Built for healthcare professionals.
+            © {new Date().getFullYear()} Kinroster. All rights reserved. Built for healthcare professionals.
           </p>
         </div>
       </div>

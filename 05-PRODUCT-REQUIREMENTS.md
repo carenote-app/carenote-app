@@ -1,8 +1,8 @@
-# CareNote — Product Requirements Document (PRD)
+# Kinroster — Product Requirements Document (PRD)
 
 ## Overview
 
-CareNote is a mobile-first documentation tool for small elder-care providers. It uses Claude to transform raw caregiver observations into structured shift logs, incident reports, family updates, and care summaries.
+Kinroster is a mobile-first documentation tool for small elder-care providers. It uses Claude to transform raw caregiver observations into structured shift logs, incident reports, family updates, and care summaries.
 
 This document defines the MVP feature set, user roles, and functional requirements for the 30-day build.
 
@@ -46,7 +46,7 @@ A staff caregiver who enters notes during their shift. Limited access.
 
 ### Role 3: Family Member (V1: No Login)
 
-Family members receive email updates but do not log into CareNote in V1. They are passive recipients.
+Family members receive email updates but do not log into Kinroster in V1. They are passive recipients.
 
 ---
 

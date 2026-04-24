@@ -1,8 +1,8 @@
-# CareNote — Data Model
+# Kinroster — Data Model
 
 ## Overview
 
-CareNote's data model is designed around seven core entities: Organizations, Users, Residents, Notes, Incident Reports, Family Communications, and Weekly Summaries. All data is scoped to an organization and protected by Row Level Security (RLS).
+Kinroster's data model is designed around seven core entities: Organizations, Users, Residents, Notes, Incident Reports, Family Communications, and Weekly Summaries. All data is scoped to an organization and protected by Row Level Security (RLS).
 
 The raw caregiver input is always stored alongside the AI-structured output. The caregiver's words are the legal source of truth; the structured output is a convenience layer.
 

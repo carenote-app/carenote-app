@@ -1,6 +1,6 @@
 # Public Launch Security — Progress Tracker
 
-Plan: Secure CareNote for public signups. Full plan at `/.claude/plans/streamed-mapping-lark.md`.
+Plan: Secure Kinroster for public signups. Full plan at `/.claude/plans/streamed-mapping-lark.md`.
 
 Last updated: 2026-04-17
 

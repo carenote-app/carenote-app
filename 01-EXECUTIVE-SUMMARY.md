@@ -1,8 +1,8 @@
-# CareNote — Executive Summary
+# Kinroster — Executive Summary
 
 ## One-Sentence Positioning
 
-CareNote turns messy caregiver notes into compliant shift logs and warm family updates in seconds, so small care homes can spend time on residents instead of paperwork.
+Kinroster turns messy caregiver notes into compliant shift logs and warm family updates in seconds, so small care homes can spend time on residents instead of paperwork.
 
 ## The Problem
 
@@ -17,7 +17,7 @@ The consequences:
 
 ## The Solution
 
-CareNote is a mobile-first web app that uses Claude (Anthropic's AI) to transform quick caregiver observations into structured, professional documentation. A caregiver types or speaks a raw note; CareNote produces:
+Kinroster is a mobile-first web app that uses Claude (Anthropic's AI) to transform quick caregiver observations into structured, professional documentation. A caregiver types or speaks a raw note; Kinroster produces:
 
 1. A **structured shift log** with proper categorization and timestamps
 2. An **escalation flag** if the note mentions falls, pain, medication refusal, or behavioral changes
@@ -43,7 +43,7 @@ CareNote is a mobile-first web app that uses Claude (Anthropic's AI) to transfor
 
 ## Strategic Rationale: Why Build the Documentation MVP First
 
-CareNote's long-term vision extends beyond documentation into data-driven elder housing development (see [Business Roadmap](./04-BUSINESS-ROADMAP.md)). The MVP is the documentation tool because:
+Kinroster's long-term vision extends beyond documentation into data-driven elder housing development (see [Business Roadmap](./04-BUSINESS-ROADMAP.md)). The MVP is the documentation tool because:
 
 1. **Data collection requires usage.** The analytics and insights that inform housing development depend on structured care data from real facilities. You can't skip to Phase 2 without Phase 1.
 2. **Revenue from day one.** Documentation SaaS generates immediate, recurring revenue while the data platform is being built.

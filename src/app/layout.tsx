@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "CareNote",
+  title: "Kinroster",
   description:
     "AI-powered documentation for residential care homes. Transform caregiver observations into structured shift logs, incident reports, and family updates.",
 };

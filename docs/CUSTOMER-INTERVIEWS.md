@@ -1,4 +1,4 @@
-# Customer Interview Kit — CareNote Business Validation
+# Customer Interview Kit — Kinroster Business Validation
 
 ## Purpose
 
@@ -8,7 +8,7 @@ Desktop research (the five Perplexity prompts in April 2026) validated the marke
 
 1. Will a CA RCFE owner actually pay $299/mo for a voice-first + state-forms + family-portal SaaS? (Compare to $300 for ALIS or $400 for ECP.)
 2. What is August Health's current CA penetration? (If 30%+ of 6-20 bed CA homes, the lane is closing. If <5%, we still have time.)
-3. Which state compliance documents (LIC 611, LIC 624, LIC 9040, PMS forms) are operators paying someone else to prepare that CareNote could automate?
+3. Which state compliance documents (LIC 611, LIC 624, LIC 9040, PMS forms) are operators paying someone else to prepare that Kinroster could automate?
 4. What's the net-new wedge they'd pay for vs. their current EHR? Voice? Family portal? Incident reports? State-form automation?
 
 ## Target
@@ -42,7 +42,7 @@ Subject: 45 min — paid research call about your RCFE's documentation workflow
 
 Hi [First Name],
 
-I'm [Your Name], one of the founders of CareNote — we're building a
+I'm [Your Name], one of the founders of Kinroster — we're building a
 documentation tool for small residential care facilities, specifically
 6-20 bed RCFEs. Before we finalize the product, I'm interviewing
 owner-operators directly to make sure we're solving the right problem.
@@ -77,7 +77,7 @@ Keep it to this length. Longer emails have lower reply rates at this tier.
 ## Outreach — LinkedIn DM
 
 ```
-Hi [First Name] — I'm one of the founders of CareNote, building a
+Hi [First Name] — I'm one of the founders of Kinroster, building a
 documentation tool for 6-20 bed RCFEs. Would you be open to a 45-min
 paid research call ($100 gift card) about how documentation works at
 your facility today? No sales pitch, just trying to make sure we solve
@@ -120,7 +120,7 @@ The goal is to learn, not to pitch. Do not show the product unless they explicit
 
 ### Opening (5 min)
 
-1. **Intro.** "Thanks for making time. I'm [Name], founder of CareNote. We're building documentation software for 6-20 bed RCFEs. This call is research, not a sales pitch — the product won't even come up unless you ask. I'll take notes. Do I have your permission to record this for my own reference? Your answers stay anonymous in any sharing."
+1. **Intro.** "Thanks for making time. I'm [Name], founder of Kinroster. We're building documentation software for 6-20 bed RCFEs. This call is research, not a sales pitch — the product won't even come up unless you ask. I'll take notes. Do I have your permission to record this for my own reference? Your answers stay anonymous in any sharing."
 2. **Their context.** "Tell me about your facility — how many beds, how long have you been running, ownership structure."
 
 ### Documentation workflow today (10 min)

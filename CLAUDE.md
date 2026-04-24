@@ -1,4 +1,4 @@
-# CareNote
+# Kinroster
 
 AI-powered documentation tool for small elder-care providers (6-20 bed residential care homes).
 
@@ -30,7 +30,7 @@ AI-powered documentation tool for small elder-care providers (6-20 bed residenti
 - RLS must be enabled on every table with user data.
 
 ## Spec Documents
-Full product spec is in the sibling `carenote-docs/` repo. Key references:
+Full product spec is in the sibling `kinroster-docs/` repo. Key references:
 - PRD: `05-PRODUCT-REQUIREMENTS.md` (features F1-F10)
 - Data Model: `08-DATA-MODEL.md`
 - Prompts: `09-PROMPT-ENGINEERING.md`

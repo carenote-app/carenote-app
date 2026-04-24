@@ -1,4 +1,4 @@
-# CareNote — Technical Architecture
+# Kinroster — Technical Architecture
 
 ## Architecture Philosophy
 
@@ -250,9 +250,9 @@ CREATE INDEX idx_family_contacts_resident ON family_contacts (resident_id);
 | Environment | Purpose | URL |
 |-------------|---------|-----|
 | Local | Development | localhost:3000 |
-| Preview | PR previews (Vercel auto-deploys) | [branch].carenote.vercel.app |
-| Staging | Pre-production testing | staging.carenote.app |
-| Production | Live app | app.carenote.app |
+| Preview | PR previews (Vercel auto-deploys) | [branch].kinroster.vercel.app |
+| Staging | Pre-production testing | staging.kinroster.app |
+| Production | Live app | app.kinroster.app |
 
 ### Infrastructure Costs (Monthly)
 

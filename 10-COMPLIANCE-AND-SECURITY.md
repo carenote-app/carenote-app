@@ -1,20 +1,20 @@
-# CareNote — Compliance, Privacy & Security
+# Kinroster — Compliance, Privacy & Security
 
 ## Overview
 
-CareNote handles Protected Health Information (PHI) as defined by HIPAA. Resident names combined with health observations constitute PHI. This document outlines the compliance posture for each phase of the product, the specific safeguards in place, and the roadmap to full HIPAA compliance.
+Kinroster handles Protected Health Information (PHI) as defined by HIPAA. Resident names combined with health observations constitute PHI. This document outlines the compliance posture for each phase of the product, the specific safeguards in place, and the roadmap to full HIPAA compliance.
 
 ---
 
 ## HIPAA Applicability
 
-### Is CareNote a Covered Entity or Business Associate?
+### Is Kinroster a Covered Entity or Business Associate?
 
-CareNote is a **Business Associate** — a service provider that handles PHI on behalf of covered entities (the care facilities). This means:
+Kinroster is a **Business Associate** — a service provider that handles PHI on behalf of covered entities (the care facilities). This means:
 
-1. CareNote must sign a **Business Associate Agreement (BAA)** with each facility
-2. CareNote must ensure its subprocessors (Anthropic, Supabase, Vercel) also have BAAs in place
-3. CareNote must implement the HIPAA Security Rule safeguards (administrative, physical, technical)
+1. Kinroster must sign a **Business Associate Agreement (BAA)** with each facility
+2. Kinroster must ensure its subprocessors (Anthropic, Supabase, Vercel) also have BAAs in place
+3. Kinroster must implement the HIPAA Security Rule safeguards (administrative, physical, technical)
 
 ### Subprocessor BAA Status
 
@@ -206,7 +206,7 @@ V1 does not support data deletion (notes are never deleted — they are legal re
 
 ## State-Specific Compliance Notes
 
-Documentation requirements vary by state. CareNote should track which state a facility operates in and surface relevant guidance.
+Documentation requirements vary by state. Kinroster should track which state a facility operates in and surface relevant guidance.
 
 | State | Licensing Body | Key Documentation Requirements |
 |-------|---------------|-------------------------------|

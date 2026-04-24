@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "HIPAA Readiness - CareNote",
-  description: "Current state of CareNote's HIPAA readiness program — what's built, what's pending, and how BAAs are handled at customer onboarding.",
+  title: "HIPAA Readiness - Kinroster",
+  description: "Current state of Kinroster's HIPAA readiness program — what's built, what's pending, and how BAAs are handled at customer onboarding.",
 }
 
 export default function HipaaCompliancePage() {
@@ -14,7 +14,7 @@ export default function HipaaCompliancePage() {
       </div>
 
       <p className="text-muted-foreground leading-relaxed">
-        CareNote is built with HIPAA (Health Insurance Portability and Accountability Act) and
+        Kinroster is built with HIPAA (Health Insurance Portability and Accountability Act) and
         42 CFR Part 2 requirements in mind. This page describes our technical architecture, the
         safeguards we have shipped, and the compliance program items we finalize at the time of
         customer onboarding. We aim to be explicit about current state rather than making blanket
@@ -32,7 +32,7 @@ export default function HipaaCompliancePage() {
         </p>
         <p className="text-muted-foreground leading-relaxed">
           <span className="font-medium text-foreground">What&apos;s finalized at onboarding:</span>{" "}
-          Business Associate Agreements with CareNote and our upstream vendor stack, qualified
+          Business Associate Agreements with Kinroster and our upstream vendor stack, qualified
           healthcare counsel review tailored to the customer&apos;s state regulatory profile,
           Notice of Privacy Practices, incident response runbook, and workforce training
           tracking. We do not use &ldquo;HIPAA Compliant&rdquo; as a self-certification label;
@@ -45,7 +45,7 @@ export default function HipaaCompliancePage() {
         <h2 className="text-xl font-semibold text-foreground">1. Our Approach to HIPAA</h2>
         <p className="text-muted-foreground leading-relaxed">
           As a platform that processes protected health information on behalf of healthcare
-          organizations, CareNote implements technical, administrative, and physical safeguards
+          organizations, Kinroster implements technical, administrative, and physical safeguards
           designed to meet the requirements of the HIPAA Security Rule and Privacy Rule. Our
           approach is additive: we ship the technical primitives in software first, then layer
           the administrative program (policies, training, BAAs, counsel review) at the point of
@@ -149,9 +149,9 @@ export default function HipaaCompliancePage() {
       <section className="space-y-3">
         <h2 className="text-xl font-semibold text-foreground">4. Physical Safeguards</h2>
         <p className="text-muted-foreground leading-relaxed">
-          CareNote operates on cloud infrastructure provided by third-party vendors. The
+          Kinroster operates on cloud infrastructure provided by third-party vendors. The
           HIPAA-grade configuration of each vendor (HIPAA-eligible tier, signed BAA with
-          CareNote, appropriate data residency) is finalized at customer onboarding based on
+          Kinroster, appropriate data residency) is finalized at customer onboarding based on
           the customer&apos;s own regulatory environment:
         </p>
         <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
@@ -172,7 +172,7 @@ export default function HipaaCompliancePage() {
       <section className="space-y-3">
         <h2 className="text-xl font-semibold text-foreground">5. Voice Data Handling</h2>
         <p className="text-muted-foreground leading-relaxed">
-          Voice documentation is a core feature of CareNote, and we take special care in how voice
+          Voice documentation is a core feature of Kinroster, and we take special care in how voice
           data is handled:
         </p>
         <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
@@ -180,10 +180,10 @@ export default function HipaaCompliancePage() {
             handles real-time audio streaming and call orchestration.</li>
           <li>For standalone transcription (outside the Vapi conversational flow), speech-to-text
             is performed by OpenAI&apos;s Whisper API. Audio blobs are streamed directly to the
-            transcription endpoint and are not persisted by CareNote.</li>
+            transcription endpoint and are not persisted by Kinroster.</li>
           <li>Transcripts are stored in encrypted form within the organization&apos;s data scope and
             are subject to all RLS and access control policies.</li>
-          <li>Raw audio recordings are not persistently stored by CareNote.</li>
+          <li>Raw audio recordings are not persistently stored by Kinroster.</li>
           <li>An organization-level setting allows turn-by-turn transcript retention to be turned
             off; when off, transcripts are deleted after the structured note is produced, while
             the note itself (source of truth) is retained.</li>
@@ -197,7 +197,7 @@ export default function HipaaCompliancePage() {
       <section className="space-y-3">
         <h2 className="text-xl font-semibold text-foreground">6. AI Processing</h2>
         <p className="text-muted-foreground leading-relaxed">
-          CareNote uses Anthropic&apos;s Claude AI to process transcripts and generate structured care
+          Kinroster uses Anthropic&apos;s Claude AI to process transcripts and generate structured care
           documentation. Our AI processing is designed with the following safeguards:
         </p>
         <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
@@ -216,7 +216,7 @@ export default function HipaaCompliancePage() {
         <p className="text-muted-foreground leading-relaxed">
           HIPAA requires covered entities to enter into Business Associate Agreements (BAAs)
           with service providers that handle PHI. BAAs are finalized at customer onboarding
-          alongside the vendor-stack alignment: CareNote signs with the customer, and we align
+          alongside the vendor-stack alignment: Kinroster signs with the customer, and we align
           upstream BAAs with each sub-processor (Supabase, Anthropic, OpenAI, Vapi, Resend,
           Stripe, Vercel) whose HIPAA-eligible tier is in play for that customer. We do not
           publish BAAs before customer conversations because the right vendor terms depend on
@@ -224,8 +224,8 @@ export default function HipaaCompliancePage() {
         </p>
         <p className="text-muted-foreground leading-relaxed">
           Organizations planning to handle real PHI and requiring a signed BAA should contact us at{" "}
-          <a href="mailto:support@carenote.app" className="text-primary underline hover:no-underline">
-            support@carenote.app
+          <a href="mailto:support@kinroster.app" className="text-primary underline hover:no-underline">
+            support@kinroster.app
           </a>{" "}
           to discuss your compliance timeline and vendor requirements.
         </p>
@@ -234,7 +234,7 @@ export default function HipaaCompliancePage() {
       <section className="space-y-3">
         <h2 className="text-xl font-semibold text-foreground">8. Incident Response</h2>
         <p className="text-muted-foreground leading-relaxed">
-          CareNote commits to the following incident response obligations with any organization
+          Kinroster commits to the following incident response obligations with any organization
           that signs a BAA with us:
         </p>
         <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
@@ -255,8 +255,8 @@ export default function HipaaCompliancePage() {
         <p className="text-sm text-muted-foreground leading-relaxed">
           This page describes current state, not an aspirational compliance label. Organizations
           planning to handle real PHI should contact us at{" "}
-          <a href="mailto:support@carenote.app" className="text-primary underline hover:no-underline">
-            support@carenote.app
+          <a href="mailto:support@kinroster.app" className="text-primary underline hover:no-underline">
+            support@kinroster.app
           </a>{" "}
           so we can align on BAA status, counsel review, and vendor-tier configuration before
           go-live. For questions about the shipped architecture or the items finalized at

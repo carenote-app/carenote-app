@@ -19,7 +19,7 @@ type CallState = "idle" | "starting" | "in-call" | "ending" | "structuring";
 // invalidates prior consents (e.g., if the disclosure copy materially
 // changes). Server audits the value the client sends.
 const CONSENT_VERSION = "v1";
-const CONSENT_STORAGE_KEY = "carenote_voice_consent_v1";
+const CONSENT_STORAGE_KEY = "kinroster_voice_consent_v1";
 
 function readStoredConsent(): boolean {
   if (typeof window === "undefined") return false;
@@ -249,14 +249,14 @@ export function VoiceCallButton({ residentId }: { residentId: string }) {
           </DialogHeader>
           <div className="space-y-3 text-sm">
             <p className="text-muted-foreground">
-              Voice calls on CareNote are transcribed and turned into a
+              Voice calls on Kinroster are transcribed and turned into a
               structured care note. By continuing, you acknowledge:
             </p>
             <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
               <li>This call will be recorded and transcribed.</li>
               <li>
                 The transcript and the AI-structured note become part of this
-                resident&apos;s care record in CareNote.
+                resident&apos;s care record in Kinroster.
               </li>
               <li>
                 You&apos;re authorized to document care for this resident on

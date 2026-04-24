@@ -1,4 +1,4 @@
-# CareNote — Compliance Action Tracker
+# Kinroster — Compliance Action Tracker
 
 **Status Key:** NOT STARTED | IN PROGRESS | DONE | BLOCKED
 **Last Updated:** April 2026
@@ -108,7 +108,7 @@ These items must be completed before any real resident data enters the system.
 
 | Role | Name | Contact |
 |------|------|---------|
-| CareNote Founder | [NAME] | [EMAIL / PHONE] |
+| Kinroster Founder | [NAME] | [EMAIL / PHONE] |
 | Legal Counsel | [NAME] | [EMAIL / PHONE] |
 | HIPAA Compliance Consultant | TBD | TBD |
 | Anthropic Account Contact | TBD | TBD |

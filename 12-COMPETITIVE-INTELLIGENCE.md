@@ -1,4 +1,4 @@
-# CareNote — Competitive Intelligence
+# Kinroster — Competitive Intelligence
 
 ## Overview
 
@@ -8,7 +8,7 @@ This document captures the competitive landscape as of April 2026, pricing analy
 
 ## Updated Competitive Landscape
 
-The original analysis in 02-MARKET-ANALYSIS.md correctly identified enterprise tools (August Health, StoriiCare) and generic workarounds (paper, Word docs, basic apps) but missed a third category: **small-RCFE-specific operations tools** that occupy the same sales channel and mindshare without being direct feature competitors. These tools target the same buyer persona, attend the same conferences, and partner with the same associations — even though they solve different problems than CareNote.
+The original analysis in 02-MARKET-ANALYSIS.md correctly identified enterprise tools (August Health, StoriiCare) and generic workarounds (paper, Word docs, basic apps) but missed a third category: **small-RCFE-specific operations tools** that occupy the same sales channel and mindshare without being direct feature competitors. These tools target the same buyer persona, attend the same conferences, and partner with the same associations — even though they solve different problems than Kinroster.
 
 ### Competitor Profiles
 
@@ -25,7 +25,7 @@ The original analysis in 02-MARKET-ANALYSIS.md correctly identified enterprise t
 | **Channel** | RCFE Association formal partner; RAL Conference SoCal; TORCHCON TX |
 | **What they don't do** | AI-structured shift notes, incident auto-detection, family update emails, weekly care summaries |
 
-**Strategic note:** 1,500 facilities with unmet demand for exactly what CareNote does; no internal roadmap to solve it; potential distribution partner at month 6+.
+**Strategic note:** 1,500 facilities with unmet demand for exactly what Kinroster does; no internal roadmap to solve it; potential distribution partner at month 6+.
 
 #### Alcomy
 
@@ -64,7 +64,7 @@ The original analysis in 02-MARKET-ANALYSIS.md correctly identified enterprise t
 | **Pricing** | Starts $650/month — eliminates them from small RCFE ICP |
 | **API** | Public API; integrates with HHAeXchange, Microsoft 365, QuickBooks Online |
 
-**Note:** Potential future integration target when CareNote API is built.
+**Note:** Potential future integration target when Kinroster API is built.
 
 #### August Health
 
@@ -75,7 +75,7 @@ The original analysis in 02-MARKET-ANALYSIS.md correctly identified enterprise t
 
 ### Competitive Gap Summary
 
-No competitor is doing AI-structured shift notes, AI-generated family updates, or AI weekly care summaries for the small RCFE market. CareNote's entire core value proposition is uncontested. The risk is **channel competition, not feature competition** — Synkwise is already present in the associations and conferences CareNote plans to use for GTM.
+No competitor is doing AI-structured shift notes, AI-generated family updates, or AI weekly care summaries for the small RCFE market. Kinroster's entire core value proposition is uncontested. The risk is **channel competition, not feature competition** — Synkwise is already present in the associations and conferences Kinroster plans to use for GTM.
 
 ---
 
@@ -86,7 +86,7 @@ No competitor is doing AI-structured shift notes, AI-generated family updates, o
 | Metric | Value |
 |--------|-------|
 | 12-bed facility monthly revenue | 12 × $4,500 = $54,000 |
-| CareNote as % of revenue | 0.3% |
+| Kinroster as % of revenue | 0.3% |
 | Owner documentation time saved | 1.5 hrs/day × $30/hr × 30 days = $1,350/month |
 | ROI ratio | ~9:1 |
 | Payback period | 3.3 days |
@@ -114,15 +114,15 @@ The real barriers are not affordability — they are:
 
 ---
 
-## Competitive Positioning: CareNote vs. Synkwise
+## Competitive Positioning: Kinroster vs. Synkwise
 
 ### One-Sentence Answer
 
-"Synkwise manages your medications and compliance forms. CareNote makes your shift notes intelligent and keeps families informed. Most facilities will eventually want both — they do completely different jobs."
+"Synkwise manages your medications and compliance forms. Kinroster makes your shift notes intelligent and keeps families informed. Most facilities will eventually want both — they do completely different jobs."
 
 ### Feature Comparison
 
-| Feature | Synkwise | CareNote |
+| Feature | Synkwise | Kinroster |
 |---------|----------|----------|
 | eMAR / medication tracking | Core feature | Out of scope |
 | Pharmacy integration | Yes | Out of scope |
@@ -138,14 +138,14 @@ The real barriers are not affordability — they are:
 
 | # | Objection | Response |
 |---|-----------|----------|
-| 1 | "I already pay for Synkwise — why add another tool?" | Synkwise handles meds and compliance forms. CareNote handles note quality and family communication. Synkwise doesn't structure shift notes or draft family updates — that gap currently costs 1–2 hours a day. |
+| 1 | "I already pay for Synkwise — why add another tool?" | Synkwise handles meds and compliance forms. Kinroster handles note quality and family communication. Synkwise doesn't structure shift notes or draft family updates — that gap currently costs 1–2 hours a day. |
 | 2 | "Can't Synkwise just add this feature?" | Their AI investment is going into medication safety and pharmacy interoperability. They're not building shift note AI. You'd be waiting a long time for a feature that may never come. |
-| 3 | "$149 seems high for something I do manually now." | How long do you spend rewriting caregiver notes every day? If it's more than 30 minutes, CareNote pays for itself in the first week. Let me show you your first structured note right now — takes 90 seconds. |
-| 4 | "What if my caregivers don't use it?" | If they can send a text, they can use CareNote. The input is a text box. The AI does the rest. We'll have your first caregiver entering notes in the first 10 minutes of setup. |
+| 3 | "$149 seems high for something I do manually now." | How long do you spend rewriting caregiver notes every day? If it's more than 30 minutes, Kinroster pays for itself in the first week. Let me show you your first structured note right now — takes 90 seconds. |
+| 4 | "What if my caregivers don't use it?" | If they can send a text, they can use Kinroster. The input is a text box. The AI does the rest. We'll have your first caregiver entering notes in the first 10 minutes of setup. |
 
 ### Closing Frame
 
-"You don't have to choose. Many facilities will use Synkwise for medications and CareNote for documentation. Together, you have the full picture — without either tool trying to do something it wasn't built for."
+"You don't have to choose. Many facilities will use Synkwise for medications and Kinroster for documentation. Together, you have the full picture — without either tool trying to do something it wasn't built for."
 
 ---
 
@@ -164,7 +164,7 @@ The real barriers are not affordability — they are:
 ### Outreach
 
 - **Contact:** Director of Business Development, sales@synkwise.com
-- **Framing:** CareNote adds an AI documentation and family communication layer that Synkwise operators are currently solving manually. Rather than build it themselves, Synkwise could offer CareNote as a recommended partner tool with a referral arrangement. Their operators get a better documentation experience; CareNote gets distribution; Synkwise retains the eMAR relationship.
+- **Framing:** Kinroster adds an AI documentation and family communication layer that Synkwise operators are currently solving manually. Rather than build it themselves, Synkwise could offer Kinroster as a recommended partner tool with a referral arrangement. Their operators get a better documentation experience; Kinroster gets distribution; Synkwise retains the eMAR relationship.
 
 ---
 
@@ -236,4 +236,4 @@ Payback period (days)               = (149 / total) × 30
 | Do not approach Synkwise before month 6 | Premature approach gives intelligence without leverage | Month 6 — when 25+ paying facilities and retention data exist |
 | Position as complement to Synkwise, not replacement | Most prospects know Synkwise; direct competition is harder than coexistence | Never — this framing is durable |
 | Monitor Caring Data (Ivonne Meader) | Operator-founder with RCFE Association Advisory Board seat is highest credibility threat | Quarterly — check for AI feature launches |
-| StoriiCare API as future integration target | Public API, family engagement features, complementary market segment | Phase 2 — when CareNote API is built |
+| StoriiCare API as future integration target | Public API, family engagement features, complementary market segment | Phase 2 — when Kinroster API is built |

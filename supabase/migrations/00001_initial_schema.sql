@@ -1,4 +1,4 @@
--- CareNote Initial Schema
+-- Kinroster Initial Schema
 -- All tables with RLS enabled from the start
 
 -- ============================================

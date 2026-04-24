@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Privacy Policy - CareNote",
-  description: "CareNote Privacy Policy. Learn how we collect, use, and protect your data.",
+  title: "Privacy Policy - Kinroster",
+  description: "Kinroster Privacy Policy. Learn how we collect, use, and protect your data.",
 }
 
 export default function PrivacyPolicyPage() {
@@ -14,10 +14,10 @@ export default function PrivacyPolicyPage() {
       </div>
 
       <p className="text-muted-foreground leading-relaxed">
-        CareNote (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is committed to protecting the
+        Kinroster (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is committed to protecting the
         privacy of our users and the individuals whose information is processed through our platform.
         This Privacy Policy describes how we collect, use, store, and share information when you use
-        the CareNote application and related services (collectively, the &quot;Service&quot;).
+        the Kinroster application and related services (collectively, the &quot;Service&quot;).
       </p>
 
       <section className="space-y-3">
@@ -120,7 +120,7 @@ export default function PrivacyPolicyPage() {
             <span className="font-medium text-foreground">OpenAI (Whisper):</span> Provides
             speech-to-text transcription for voice notes recorded outside the conversational
             Vapi flow. Audio is streamed directly to the transcription endpoint and is not
-            persisted by CareNote.
+            persisted by Kinroster.
           </li>
           <li>
             <span className="font-medium text-foreground">Resend:</span> Delivers transactional
@@ -136,7 +136,7 @@ export default function PrivacyPolicyPage() {
           We require all third-party providers to maintain appropriate security standards and to process
           data only in accordance with our instructions and applicable law. HIPAA Business Associate
           Agreements with each sub-processor are finalized at the time of customer onboarding alongside
-          the BAA with CareNote.
+          the BAA with Kinroster.
         </p>
       </section>
 
@@ -196,8 +196,8 @@ export default function PrivacyPolicyPage() {
         </p>
         <p className="text-muted-foreground">
           Email:{" "}
-          <a href="mailto:support@carenote.app" className="text-primary underline hover:no-underline">
-            support@carenote.app
+          <a href="mailto:support@kinroster.app" className="text-primary underline hover:no-underline">
+            support@kinroster.app
           </a>
         </p>
       </section>

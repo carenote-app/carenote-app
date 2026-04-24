@@ -1,4 +1,4 @@
-# CareNote — Resident / Family Notification Template
+# Kinroster — Resident / Family Notification Template
 
 **For: Facility Partners to Customize and Distribute**
 **Version:** 1.0
@@ -22,11 +22,11 @@
 
 Dear Residents and Families,
 
-We are writing to let you know that [FACILITY NAME] has begun using a documentation tool called **CareNote** to help our caregivers create more complete, professional care records.
+We are writing to let you know that [FACILITY NAME] has begun using a documentation tool called **Kinroster** to help our caregivers create more complete, professional care records.
 
-### What CareNote Does
+### What Kinroster Does
 
-When our caregivers observe something about your care — such as how you're feeling, what you ate, or an activity you enjoyed — they type or speak a quick note into CareNote. The tool then uses artificial intelligence to organize that note into a clear, structured record.
+When our caregivers observe something about your care — such as how you're feeling, what you ate, or an activity you enjoyed — they type or speak a quick note into Kinroster. The tool then uses artificial intelligence to organize that note into a clear, structured record.
 
 This helps us:
 - Keep more complete and consistent daily records
@@ -39,15 +39,15 @@ This helps us:
 - **A real person always reviews the output.** Every AI-structured note is reviewed by the caregiver or facility manager before it becomes part of the official record.
 - **Your information is protected.** Your name and care observations are processed securely. The AI service does not store your information permanently and does not use it to train its systems.
 - **No audio recordings are kept.** If a caregiver uses voice input, the recording is converted to text and then immediately deleted. No audio is ever saved.
-- **No photos or videos are taken.** CareNote is text-only.
+- **No photos or videos are taken.** Kinroster is text-only.
 
 ### Your Rights
 
-- You may ask to see any CareNote records about you at any time
-- You may ask questions about how CareNote works
+- You may ask to see any Kinroster records about you at any time
+- You may ask questions about how Kinroster works
 - You may express concerns to [FACILITY ADMINISTRATOR NAME] at [PHONE/EMAIL]
 
-Using CareNote does not change the care you receive. It is simply a tool that helps our staff document your care more completely.
+Using Kinroster does not change the care you receive. It is simply a tool that helps our staff document your care more completely.
 
 If you have any questions or concerns, please don't hesitate to reach out.
 

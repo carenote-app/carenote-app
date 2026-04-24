@@ -15,7 +15,7 @@ const featureDetails = [
     title: "Voice Recording",
     headline: "Speak naturally. We handle the rest.",
     description:
-      "Just talk about your patient like you would to a colleague. CareNote's AI assistant guides you through the key areas — mood, meals, medications, mobility — so nothing gets missed. No forms, no typing, no learning curve.",
+      "Just talk about your patient like you would to a colleague. Kinroster's AI assistant guides you through the key areas — mood, meals, medications, mobility — so nothing gets missed. No forms, no typing, no learning curve.",
     benefits: [
       "Conversational AI that adapts to your pace",
       "Covers all required documentation areas automatically",
@@ -60,7 +60,7 @@ const featureDetails = [
     title: "Real-Time Conversation",
     headline: "Talk to an AI that actually listens.",
     description:
-      "Unlike dictation tools that just transcribe, CareNote has a real conversation with you. It asks follow-up questions, clarifies details, and ensures you've covered everything the next shift needs to know.",
+      "Unlike dictation tools that just transcribe, Kinroster has a real conversation with you. It asks follow-up questions, clarifies details, and ensures you've covered everything the next shift needs to know.",
     benefits: [
       "Streaming voice recognition for real-time back-and-forth",
       "Sub-second response time for natural conversation",
@@ -90,7 +90,7 @@ const featureDetails = [
     title: "Compliance-Ready",
     headline: "Built for healthcare from day one.",
     description:
-      "Patient data deserves the highest protection. CareNote ships concrete compliance primitives — not generic encryption promises — so your security review has real code to inspect, not marketing copy. Every disclosure is logged, every sensitive note is segregated, every clinician share is revocable.",
+      "Patient data deserves the highest protection. Kinroster ships concrete compliance primitives — not generic encryption promises — so your security review has real code to inspect, not marketing copy. Every disclosure is logged, every sensitive note is segregated, every clinician share is revocable.",
     benefits: [
       "Row-Level Security on every PHI table",
       "Append-only audit + disclosure ledgers",

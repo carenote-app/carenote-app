@@ -116,7 +116,7 @@ export async function GET(
       resident_id: id,
       organization_id: residentRow.organization_id,
       note:
-        "This export represents the resident's record in CareNote as of " +
+        "This export represents the resident's record in Kinroster as of " +
         "the export timestamp. Any records added after that time are not " +
         "included. The export act itself is logged on the audit and " +
         "disclosure ledgers.",
@@ -163,7 +163,7 @@ export async function GET(
     },
   });
 
-  const filename = `carenote-resident-${residentRow.last_name}-${residentRow.first_name}-${new Date()
+  const filename = `kinroster-resident-${residentRow.last_name}-${residentRow.first_name}-${new Date()
     .toISOString()
     .slice(0, 10)}.json`
     .toLowerCase()

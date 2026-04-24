@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Terms of Service - CareNote",
-  description: "CareNote Terms of Service. Review the terms governing your use of our platform.",
+  title: "Terms of Service - Kinroster",
+  description: "Kinroster Terms of Service. Review the terms governing your use of our platform.",
 }
 
 export default function TermsOfServicePage() {
@@ -14,8 +14,8 @@ export default function TermsOfServicePage() {
       </div>
 
       <p className="text-muted-foreground leading-relaxed">
-        These Terms of Service (&quot;Terms&quot;) govern your access to and use of the CareNote
-        application and related services (collectively, the &quot;Service&quot;) provided by CareNote
+        These Terms of Service (&quot;Terms&quot;) govern your access to and use of the Kinroster
+        application and related services (collectively, the &quot;Service&quot;) provided by Kinroster
         (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;). By accessing or using the Service, you
         agree to be bound by these Terms.
       </p>
@@ -33,7 +33,7 @@ export default function TermsOfServicePage() {
       <section className="space-y-3">
         <h2 className="text-xl font-semibold text-foreground">2. Description of Service</h2>
         <p className="text-muted-foreground leading-relaxed">
-          CareNote is an AI-powered clinical voice documentation platform designed for residential care
+          Kinroster is an AI-powered clinical voice documentation platform designed for residential care
           facilities, including RCFEs, home care agencies, and similar healthcare settings. The Service
           enables caregivers to create structured clinical documentation through voice interaction with
           an AI assistant, which automatically organizes spoken observations into standardized care notes,
@@ -96,7 +96,7 @@ export default function TermsOfServicePage() {
       <section className="space-y-3">
         <h2 className="text-xl font-semibold text-foreground">6. Intellectual Property</h2>
         <p className="text-muted-foreground leading-relaxed">
-          The Service, including its software, design, features, and documentation, is owned by CareNote
+          The Service, including its software, design, features, and documentation, is owned by Kinroster
           and is protected by intellectual property laws. Your use of the Service does not grant you
           ownership of any intellectual property rights in the Service or its content. You retain
           ownership of the care documentation and data you create through the Service.
@@ -106,7 +106,7 @@ export default function TermsOfServicePage() {
       <section className="space-y-3">
         <h2 className="text-xl font-semibold text-foreground">7. Limitation of Liability</h2>
         <p className="text-muted-foreground leading-relaxed">
-          To the maximum extent permitted by applicable law, CareNote shall not be liable for any
+          To the maximum extent permitted by applicable law, Kinroster shall not be liable for any
           indirect, incidental, special, consequential, or punitive damages, or any loss of profits
           or revenues, whether incurred directly or indirectly, or any loss of data, use, goodwill,
           or other intangible losses resulting from:
@@ -160,8 +160,8 @@ export default function TermsOfServicePage() {
         </p>
         <p className="text-muted-foreground">
           Email:{" "}
-          <a href="mailto:support@carenote.app" className="text-primary underline hover:no-underline">
-            support@carenote.app
+          <a href="mailto:support@kinroster.app" className="text-primary underline hover:no-underline">
+            support@kinroster.app
           </a>
         </p>
       </section>

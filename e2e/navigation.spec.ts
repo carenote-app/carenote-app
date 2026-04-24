@@ -16,7 +16,7 @@ test.describe("Navigation", () => {
     await page.goto("/login");
 
     const title = await page.title();
-    expect(title).toContain("CareNote");
+    expect(title).toContain("Kinroster");
   });
 
   test("mobile viewport renders correctly", async ({ page }) => {

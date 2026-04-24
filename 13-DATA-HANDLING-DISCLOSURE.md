@@ -1,4 +1,4 @@
-# CareNote — Data Handling Disclosure
+# Kinroster — Data Handling Disclosure
 
 **For: Pilot Facility Partners**
 **Version:** 1.0
@@ -8,13 +8,13 @@
 
 ## Purpose of This Document
 
-This document explains how CareNote collects, stores, processes, and protects data from your facility. We provide this disclosure so you can make an informed decision about using CareNote and so you can inform your residents (or their legal representatives) about how their information is handled.
+This document explains how Kinroster collects, stores, processes, and protects data from your facility. We provide this disclosure so you can make an informed decision about using Kinroster and so you can inform your residents (or their legal representatives) about how their information is handled.
 
-CareNote is committed to transparency. If you have questions about anything in this document, contact us at [INSERT CONTACT EMAIL].
+Kinroster is committed to transparency. If you have questions about anything in this document, contact us at [INSERT CONTACT EMAIL].
 
 ---
 
-## 1. What Data CareNote Collects
+## 1. What Data Kinroster Collects
 
 ### Resident Information
 
@@ -35,7 +35,7 @@ CareNote is committed to transparency. If you have questions about anything in t
 |---------------|---------|
 | Name and relationship | Identify who receives family updates |
 | Email address | Deliver family update emails |
-| Phone number | Stored for facility reference; CareNote does not call or text contacts in V1 |
+| Phone number | Stored for facility reference; Kinroster does not call or text contacts in V1 |
 
 ### Caregiver Notes
 
@@ -76,9 +76,9 @@ CareNote is committed to transparency. If you have questions about anything in t
 
 ---
 
-## 2. What Data CareNote Does NOT Collect
+## 2. What Data Kinroster Does NOT Collect
 
-CareNote does not collect:
+Kinroster does not collect:
 
 - Social Security numbers
 - Insurance or billing information for residents
@@ -92,7 +92,7 @@ CareNote does not collect:
 
 ## 3. How AI Is Used
 
-CareNote uses artificial intelligence to assist with documentation. Here is exactly what the AI does and does not do.
+Kinroster uses artificial intelligence to assist with documentation. Here is exactly what the AI does and does not do.
 
 ### AI Services Used
 
@@ -166,15 +166,15 @@ Neither provider stores your facility's data permanently or uses it to improve t
 
 ### Where Data Is Stored
 
-All CareNote data is stored in a managed PostgreSQL database hosted by **Supabase** in the United States (US West region).
+All Kinroster data is stored in a managed PostgreSQL database hosted by **Supabase** in the United States (US West region).
 
 ### Encryption
 
 | Protection | Method |
 |-----------|--------|
-| Data in transit | TLS 1.2+ (HTTPS) for all connections — between your device and CareNote, between CareNote and AI services, between CareNote and the database |
+| Data in transit | TLS 1.2+ (HTTPS) for all connections — between your device and Kinroster, between Kinroster and AI services, between Kinroster and the database |
 | Data at rest | AES-256 encryption on the database and all backups |
-| Passwords | Hashed using bcrypt (industry standard); CareNote staff cannot see your password |
+| Passwords | Hashed using bcrypt (industry standard); Kinroster staff cannot see your password |
 | API keys and secrets | Stored in encrypted environment variables; never in source code |
 
 ### Access Controls
@@ -198,12 +198,12 @@ The database is backed up daily. Backups are encrypted and retained per Supabase
 |-----|---------------------|-----|
 | **Your facility's admin(s)** | All data for your facility | Facility management and oversight |
 | **Your facility's caregivers** | Notes (read/write own, read others'), resident profiles (read-only) | Shift documentation |
-| **CareNote engineering team** | Database access for debugging and support (with your knowledge) | Technical support and system maintenance |
+| **Kinroster engineering team** | Database access for debugging and support (with your knowledge) | Technical support and system maintenance |
 | **Anthropic (Claude)** | Individual notes and resident context during processing | AI-powered note structuring |
 | **OpenAI (Whisper)** | Audio recordings during transcription (immediately discarded) | Voice-to-text conversion |
 | **Supabase** | Infrastructure-level access to the database | Database hosting and management |
 
-**CareNote does not sell, share, or provide your data to:**
+**Kinroster does not sell, share, or provide your data to:**
 - Insurance companies
 - Pharmaceutical companies
 - Marketing companies
@@ -215,7 +215,7 @@ The database is backed up daily. Backups are encrypted and retained per Supabase
 
 ## 6. Current Compliance Status
 
-CareNote is in active development and is transparent about its current compliance posture.
+Kinroster is in active development and is transparent about its current compliance posture.
 
 ### What Is In Place
 
@@ -240,13 +240,13 @@ CareNote is in active development and is transparent about its current complianc
 
 ### What This Means for You
 
-During the pilot phase, CareNote is **not formally HIPAA certified** (note: HIPAA does not have a formal "certification" — compliance is self-assessed and verified through audits). We are implementing all standard technical safeguards and pursuing BAAs with our subprocessors.
+During the pilot phase, Kinroster is **not formally HIPAA certified** (note: HIPAA does not have a formal "certification" — compliance is self-assessed and verified through audits). We are implementing all standard technical safeguards and pursuing BAAs with our subprocessors.
 
 By participating in the pilot, you acknowledge:
-1. You understand CareNote's current compliance status as described in this document
+1. You understand Kinroster's current compliance status as described in this document
 2. You accept that some compliance components are still in progress
 3. You will inform your residents (or their legal representatives) that AI-assisted documentation tools are being used
-4. You understand that CareNote is working toward full HIPAA compliance
+4. You understand that Kinroster is working toward full HIPAA compliance
 
 ---
 
@@ -254,18 +254,18 @@ By participating in the pilot, you acknowledge:
 
 ### As a Facility Operator, You Can:
 
-- **View all data** CareNote stores about your facility, residents, and staff
+- **View all data** Kinroster stores about your facility, residents, and staff
 - **Export your data** upon request (we will provide a complete export within 5 business days)
 - **Deactivate staff accounts** immediately when staff leave your facility
-- **Stop using CareNote** at any time — your data will be retained for the legally required period and then deleted upon your request
+- **Stop using Kinroster** at any time — your data will be retained for the legally required period and then deleted upon your request
 - **Request data deletion** — we will delete your data after confirming no legal retention requirements apply
 - **Ask questions** about how your data is handled at any time
 
 ### As a Facility Operator, You Are Responsible For:
 
 - Informing your residents (or their legal representatives) that AI-assisted documentation tools are used at your facility
-- Ensuring your staff understand that notes entered into CareNote are processed by AI
-- Managing who has access to CareNote by inviting and deactivating staff accounts
+- Ensuring your staff understand that notes entered into Kinroster are processed by AI
+- Managing who has access to Kinroster by inviting and deactivating staff accounts
 - Reviewing AI-generated content before it becomes part of the official record or is sent to families
 - Complying with your state's documentation and record retention requirements
 
@@ -273,7 +273,7 @@ By participating in the pilot, you acknowledge:
 
 ## 8. Changes to This Disclosure
 
-We will notify you of material changes to this data handling disclosure at least 14 days before they take effect. Changes will be sent to the admin email address on your CareNote account.
+We will notify you of material changes to this data handling disclosure at least 14 days before they take effect. Changes will be sent to the admin email address on your Kinroster account.
 
 ---
 

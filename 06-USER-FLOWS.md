@@ -1,18 +1,18 @@
-# CareNote — User Flows
+# Kinroster — User Flows
 
 ## Overview
 
-This document describes the detailed step-by-step flows for every core user journey in CareNote. Each flow specifies user actions, system responses, Claude interactions, and edge cases.
+This document describes the detailed step-by-step flows for every core user journey in Kinroster. Each flow specifies user actions, system responses, Claude interactions, and edge cases.
 
 ---
 
 ## Flow 1: Organization Setup and Onboarding
 
 **Actor:** Admin (new user)
-**Trigger:** First visit to CareNote
+**Trigger:** First visit to Kinroster
 
 ```
-1. Admin visits carenote.app
+1. Admin visits kinroster.app
 2. Taps "Start Free Trial"
 3. Enters email address and password
 4. Supabase Auth sends verification email
@@ -58,7 +58,7 @@ This document describes the detailed step-by-step flows for every core user jour
 **Trigger:** During or at end of shift, caregiver needs to document an observation
 
 ```
-1. Caregiver opens CareNote on phone browser (bookmarked / PWA)
+1. Caregiver opens Kinroster on phone browser (bookmarked / PWA)
    - Already logged in (30-day session persistence)
    - Lands on "Today" view showing residents with today's activity
 
@@ -162,7 +162,7 @@ This document describes the detailed step-by-step flows for every core user jour
 **Trigger:** During or at end of shift, caregiver prefers to speak rather than type
 
 ```
-1. Caregiver opens CareNote on phone, navigates to resident (same as Flow 2
+1. Caregiver opens Kinroster on phone, navigates to resident (same as Flow 2
    steps 1–4)
 
 2. On the note input screen, caregiver taps and holds the microphone button
@@ -355,7 +355,7 @@ This document describes the detailed step-by-step flows for every core user jour
        (sarah@email.com)?"
     → If confirmed:
        - Email sent via Resend
-       - From: "Sunrise Care Home" <updates@carenote.app>
+       - From: "Sunrise Care Home" <updates@kinroster.app>
        - Reply-To: maria@sunrisecare.com (facility's configured email)
        - Family communication record saved
        - "Last update sent" timestamp updated on resident profile
@@ -439,7 +439,7 @@ This document describes the detailed step-by-step flows for every core user jour
 2. Taps "Invite Caregiver"
 3. Enters caregiver's email address
 4. System sends invitation email:
-   "Maria at Sunrise Care Home has invited you to join CareNote.
+   "Maria at Sunrise Care Home has invited you to join Kinroster.
     Click here to create your account."
 5. Caregiver clicks link → account creation page
    - Enters full name and password
@@ -456,7 +456,7 @@ This document describes the detailed step-by-step flows for every core user jour
 **Trigger:** Caregiver starts their shift and wants to know what happened
 
 ```
-1. Incoming caregiver opens CareNote
+1. Incoming caregiver opens Kinroster
 2. Lands on "Today" view
 3. Sees notes from the previous shift for each resident
 4. Taps any resident to see their recent timeline
@@ -475,7 +475,7 @@ available and readable. The shift log IS the handoff.
 
 ```
 ┌─────────────────────────────────┐
-│ ☰  CareNote        [facility]  │  ← Header
+│ ☰  Kinroster        [facility]  │  ← Header
 ├─────────────────────────────────┤
 │                                 │
 │                                 │

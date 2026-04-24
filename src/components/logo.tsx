@@ -20,7 +20,7 @@ export function Logo({ href = "/", size = "default" }: { href?: string; size?: "
       </div>
       <div className="flex flex-col">
         <span className={`${textSize} font-semibold tracking-tight text-foreground`}>
-          CareNote
+          Kinroster
         </span>
         <span className={`${subSize} text-muted-foreground leading-none`}>
           Clinical Voice Assistant

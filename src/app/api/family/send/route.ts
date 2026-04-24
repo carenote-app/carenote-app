@@ -146,8 +146,8 @@ export async function POST(request: NextRequest) {
   try {
     await sendFamilyEmail({
       to: contact.email,
-      fromName: typedOrg?.email_from_name || typedOrg?.name || "CareNote",
-      replyTo: typedOrg?.email_reply_to || "noreply@carenote.app",
+      fromName: typedOrg?.email_from_name || typedOrg?.name || "Kinroster",
+      replyTo: typedOrg?.email_reply_to || "noreply@kinroster.app",
       subject: typedComm.subject,
       body: typedComm.body,
     });

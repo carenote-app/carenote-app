@@ -132,7 +132,7 @@ export default function BillingPage() {
                   : "Your free trial has expired."}
               </p>
               <div className="rounded-lg bg-muted/50 p-4">
-                <p className="font-medium">CareNote Pro</p>
+                <p className="font-medium">Kinroster Pro</p>
                 <p className="text-2xl font-bold">
                   $149<span className="text-sm font-normal text-muted-foreground">/month</span>
                 </p>
@@ -149,7 +149,7 @@ export default function BillingPage() {
           {org?.subscription_status === "active" && (
             <div className="space-y-3">
               <p className="text-sm text-muted-foreground">
-                Your subscription is active. Thank you for using CareNote.
+                Your subscription is active. Thank you for using Kinroster.
               </p>
               <Button variant="outline" onClick={handleManage}>
                 Manage Subscription
@@ -161,7 +161,7 @@ export default function BillingPage() {
             <div className="space-y-3">
               <p className="text-sm text-destructive">
                 Your payment is past due. Please update your payment method to
-                continue using CareNote.
+                continue using Kinroster.
               </p>
               <Button variant="destructive" onClick={handleManage}>
                 Update Payment
