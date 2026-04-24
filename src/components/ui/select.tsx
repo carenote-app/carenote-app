@@ -25,12 +25,20 @@ const MobileContext = React.createContext<{
   registerItem: () => {},
 })
 
+// Touch capability is effectively static after mount, so no subscription is
+// needed. The server snapshot returns false to keep SSR output stable; the
+// client snapshot reads the real value on first render without setState.
+const subscribeNoop = () => () => {}
+const getTouchSnapshot = () =>
+  "ontouchstart" in window || navigator.maxTouchPoints > 0
+const getTouchServerSnapshot = () => false
+
 function useIsTouchDevice() {
-  const [isTouch, setIsTouch] = React.useState(false)
-  React.useEffect(() => {
-    setIsTouch("ontouchstart" in window || navigator.maxTouchPoints > 0)
-  }, [])
-  return isTouch
+  return React.useSyncExternalStore(
+    subscribeNoop,
+    getTouchSnapshot,
+    getTouchServerSnapshot
+  )
 }
 
 // ---------------------------------------------------------------------------

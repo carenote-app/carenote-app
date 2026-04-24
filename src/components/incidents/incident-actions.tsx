@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import type { Database } from "@/types/database";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -42,7 +43,7 @@ export function IncidentActions({ incident }: { incident: IncidentData }) {
       data: { user },
     } = await supabase.auth.getUser();
 
-    const updates: Record<string, unknown> = {
+    const updates: Database["public"]["Tables"]["incident_reports"]["Update"] = {
       status,
       severity,
       manager_notes: managerNotes || null,
