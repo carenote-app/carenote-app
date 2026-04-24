@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState, useRef, useCallback } from "react"
-import { X, Mic, Square, Loader2, FileText, Copy, Check, Volume2, ArrowRight } from "lucide-react"
+import { X, Mic, Square, Loader2, FileText, Copy, Check, Volume2, ArrowRight, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
@@ -12,42 +12,75 @@ interface ConsultModalProps {
   selectedRole: "caretaker" | "doctor" | null
 }
 
-type RecordingState = "idle" | "recording" | "processing" | "complete"
+type RecordingState = "idle" | "recording" | "processing" | "complete" | "error"
+
+const MAX_RECORDING_SECONDS = 90
 
 export function ConsultModal({ isOpen, onClose, selectedRole }: ConsultModalProps) {
   const [recordingState, setRecordingState] = useState<RecordingState>("idle")
   const [transcript, setTranscript] = useState("")
   const [generatedNote, setGeneratedNote] = useState("")
+  const [errorMessage, setErrorMessage] = useState("")
   const [copied, setCopied] = useState(false)
   const [recordingTime, setRecordingTime] = useState(0)
-  const timerRef = useRef<NodeJS.Timeout | null>(null)
+
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
+  const chunksRef = useRef<Blob[]>([])
+  const streamRef = useRef<MediaStream | null>(null)
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const autoStopRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const resetState = useCallback(() => {
     setRecordingState("idle")
     setTranscript("")
     setGeneratedNote("")
+    setErrorMessage("")
     setRecordingTime(0)
   }, [])
 
+  const cleanupRecorder = useCallback(() => {
+    if (autoStopRef.current) {
+      clearTimeout(autoStopRef.current)
+      autoStopRef.current = null
+    }
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((t) => t.stop())
+      streamRef.current = null
+    }
+    mediaRecorderRef.current = null
+  }, [])
+
   const handleClose = useCallback(() => {
+    if (mediaRecorderRef.current?.state === "recording") {
+      mediaRecorderRef.current.stop()
+    }
+    cleanupRecorder()
     resetState()
     onClose()
-  }, [resetState, onClose])
+  }, [cleanupRecorder, resetState, onClose])
 
   useEffect(() => {
     if (recordingState === "recording") {
       timerRef.current = setInterval(() => {
-        setRecordingTime(prev => prev + 1)
+        setRecordingTime((prev) => prev + 1)
       }, 1000)
-    } else {
-      if (timerRef.current) {
-        clearInterval(timerRef.current)
-      }
+    } else if (timerRef.current) {
+      clearInterval(timerRef.current)
+      timerRef.current = null
     }
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current)
+      if (timerRef.current) {
+        clearInterval(timerRef.current)
+        timerRef.current = null
+      }
     }
   }, [recordingState])
+
+  useEffect(() => {
+    return () => {
+      cleanupRecorder()
+    }
+  }, [cleanupRecorder])
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60)
@@ -55,91 +88,110 @@ export function ConsultModal({ isOpen, onClose, selectedRole }: ConsultModalProp
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
   }
 
-  const startRecording = () => {
-    setRecordingState("recording")
-    setRecordingTime(0)
+  const sendToServer = useCallback(
+    async (audioBlob: Blob) => {
+      setRecordingState("processing")
+      try {
+        const formData = new FormData()
+        formData.append("audio", audioBlob)
+        formData.append("role", selectedRole ?? "caretaker")
+
+        const response = await fetch("/api/demo/consult", {
+          method: "POST",
+          body: formData,
+        })
+
+        const data = (await response.json().catch(() => ({}))) as {
+          transcript?: string
+          structured?: string
+          error?: string
+        }
+
+        if (!response.ok) {
+          setErrorMessage(
+            data.error ?? "Something went wrong. Please try again."
+          )
+          setRecordingState("error")
+          return
+        }
+
+        setTranscript(data.transcript ?? "")
+        setGeneratedNote(data.structured ?? "")
+        setRecordingState("complete")
+      } catch {
+        setErrorMessage("Network error. Please try again.")
+        setRecordingState("error")
+      }
+    },
+    [selectedRole]
+  )
+
+  const stopRecording = useCallback(() => {
+    if (autoStopRef.current) {
+      clearTimeout(autoStopRef.current)
+      autoStopRef.current = null
+    }
+    if (mediaRecorderRef.current?.state === "recording") {
+      mediaRecorderRef.current.stop()
+    }
+  }, [])
+
+  const startRecording = useCallback(async () => {
+    setErrorMessage("")
     setTranscript("")
     setGeneratedNote("")
-  }
+    setRecordingTime(0)
 
-  const stopRecording = () => {
-    setRecordingState("processing")
-    // Simulate processing
-    setTimeout(() => {
-      setTranscript(
-        selectedRole === "doctor" 
-          ? "Patient presents with persistent cough for 5 days, mild fever of 100.2°F. No difficulty breathing. History of seasonal allergies. Currently taking no medications. Recommend chest X-ray and complete blood count. Prescribing amoxicillin 500mg three times daily for 7 days."
-          : "Mrs. Johnson had a good day today. She ate about 75% of her breakfast and all of her lunch. Her mobility seems improved—she walked to the garden with assistance. Blood pressure reading was 128/82. She mentioned some mild discomfort in her left hip but said it was manageable. Mood was positive, enjoyed visiting with family in the afternoon."
+    if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia) {
+      setErrorMessage("Microphone is not available in this browser.")
+      setRecordingState("error")
+      return
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      streamRef.current = stream
+
+      const mimeType = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
+        ? "audio/webm;codecs=opus"
+        : MediaRecorder.isTypeSupported("audio/webm")
+        ? "audio/webm"
+        : "audio/mp4"
+
+      const recorder = new MediaRecorder(stream, { mimeType })
+      mediaRecorderRef.current = recorder
+      chunksRef.current = []
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunksRef.current.push(e.data)
+      }
+
+      recorder.onstop = () => {
+        const blob = new Blob(chunksRef.current, { type: recorder.mimeType })
+        cleanupRecorder()
+
+        if (blob.size < 5000) {
+          setErrorMessage("Recording too short. Try again and speak for a few seconds.")
+          setRecordingState("error")
+          return
+        }
+        void sendToServer(blob)
+      }
+
+      recorder.start(250)
+      setRecordingState("recording")
+
+      autoStopRef.current = setTimeout(() => {
+        stopRecording()
+      }, MAX_RECORDING_SECONDS * 1000)
+    } catch {
+      cleanupRecorder()
+      setErrorMessage(
+        "Microphone access denied. Allow microphone access and try again."
       )
-      setGeneratedNote(
-        selectedRole === "doctor"
-          ? `CLINICAL NOTE
-
-Date: ${new Date().toLocaleDateString()}
-Provider: Attending Physician
-
-CHIEF COMPLAINT:
-Persistent cough × 5 days with low-grade fever
-
-HISTORY OF PRESENT ILLNESS:
-Patient presents with a productive cough that began 5 days ago. Associated with mild fever (100.2°F). Denies shortness of breath, chest pain, or hemoptysis. No recent travel or sick contacts.
-
-PAST MEDICAL HISTORY:
-- Seasonal allergies
-
-CURRENT MEDICATIONS:
-- None
-
-ASSESSMENT:
-1. Acute bronchitis, likely bacterial superinfection
-
-PLAN:
-1. Chest X-ray (PA and lateral)
-2. CBC with differential
-3. Amoxicillin 500mg TID × 7 days
-4. Return if symptoms worsen or no improvement in 48-72 hours
-
-_________________________________
-Electronic Signature`
-          : `DAILY CARE REPORT
-
-Resident: Mrs. Johnson
-Date: ${new Date().toLocaleDateString()}
-Caregiver: [Name]
-
-NUTRITION:
-- Breakfast: 75% consumed
-- Lunch: 100% consumed
-- Dinner: Pending
-- Hydration: Adequate
-
-MOBILITY:
-- Activity Level: Improved
-- Ambulation: Walked to garden with assistance
-- Falls: None reported
-
-VITAL SIGNS:
-- Blood Pressure: 128/82 mmHg
-
-PAIN ASSESSMENT:
-- Location: Left hip
-- Severity: Mild, manageable
-- Intervention: Monitoring
-
-MOOD & BEHAVIOR:
-- Overall Mood: Positive
-- Social Activity: Family visit in afternoon
-- Sleep Quality: To be documented
-
-NOTES:
-Resident had a good day with improved mobility and positive social engagement.
-
-_________________________________
-Caregiver Signature`
-      )
-      setRecordingState("complete")
-    }, 2000)
-  }
+      setRecordingState("error")
+    }
+  }, [cleanupRecorder, sendToServer, stopRecording])
 
   const copyToClipboard = async () => {
     await navigator.clipboard.writeText(generatedNote)
@@ -149,17 +201,17 @@ Caregiver Signature`
 
   if (!isOpen) return null
 
+  const buttonAction =
+    recordingState === "recording" ? stopRecording : startRecording
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-background/80 backdrop-blur-sm"
         onClick={handleClose}
       />
 
-      {/* Modal */}
       <div className="relative flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl">
-        {/* Header */}
         <div className="flex items-center justify-between border-b border-border px-6 py-4">
           <div>
             <h2 className="text-lg font-semibold text-foreground">AI Consultation</h2>
@@ -167,30 +219,27 @@ Caregiver Signature`
               {selectedRole === "doctor" ? "Clinical Documentation" : "Care Documentation"}
             </p>
           </div>
-          <Button variant="ghost" size="icon" onClick={onClose}>
+          <Button variant="ghost" size="icon" onClick={handleClose}>
             <X className="h-5 w-5" />
           </Button>
         </div>
 
-        {/* Content */}
         <div className="flex-1 overflow-auto p-6">
           <div className="grid gap-6 lg:grid-cols-2">
-            {/* Recording Section */}
             <div className="space-y-4">
               <h3 className="flex items-center gap-2 text-sm font-medium text-foreground">
                 <Volume2 className="h-4 w-4 text-primary" />
                 Voice Recording
               </h3>
-              
+
               <div className="flex flex-col items-center justify-center rounded-xl border border-border bg-secondary/30 p-8">
-                {/* Recording Button */}
                 <button
-                  onClick={recordingState === "recording" ? stopRecording : startRecording}
+                  onClick={buttonAction}
                   disabled={recordingState === "processing"}
                   className={cn(
                     "relative flex h-24 w-24 items-center justify-center rounded-full transition-all",
-                    recordingState === "recording" 
-                      ? "bg-destructive text-destructive-foreground animate-pulse" 
+                    recordingState === "recording"
+                      ? "bg-destructive text-destructive-foreground animate-pulse"
                       : "bg-primary text-primary-foreground hover:bg-primary/90",
                     recordingState === "processing" && "opacity-50 cursor-not-allowed"
                   )}
@@ -202,8 +251,7 @@ Caregiver Signature`
                   ) : (
                     <Mic className="h-10 w-10" />
                   )}
-                  
-                  {/* Recording ring animation */}
+
                   {recordingState === "recording" && (
                     <>
                       <span className="absolute inset-0 animate-ping rounded-full bg-destructive/30" />
@@ -212,11 +260,10 @@ Caregiver Signature`
                   )}
                 </button>
 
-                {/* Status text */}
                 <div className="mt-4 text-center">
                   {recordingState === "idle" && (
                     <p className="text-sm text-muted-foreground">
-                      Tap to start recording
+                      Tap to start recording (up to {MAX_RECORDING_SECONDS}s)
                     </p>
                   )}
                   {recordingState === "recording" && (
@@ -231,18 +278,29 @@ Caregiver Signature`
                   )}
                   {recordingState === "processing" && (
                     <p className="text-sm text-muted-foreground">
-                      Processing your recording...
+                      Transcribing and structuring...
                     </p>
                   )}
                   {recordingState === "complete" && (
                     <p className="text-sm text-primary">
-                      Recording complete
+                      Recording complete · tap mic to try again
+                    </p>
+                  )}
+                  {recordingState === "error" && (
+                    <p className="text-sm text-destructive">
+                      Tap mic to try again
                     </p>
                   )}
                 </div>
               </div>
 
-              {/* Transcript */}
+              {errorMessage && (
+                <div className="flex items-start gap-2 rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">
+                  <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />
+                  <span>{errorMessage}</span>
+                </div>
+              )}
+
               {transcript && (
                 <div className="space-y-2">
                   <h4 className="text-sm font-medium text-muted-foreground">Transcript</h4>
@@ -255,22 +313,23 @@ Caregiver Signature`
               )}
             </div>
 
-            {/* Generated Note Section */}
             <div className="space-y-4">
               <h3 className="flex items-center gap-2 text-sm font-medium text-foreground">
                 <FileText className="h-4 w-4 text-primary" />
                 Generated Documentation
               </h3>
 
-              <div className={cn(
-                "min-h-[300px] rounded-xl border bg-secondary/30 p-4",
-                generatedNote ? "border-primary/50" : "border-border"
-              )}>
+              <div
+                className={cn(
+                  "min-h-[300px] rounded-xl border bg-secondary/30 p-4",
+                  generatedNote ? "border-primary/50" : "border-border"
+                )}
+              >
                 {!generatedNote ? (
                   <div className="flex h-full items-center justify-center text-center">
                     <p className="text-sm text-muted-foreground">
-                      {recordingState === "processing" 
-                        ? "Generating documentation..." 
+                      {recordingState === "processing"
+                        ? "Generating documentation..."
                         : "Start a recording to generate documentation"}
                     </p>
                   </div>
@@ -304,7 +363,6 @@ Caregiver Signature`
           </div>
         </div>
 
-        {/* Footer */}
         <div className="border-t border-border bg-secondary/30 px-6 py-4">
           {recordingState === "complete" ? (
             <div className="flex flex-col items-center gap-2">
@@ -320,7 +378,7 @@ Caregiver Signature`
             </div>
           ) : (
             <p className="text-center text-xs text-muted-foreground">
-              This is a demo showing how Kinroster structures clinical documentation from voice input.
+              Live demo: your voice is transcribed and structured by AI. Audio is not stored.
             </p>
           )}
         </div>
