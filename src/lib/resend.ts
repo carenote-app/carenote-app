@@ -26,7 +26,7 @@ export async function sendFamilyEmail({
   const html = buildEmailHtml(body, fromName);
 
   const { data, error } = await resend.emails.send({
-    from: `${fromName} <updates@${process.env.RESEND_DOMAIN || "kinroster.app"}>`,
+    from: `${fromName} <updates@${process.env.RESEND_DOMAIN || "kinroster.com"}>`,
     replyTo,
     to,
     subject,
@@ -83,7 +83,7 @@ export async function sendClinicianPortalLink({
   });
 
   const { data, error } = await resend.emails.send({
-    from: `${fromName} <updates@${process.env.RESEND_DOMAIN || "kinroster.app"}>`,
+    from: `${fromName} <updates@${process.env.RESEND_DOMAIN || "kinroster.com"}>`,
     replyTo,
     to,
     subject,

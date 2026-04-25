@@ -160,8 +160,8 @@ export default function TermsOfServicePage() {
         </p>
         <p className="text-muted-foreground">
           Email:{" "}
-          <a href="mailto:support@kinroster.app" className="text-primary underline hover:no-underline">
-            support@kinroster.app
+          <a href="mailto:support@kinroster.com" className="text-primary underline hover:no-underline">
+            support@kinroster.com
           </a>
         </p>
       </section>

@@ -12,7 +12,7 @@ This document describes the detailed step-by-step flows for every core user jour
 **Trigger:** First visit to Kinroster
 
 ```
-1. Admin visits kinroster.app
+1. Admin visits kinroster.com
 2. Taps "Start Free Trial"
 3. Enters email address and password
 4. Supabase Auth sends verification email
@@ -355,7 +355,7 @@ This document describes the detailed step-by-step flows for every core user jour
        (sarah@email.com)?"
     → If confirmed:
        - Email sent via Resend
-       - From: "Sunrise Care Home" <updates@kinroster.app>
+       - From: "Sunrise Care Home" <updates@kinroster.com>
        - Reply-To: maria@sunrisecare.com (facility's configured email)
        - Family communication record saved
        - "Last update sent" timestamp updated on resident profile

@@ -24,8 +24,8 @@ export default function SupportPage() {
         </p>
         <p className="text-muted-foreground">
           Email:{" "}
-          <a href="mailto:support@kinroster.app" className="text-primary underline hover:no-underline">
-            support@kinroster.app
+          <a href="mailto:support@kinroster.com" className="text-primary underline hover:no-underline">
+            support@kinroster.com
           </a>
         </p>
         <p className="text-muted-foreground leading-relaxed">

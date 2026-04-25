@@ -36,9 +36,13 @@ ALTER TABLE notes_sensitive_access ENABLE ROW LEVEL SECURITY;
 
 CREATE INDEX idx_sensitive_access_user_resident
   ON notes_sensitive_access (user_id, resident_id);
+-- Partial index including expires_at for the active-grants EXISTS check
+-- in the notes SELECT policy. The `now()` predicate from the original
+-- design can't be used (Postgres requires index predicates to call only
+-- IMMUTABLE functions); the filter on expires_at happens at query time
+-- against this composite index instead.
 CREATE INDEX idx_sensitive_access_active
-  ON notes_sensitive_access (user_id, resident_id)
-  WHERE expires_at IS NULL OR expires_at > now();
+  ON notes_sensitive_access (user_id, resident_id, expires_at);
 
 -- A user always sees their own grants — the notes SELECT policy's EXISTS
 -- subquery depends on this. Admins see all grants within their org so the

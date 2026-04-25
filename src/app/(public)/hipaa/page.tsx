@@ -224,8 +224,8 @@ export default function HipaaCompliancePage() {
         </p>
         <p className="text-muted-foreground leading-relaxed">
           Organizations planning to handle real PHI and requiring a signed BAA should contact us at{" "}
-          <a href="mailto:support@kinroster.app" className="text-primary underline hover:no-underline">
-            support@kinroster.app
+          <a href="mailto:support@kinroster.com" className="text-primary underline hover:no-underline">
+            support@kinroster.com
           </a>{" "}
           to discuss your compliance timeline and vendor requirements.
         </p>
@@ -255,8 +255,8 @@ export default function HipaaCompliancePage() {
         <p className="text-sm text-muted-foreground leading-relaxed">
           This page describes current state, not an aspirational compliance label. Organizations
           planning to handle real PHI should contact us at{" "}
-          <a href="mailto:support@kinroster.app" className="text-primary underline hover:no-underline">
-            support@kinroster.app
+          <a href="mailto:support@kinroster.com" className="text-primary underline hover:no-underline">
+            support@kinroster.com
           </a>{" "}
           so we can align on BAA status, counsel review, and vendor-tier configuration before
           go-live. For questions about the shipped architecture or the items finalized at

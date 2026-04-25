@@ -19,7 +19,7 @@ Complete these before Day 1:
 - [ ] Stripe account created (test mode)
 - [ ] Vercel account created
 - [ ] GitHub repository created
-- [ ] Domain purchased (kinroster.app or similar)
+- [ ] Domain purchased (kinroster.com or similar)
 - [ ] Figma or paper sketches of key screens (optional but helpful)
 
 ---

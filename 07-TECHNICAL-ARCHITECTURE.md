@@ -251,8 +251,8 @@ CREATE INDEX idx_family_contacts_resident ON family_contacts (resident_id);
 |-------------|---------|-----|
 | Local | Development | localhost:3000 |
 | Preview | PR previews (Vercel auto-deploys) | [branch].kinroster.vercel.app |
-| Staging | Pre-production testing | staging.kinroster.app |
-| Production | Live app | app.kinroster.app |
+| Staging | Pre-production testing | staging.kinroster.com |
+| Production | Live app | app.kinroster.com |
 
 ### Infrastructure Costs (Monthly)
 

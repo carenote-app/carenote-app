@@ -45,7 +45,7 @@ The legal pages make specific claims that are not backed by code. This creates l
 
 | Gap | Where | What's missing | Effort |
 |-----|-------|----------------|--------|
-| **support@kinroster.app** | Support page | No domain, no email configured | Needs domain purchase first |
+| **support@kinroster.com** | Support page | No domain, no email configured | Needs domain purchase first |
 | **Incident response plan** | HIPAA page | Described but no actual runbook exists | 1 day (doc only) |
 
 ---
