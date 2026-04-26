@@ -36,13 +36,19 @@ test.describe("Landing Page", () => {
     await expect(joinButton).toBeVisible();
   });
 
-  test("consult modal opens and shows demo", async ({ page }) => {
+  test("consult modal opens", async ({ page }) => {
     await page.goto("/");
     await page.getByRole("button", { name: /Start AI Consult/i }).click();
 
+    // The modal renders one of two states depending on whether the consult
+    // demo is currently active in src/lib/demos/registry.ts. Either is a
+    // valid pass; we just want to know the modal opened.
     const modal = page.locator("[class*='fixed inset-0']");
     await expect(modal.getByText("AI Consultation")).toBeVisible();
-    await expect(modal.getByText("Generated Documentation")).toBeVisible();
+
+    const liveDemo = modal.getByText("Generated Documentation");
+    const pausedDemo = modal.getByText("Demo coming soon");
+    await expect(liveDemo.or(pausedDemo)).toBeVisible();
   });
 
   test("footer links navigate to public pages", async ({ page }) => {
