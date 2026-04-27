@@ -116,90 +116,88 @@ export function ResidentClinicianList({
         <h4 className="text-sm font-medium text-muted-foreground">
           Treating Clinicians
         </h4>
-        {isAdmin && (
-          <Dialog open={assignOpen} onOpenChange={setAssignOpen}>
-            <DialogTrigger
-              render={
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  disabled={unassignedDirectory.length === 0}
-                />
-              }
-            >
-              <Plus className="mr-1 h-3 w-3" />
-              Assign
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Assign Clinician</DialogTitle>
-              </DialogHeader>
+        <Dialog open={assignOpen} onOpenChange={setAssignOpen}>
+          <DialogTrigger
+            render={
+              <Button
+                variant="ghost"
+                size="sm"
+                disabled={unassignedDirectory.length === 0}
+              />
+            }
+          >
+            <Plus className="mr-1 h-3 w-3" />
+            Assign
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Assign Clinician</DialogTitle>
+            </DialogHeader>
 
-              {unassignedDirectory.length === 0 ? (
-                <p className="text-sm text-muted-foreground">
-                  No clinicians available to assign. Add one in the{" "}
-                  <a href="/clinicians" className="underline">
-                    Clinicians directory
-                  </a>{" "}
-                  first.
-                </p>
-              ) : (
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="assign-clinician">Clinician</Label>
-                    <Select value={picked} onValueChange={setPicked}>
-                      <SelectTrigger id="assign-clinician">
-                        <SelectValue placeholder="Select a clinician" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {unassignedDirectory.map((c) => (
-                          <SelectItem key={c.id} value={c.id}>
-                            {c.full_name}
-                            {c.specialty ? ` — ${c.specialty}` : ""}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="assign-relationship">Relationship</Label>
-                    <Select
-                      value={relationship}
-                      onValueChange={setRelationship}
-                    >
-                      <SelectTrigger id="assign-relationship">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {RELATIONSHIP_OPTIONS.map((opt) => (
-                          <SelectItem key={opt.value} value={opt.value}>
-                            {opt.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <DialogFooter>
-                    <Button
-                      onClick={handleAssign}
-                      disabled={!picked || saving}
-                    >
-                      {saving ? "Assigning..." : "Assign"}
-                    </Button>
-                  </DialogFooter>
+            {unassignedDirectory.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                No clinicians available to assign.{" "}
+                {isAdmin ? "Add" : "Ask an admin to add"} one in the{" "}
+                <a href="/clinicians" className="underline">
+                  Clinicians directory
+                </a>{" "}
+                first.
+              </p>
+            ) : (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="assign-clinician">Clinician</Label>
+                  <Select value={picked} onValueChange={setPicked}>
+                    <SelectTrigger id="assign-clinician">
+                      <SelectValue placeholder="Select a clinician" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {unassignedDirectory.map((c) => (
+                        <SelectItem key={c.id} value={c.id}>
+                          {c.full_name}
+                          {c.specialty ? ` — ${c.specialty}` : ""}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
-              )}
-            </DialogContent>
-          </Dialog>
-        )}
+
+                <div className="space-y-2">
+                  <Label htmlFor="assign-relationship">Relationship</Label>
+                  <Select
+                    value={relationship}
+                    onValueChange={setRelationship}
+                  >
+                    <SelectTrigger id="assign-relationship">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {RELATIONSHIP_OPTIONS.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <DialogFooter>
+                  <Button
+                    onClick={handleAssign}
+                    disabled={!picked || saving}
+                  >
+                    {saving ? "Assigning..." : "Assign"}
+                  </Button>
+                </DialogFooter>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
 
       {assigned.length === 0 && (
         <p className="text-sm text-muted-foreground">
-          No clinicians assigned yet.
-          {isAdmin ? " Assign a treating physician above." : ""}
+          No clinicians assigned yet. Assign a treating physician above.
         </p>
       )}
 
@@ -237,16 +235,14 @@ export function ResidentClinicianList({
                   clinicianName={c.full_name}
                 />
               )}
-              {isAdmin && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleUnassign(c.assignment_id)}
-                  aria-label={`Unassign ${c.full_name}`}
-                >
-                  <X className="h-3 w-3" />
-                </Button>
-              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleUnassign(c.assignment_id)}
+                aria-label={`Unassign ${c.full_name}`}
+              >
+                <X className="h-3 w-3" />
+              </Button>
             </div>
           </div>
         ))}

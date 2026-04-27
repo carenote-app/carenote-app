@@ -134,7 +134,19 @@ function SelectValue({ className, placeholder, ...props }: SelectPrimitive.Value
       className={cn("flex flex-1 text-left", className)}
       placeholder={placeholder}
       {...props}
-    />
+    >
+      {(currentValue: unknown) => {
+        const v =
+          typeof currentValue === "string"
+            ? currentValue
+            : currentValue == null
+              ? ""
+              : String(currentValue)
+        if (!v) return placeholder ?? null
+        const selectedItem = items.find((item) => item.value === v)
+        return selectedItem?.label ?? v
+      }}
+    </SelectPrimitive.Value>
   )
 }
 
