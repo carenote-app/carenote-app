@@ -120,6 +120,17 @@ export async function GET(
         "the export timestamp. Any records added after that time are not " +
         "included. The export act itself is logged on the audit and " +
         "disclosure ledgers.",
+      ai_generated_fields: {
+        notes: ["structured_output", "edited_output"],
+        weekly_summaries: ["summary_text", "key_trends", "concerns"],
+        incident_reports: ["report_text"],
+        voice_transcripts: ["text"],
+        description:
+          "Fields listed above are AI-generated from caregiver-entered " +
+          "raw input. They are documentation aids and not clinical " +
+          "assessments. The corresponding raw_input fields on each note " +
+          "are the unedited source of truth.",
+      },
     },
     resident: residentRow,
     family_contacts: familyContacts ?? [],

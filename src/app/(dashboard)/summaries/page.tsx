@@ -3,6 +3,10 @@ import { requireAdmin } from "@/lib/auth";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SummaryActions } from "@/components/summaries/summary-actions";
+import {
+  AIDisclosure,
+  AI_DISCLOSURE_SUMMARY,
+} from "@/components/transparency/ai-disclosure";
 import { format } from "date-fns";
 
 export default async function SummariesPage() {
@@ -34,7 +38,10 @@ export default async function SummariesPage() {
 
   return (
     <div className="px-4 py-6">
-      <h2 className="mb-6 text-xl font-semibold">Weekly Summaries</h2>
+      <h2 className="mb-2 text-xl font-semibold">Weekly Summaries</h2>
+      <div className="mb-6">
+        <AIDisclosure message={AI_DISCLOSURE_SUMMARY} />
+      </div>
 
       {summaries.length === 0 ? (
         <div className="rounded-lg border border-dashed p-8 text-center">
@@ -130,10 +137,10 @@ function SummaryCard({
 
         {summary.concerns.length > 0 && (
           <div>
-            <p className="text-xs font-medium text-destructive uppercase tracking-wide mb-1">
-              Concerns
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
+              Items for review
             </p>
-            <ul className="text-sm list-disc list-inside text-destructive">
+            <ul className="text-sm list-disc list-inside">
               {summary.concerns.map((concern, i) => (
                 <li key={i}>{concern}</li>
               ))}

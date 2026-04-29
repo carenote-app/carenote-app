@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ShieldCheck, Clock } from "lucide-react";
 import type { ClinicianSummaryOutput } from "@/lib/prompts/clinician-summary";
+import { AIDisclosure } from "@/components/transparency/ai-disclosure";
 
 export function ClinicianPortalView({
   facility_name,
@@ -44,11 +45,15 @@ export function ClinicianPortalView({
               Clinical summary: {residentDisplay}
             </h1>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Badge variant="secondary" className="text-xs">
               <ShieldCheck className="mr-1 h-3 w-3" />
               Confidential — HIPAA protected
             </Badge>
+            <AIDisclosure
+              variant="badge"
+              message="AI-generated summary"
+            />
           </div>
         </div>
       </header>
