@@ -19,6 +19,9 @@ export const mockOrganization: Organization = {
   stripe_customer_id: null,
   stripe_subscription_id: null,
   settings: {},
+  bed_count: 8,
+  subscription_tier: "small",
+  billing_emails_sent: {},
   created_at: "2026-04-01T00:00:00Z",
   updated_at: "2026-04-01T00:00:00Z",
 };

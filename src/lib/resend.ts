@@ -4,6 +4,115 @@ const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
   : null;
 
+function billingFromAddress(facilityName: string): string {
+  return `${facilityName} via Kinroster <billing@${process.env.RESEND_DOMAIN || "kinroster.com"}>`;
+}
+
+type BillingReminderKey = "trial_7_day" | "trial_1_day" | "trial_expired";
+
+interface BillingEmailContent {
+  subject: string;
+  html: string;
+}
+
+function billingEmailContent(
+  reminder: BillingReminderKey,
+  params: { adminName: string | null; facilityName: string; billingUrl: string }
+): BillingEmailContent {
+  const greeting = params.adminName
+    ? `Hi ${params.adminName.split(" ")[0]},`
+    : "Hello,";
+
+  if (reminder === "trial_7_day") {
+    return {
+      subject: `Your Kinroster free trial ends in a week`,
+      html: buildBillingEmailHtml({
+        ...params,
+        greeting,
+        bodyHtml: `<p style="margin: 0 0 16px 0; line-height: 1.6;">Your Kinroster free trial for <strong>${params.facilityName}</strong> ends in 7 days.</p><p style="margin: 0 0 16px 0; line-height: 1.6;">No payment is needed yet — when you're ready, click below to keep your team's documentation flowing without interruption.</p>`,
+        ctaLabel: "Set up billing",
+      }),
+    };
+  }
+  if (reminder === "trial_1_day") {
+    return {
+      subject: `Your Kinroster free trial ends tomorrow`,
+      html: buildBillingEmailHtml({
+        ...params,
+        greeting,
+        bodyHtml: `<p style="margin: 0 0 16px 0; line-height: 1.6;">Your Kinroster free trial for <strong>${params.facilityName}</strong> ends <strong>tomorrow</strong>.</p><p style="margin: 0 0 16px 0; line-height: 1.6;">Add a payment method now to keep documentation working without a gap.</p>`,
+        ctaLabel: "Subscribe now",
+      }),
+    };
+  }
+  return {
+    subject: `Your Kinroster free trial has ended`,
+    html: buildBillingEmailHtml({
+      ...params,
+      greeting,
+      bodyHtml: `<p style="margin: 0 0 16px 0; line-height: 1.6;">Your Kinroster free trial for <strong>${params.facilityName}</strong> has ended.</p><p style="margin: 0 0 16px 0; line-height: 1.6;">Note creation, voice sessions, and AI summaries are paused until you subscribe. Your data is safe and waiting for you.</p>`,
+      ctaLabel: "Subscribe now",
+    }),
+  };
+}
+
+function buildBillingEmailHtml(params: {
+  facilityName: string;
+  greeting: string;
+  bodyHtml: string;
+  ctaLabel: string;
+  billingUrl: string;
+}): string {
+  return `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; color: #1a1a1a; background: #ffffff;">
+  <div style="border-bottom: 2px solid #e5e5e5; padding-bottom: 16px; margin-bottom: 24px;">
+    <h2 style="margin: 0; font-size: 18px; color: #1a1a1a;">Kinroster</h2>
+  </div>
+  <p style="margin: 0 0 16px 0; line-height: 1.6;">${params.greeting}</p>
+  ${params.bodyHtml}
+  <p style="margin: 24px 0;">
+    <a href="${params.billingUrl}" style="background: #1a1a1a; color: #ffffff; padding: 12px 20px; border-radius: 6px; text-decoration: none; display: inline-block; font-weight: 500;">${params.ctaLabel}</a>
+  </p>
+  <div style="border-top: 1px solid #e5e5e5; padding-top: 16px; margin-top: 24px; font-size: 12px; color: #666;">
+    <p style="margin: 0;">This billing reminder was sent to the admin(s) of ${params.facilityName} on Kinroster.</p>
+  </div>
+</body>
+</html>`;
+}
+
+export async function sendBillingEmail(params: {
+  to: string;
+  adminName: string | null;
+  facilityName: string;
+  reminder: BillingReminderKey;
+  billingUrl: string;
+}): Promise<{ id: string }> {
+  if (!resend) {
+    throw new Error("Email sending is not configured (RESEND_API_KEY missing)");
+  }
+
+  const { subject, html } = billingEmailContent(params.reminder, {
+    adminName: params.adminName,
+    facilityName: params.facilityName,
+    billingUrl: params.billingUrl,
+  });
+
+  const { data, error } = await resend.emails.send({
+    from: billingFromAddress(params.facilityName),
+    to: params.to,
+    subject,
+    html,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return { id: data!.id };
+}
+
 interface SendEmailParams {
   to: string;
   fromName: string;
