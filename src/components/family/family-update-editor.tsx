@@ -20,6 +20,10 @@ import { Loader2, Send, Save, ShieldCheck, AlertTriangle } from "lucide-react";
 import { format, subDays } from "date-fns";
 import type { FamilyContact } from "@/types/database";
 import { SCOPE_OPTIONS } from "@/components/residents/family-contact-form";
+import {
+  AIDisclosure,
+  AI_DISCLOSURE_FAMILY,
+} from "@/components/transparency/ai-disclosure";
 
 type LegalBasisLabel =
   | "Personal representative"
@@ -331,6 +335,8 @@ export function FamilyUpdateEditor({
           </div>
         </div>
       )}
+
+      <AIDisclosure message={AI_DISCLOSURE_FAMILY} />
 
       <div className="space-y-2">
         <Label>Subject</Label>

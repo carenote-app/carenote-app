@@ -110,6 +110,9 @@ function buildEmailHtml(body: string, facilityName: string): string {
   <div style="border-bottom: 2px solid #e5e5e5; padding-bottom: 16px; margin-bottom: 24px;">
     <h2 style="margin: 0; font-size: 18px; color: #1a1a1a;">${facilityName}</h2>
   </div>
+  <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 10px 14px; margin-bottom: 20px; border-radius: 4px; font-size: 12px; line-height: 1.5; color: #78350f;">
+    <p style="margin: 0;"><strong>AI-assisted update.</strong> This message was drafted by AI from caregiver shift notes and reviewed by ${facilityName}. It reflects observations from the care team and is not a medical diagnosis or clinical assessment.</p>
+  </div>
   ${paragraphs}
   <div style="border-top: 1px solid #e5e5e5; padding-top: 16px; margin-top: 24px; font-size: 12px; color: #666;">
     <p style="margin: 0;">This update was sent by ${facilityName} using Kinroster.</p>
@@ -140,6 +143,7 @@ function buildPortalLinkHtml(params: {
   <p style="margin: 0 0 16px 0; line-height: 1.6; font-size: 14px; color: #555;">This link expires on <strong>${params.expiresDisplay}</strong>. Opens are logged for compliance.</p>
   <div style="border-top: 1px solid #e5e5e5; padding-top: 16px; margin-top: 24px; font-size: 12px; color: #666;">
     <p style="margin: 0 0 6px 0;">Sent by ${params.facilityName} using Kinroster.</p>
+    <p style="margin: 0 0 6px 0;">The clinical summary behind this link is AI-generated from caregiver shift notes and intended for professional review. It is not a substitute for direct clinical assessment.</p>
     <p style="margin: 0;">If you weren't expecting this, you can ignore this email. The link will expire on its own.</p>
   </div>
 </body>

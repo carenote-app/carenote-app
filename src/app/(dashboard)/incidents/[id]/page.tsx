@@ -4,6 +4,10 @@ import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { IncidentActions } from "@/components/incidents/incident-actions";
+import {
+  AIDisclosure,
+  AI_DISCLOSURE_INCIDENT,
+} from "@/components/transparency/ai-disclosure";
 import { format } from "date-fns";
 
 export default async function IncidentDetailPage({
@@ -93,6 +97,7 @@ export default async function IncidentDetailPage({
       {/* AI-generated report */}
       {reportData && (
         <div className="space-y-4 mb-6">
+          <AIDisclosure message={AI_DISCLOSURE_INCIDENT} />
           <div>
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
               Description

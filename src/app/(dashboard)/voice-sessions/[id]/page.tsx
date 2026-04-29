@@ -7,6 +7,10 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Clock, Mic, FileText, User, Bot } from "lucide-react";
+import {
+  AIDisclosure,
+  AI_DISCLOSURE_TRANSCRIPT,
+} from "@/components/transparency/ai-disclosure";
 import { format } from "date-fns";
 
 function formatDuration(seconds: number | null): string {
@@ -158,6 +162,9 @@ export default async function VoiceSessionDetailPage({
       {/* Transcript */}
       <div className="mt-5 mb-5">
         <h3 className="text-base font-medium mb-3">Conversation</h3>
+        <div className="mb-3">
+          <AIDisclosure message={AI_DISCLOSURE_TRANSCRIPT} />
+        </div>
         {transcripts.length === 0 ? (
           <p className="text-sm text-muted-foreground">
             {session.full_transcript

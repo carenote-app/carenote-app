@@ -13,6 +13,10 @@ import type {
   DisclosureClass,
   StructuredNoteSection,
 } from "@/lib/prompts/shift-note";
+import {
+  AIDisclosure,
+  AI_DISCLOSURE_NOTE,
+} from "@/components/transparency/ai-disclosure";
 
 type OverCaptureWarning = {
   has_concerns: boolean;
@@ -61,6 +65,9 @@ export function NoteTimeline({
 }) {
   return (
     <div className="space-y-3">
+      {notes.length > 0 && (
+        <AIDisclosure message={AI_DISCLOSURE_NOTE} />
+      )}
       {hiddenSensitiveCount > 0 && (
         <Card className="border-amber-500/40 bg-amber-50/40 dark:bg-amber-950/20">
           <CardContent className="py-3 flex items-start gap-2">

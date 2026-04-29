@@ -5,6 +5,10 @@ import { X, Mic, Square, Loader2, FileText, Copy, Check, Volume2, ArrowRight, Al
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { isDemoActive } from "@/lib/demos/registry"
+import {
+  AIDisclosure,
+  AI_DISCLOSURE_DEMO,
+} from "@/components/transparency/ai-disclosure"
 import Link from "next/link"
 
 interface ConsultModalProps {
@@ -356,6 +360,8 @@ export function ConsultModal({ isOpen, onClose, selectedRole }: ConsultModalProp
                 <FileText className="h-4 w-4 text-primary" />
                 Generated Documentation
               </h3>
+
+              {generatedNote && <AIDisclosure message={AI_DISCLOSURE_DEMO} />}
 
               <div
                 className={cn(
