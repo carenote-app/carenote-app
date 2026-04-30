@@ -61,7 +61,7 @@ export async function POST() {
     success_url: `${process.env.NEXT_PUBLIC_APP_URL}/billing?success=true`,
     cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/billing?canceled=true`,
     subscription_data: {
-      trial_period_days: 14,
+      trial_period_days: 3,
       metadata: { organization_id: orgId },
     },
   });

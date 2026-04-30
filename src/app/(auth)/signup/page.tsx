@@ -116,7 +116,7 @@ export default function SignupPage() {
           </div>
           <CardTitle className="text-xl font-bold">Create Account</CardTitle>
           <CardDescription>
-            Start your 14-day free trial
+            Start your 3-day free trial
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSignup}>

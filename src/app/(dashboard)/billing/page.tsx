@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { differenceInDays } from "date-fns";
+import { ContactPricingDialog } from "@/components/contact-pricing-dialog";
 
 export default function BillingPage() {
   const [org, setOrg] = useState<{
@@ -16,6 +17,7 @@ export default function BillingPage() {
     stripe_customer_id: string | null;
   } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [pricingOpen, setPricingOpen] = useState(false);
   const router = useRouter();
   const supabase = createClient();
 
@@ -56,22 +58,6 @@ export default function BillingPage() {
     }
     load();
   }, [supabase, router]);
-
-  async function handleSubscribe() {
-    try {
-      const res = await fetch("/api/stripe/checkout", {
-        method: "POST",
-      });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        toast.error("Failed to create checkout session");
-      }
-    } catch {
-      toast.error("Failed to connect to billing");
-    }
-  }
 
   async function handleManage() {
     try {
@@ -133,15 +119,13 @@ export default function BillingPage() {
               </p>
               <div className="rounded-lg bg-muted/50 p-4">
                 <p className="font-medium">Kinroster Pro</p>
-                <p className="text-2xl font-bold">
-                  $149<span className="text-sm font-normal text-muted-foreground">/month</span>
-                </p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Unlimited residents, notes, and family updates
+                  Unlimited residents, notes, and family updates. Pricing is
+                  tailored to your facility — get in touch for a quote.
                 </p>
               </div>
-              <Button onClick={handleSubscribe} className="w-full">
-                Subscribe Now
+              <Button onClick={() => setPricingOpen(true)} className="w-full">
+                Get Pricing
               </Button>
             </div>
           )}
@@ -172,14 +156,24 @@ export default function BillingPage() {
           {org?.subscription_status === "canceled" && (
             <div className="space-y-3">
               <p className="text-sm text-muted-foreground">
-                Your subscription has been canceled. Subscribe again to regain
-                full access.
+                Your subscription has been canceled. Email us to discuss
+                reactivating your facility.
               </p>
-              <Button onClick={handleSubscribe}>Resubscribe</Button>
+              <Button onClick={() => setPricingOpen(true)}>
+                Get Pricing
+              </Button>
             </div>
           )}
         </CardContent>
       </Card>
+
+      <ContactPricingDialog
+        open={pricingOpen}
+        onOpenChange={setPricingOpen}
+        trialExpired={
+          org?.subscription_status === "trial" && trialDaysLeft <= 0
+        }
+      />
     </div>
   );
 }
