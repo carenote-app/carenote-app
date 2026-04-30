@@ -28,6 +28,7 @@ vi.mock("@/lib/supabase/server", () => ({
       "gte",
       "lte",
       "ilike",
+      "or",
     ] as const;
     for (const method of chainMethods) {
       builder[method] = vi.fn((...args: unknown[]) => {
@@ -180,9 +181,8 @@ describe("GET /api/residents/[id]/notes", () => {
       "flagged_as_incident",
       true
     );
-    expect(mockState.builder!.ilike).toHaveBeenCalledWith(
-      "raw_input",
-      "%fall%"
+    expect(mockState.builder!.or).toHaveBeenCalledWith(
+      'raw_input.ilike."%fall%",structured_output.ilike."%fall%",edited_output.ilike."%fall%"'
     );
   });
 

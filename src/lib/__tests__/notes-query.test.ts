@@ -65,8 +65,8 @@ describe("parseNotesFiltersFromSearchParams", () => {
 });
 
 // Builds a chainable spy mock that mirrors the Supabase PostgrestFilterBuilder
-// surface used by applyNotesFilters: gte / lte / eq / ilike all returning
-// the same builder so calls can be chained and inspected.
+// surface used by applyNotesFilters: gte / lte / eq / ilike / or all
+// returning the same builder so calls can be chained and inspected.
 function makeQueryBuilder() {
   const calls: Array<{ method: string; args: unknown[] }> = [];
   const builder = {
@@ -84,6 +84,10 @@ function makeQueryBuilder() {
     }),
     ilike: vi.fn((...args: unknown[]) => {
       calls.push({ method: "ilike", args });
+      return builder;
+    }),
+    or: vi.fn((...args: unknown[]) => {
+      calls.push({ method: "or", args });
       return builder;
     }),
     calls,
@@ -122,11 +126,20 @@ describe("applyNotesFilters", () => {
     ]);
   });
 
-  it("applies ilike search against raw_input wrapped in % wildcards", () => {
+  it("searches raw_input AND structured_output AND edited_output via .or()", () => {
+    // Searching only raw_input misses notes whose AI-structured text
+    // (the part the user actually sees on screen) contains the term —
+    // e.g. searching "short-tempered behavior" when the original raw
+    // note said "acting up". Cover all three columns.
     const q = makeQueryBuilder();
     applyNotesFilters(q, { search: "fall" });
     expect(q.calls).toEqual([
-      { method: "ilike", args: ["raw_input", "%fall%"] },
+      {
+        method: "or",
+        args: [
+          'raw_input.ilike."%fall%",structured_output.ilike."%fall%",edited_output.ilike."%fall%"',
+        ],
+      },
     ]);
   });
 
@@ -135,10 +148,22 @@ describe("applyNotesFilters", () => {
     applyNotesFilters(q, { search: "100% certain_yes" });
     expect(q.calls).toEqual([
       {
-        method: "ilike",
-        args: ["raw_input", "%100\\% certain\\_yes%"],
+        method: "or",
+        args: [
+          'raw_input.ilike."%100\\% certain\\_yes%",structured_output.ilike."%100\\% certain\\_yes%",edited_output.ilike."%100\\% certain\\_yes%"',
+        ],
       },
     ]);
+  });
+
+  it("escapes embedded double quotes in the search term so the PostgREST or() parser stays sane", () => {
+    const q = makeQueryBuilder();
+    applyNotesFilters(q, { search: 'said "ouch"' });
+    const orCall = q.calls.find((c) => c.method === "or");
+    expect(orCall).toBeDefined();
+    // Each predicate's value is wrapped in double quotes; embedded
+    // quotes are backslash-escaped so the wrapping stays balanced.
+    expect(orCall!.args[0]).toContain('raw_input.ilike."%said \\"ouch\\"%"');
   });
 
   it("chains all filters when all are set", () => {
@@ -152,7 +177,9 @@ describe("applyNotesFilters", () => {
     expect(q.gte).toHaveBeenCalledWith("created_at", "2026-04-01T00:00:00Z");
     expect(q.lte).toHaveBeenCalledWith("created_at", "2026-04-15T23:59:59Z");
     expect(q.eq).toHaveBeenCalledWith("flagged_as_incident", true);
-    expect(q.ilike).toHaveBeenCalledWith("raw_input", "%hip pain%");
+    expect(q.or).toHaveBeenCalledWith(
+      'raw_input.ilike."%hip pain%",structured_output.ilike."%hip pain%",edited_output.ilike."%hip pain%"'
+    );
   });
 
   it("returns the chainable builder back so callers can keep adding .order() / .limit()", () => {

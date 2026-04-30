@@ -54,12 +54,30 @@ export function applyNotesFilters(
     q = q.eq("flagged_as_incident", true);
   }
   if (filters.search) {
-    // Substring match against the caregiver's raw input — the source of
-    // truth that's never AI-rewritten. Postgres ilike is index-free here
-    // (we don't have a trigram index), but the LIMIT bounds rows scanned
-    // and the resident_id filter narrows the search space first.
+    // Match against the caregiver's raw input (the canonical source of
+    // truth) AND the AI-structured / edited outputs (what the user
+    // actually sees on screen). Without the structured columns, a search
+    // for a phrase only present in the AI tidy-up — e.g. "short-tempered
+    // behavior" — silently returns nothing because the original raw note
+    // used different words. Postgres ilike is index-free here; the
+    // resident_id filter and LIMIT bound the rows scanned.
+    //
+    // structured_output and edited_output are stored as JSON-encoded
+    // strings on the notes table, so a substring match works without
+    // casting.
     const escaped = filters.search.replace(/[%_]/g, (c) => `\\${c}`);
-    q = q.ilike("raw_input", `%${escaped}%`);
+    // PostgREST `or()` separates predicates with commas. Any comma /
+    // parenthesis in the user's search would corrupt the parser, so wrap
+    // the value in double quotes — PostgREST treats quoted values as
+    // opaque.
+    const escapedForOr = escaped.replace(/"/g, '\\"');
+    q = q.or(
+      [
+        `raw_input.ilike."%${escapedForOr}%"`,
+        `structured_output.ilike."%${escapedForOr}%"`,
+        `edited_output.ilike."%${escapedForOr}%"`,
+      ].join(",")
+    );
   }
   return q;
 }
