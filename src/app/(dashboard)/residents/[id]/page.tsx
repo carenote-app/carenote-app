@@ -22,6 +22,7 @@ import {
   type DirectoryClinician,
 } from "@/components/clinicians/resident-clinician-list";
 import { ResidentDeleteControls } from "@/components/data-requests/resident-delete-controls";
+import { ExportReportButton } from "@/components/residents/export-report-dialog";
 import type { Resident, FamilyContact } from "@/types/database";
 
 export default async function ResidentDetailPage({
@@ -159,26 +160,34 @@ export default async function ResidentDetailPage({
             </Badge>
           </div>
         </div>
-        {isAdmin && !isDeletedPending && (
+        {!isDeletedPending && (
           <div className="flex gap-1.5 flex-wrap justify-end">
-            <Link href={`/family/${id}/new`}>
-              <Button variant="outline" size="sm">
-                <Mail className="mr-1 h-3 w-3" />
-                Family Update
-              </Button>
-            </Link>
-            <Link href={`/residents/${id}/edit`}>
-              <Button variant="outline" size="sm">
-                <Pencil className="mr-1 h-3 w-3" />
-                Edit
-              </Button>
-            </Link>
-            <ResidentDeleteControls
+            <ExportReportButton
               residentId={id}
-              residentName={residentDisplayName}
-              status={resident.status}
-              variant="header-button"
+              residentDisplay={residentDisplayName}
             />
+            {isAdmin && (
+              <>
+                <Link href={`/family/${id}/new`}>
+                  <Button variant="outline" size="sm">
+                    <Mail className="mr-1 h-3 w-3" />
+                    Family Update
+                  </Button>
+                </Link>
+                <Link href={`/residents/${id}/edit`}>
+                  <Button variant="outline" size="sm">
+                    <Pencil className="mr-1 h-3 w-3" />
+                    Edit
+                  </Button>
+                </Link>
+                <ResidentDeleteControls
+                  residentId={id}
+                  residentName={residentDisplayName}
+                  status={resident.status}
+                  variant="header-button"
+                />
+              </>
+            )}
           </div>
         )}
       </div>
