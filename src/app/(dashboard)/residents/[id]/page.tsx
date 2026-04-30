@@ -23,6 +23,7 @@ import {
 } from "@/components/clinicians/resident-clinician-list";
 import { ResidentDeleteControls } from "@/components/data-requests/resident-delete-controls";
 import { ExportReportButton } from "@/components/residents/export-report-dialog";
+import { QuickSummaryButton } from "@/components/residents/quick-summary-button";
 import type { Resident, FamilyContact } from "@/types/database";
 
 export default async function ResidentDetailPage({
@@ -162,6 +163,10 @@ export default async function ResidentDetailPage({
         </div>
         {!isDeletedPending && (
           <div className="flex gap-1.5 flex-wrap justify-end">
+            <QuickSummaryButton
+              residentId={id}
+              residentDisplay={residentDisplayName}
+            />
             <ExportReportButton
               residentId={id}
               residentDisplay={residentDisplayName}

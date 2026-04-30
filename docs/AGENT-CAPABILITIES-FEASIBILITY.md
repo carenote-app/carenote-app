@@ -4,15 +4,19 @@ A first-pass assessment of seven proposed agent behaviours. Each is rated on how
 
 The aim of this doc is to give the team a shared picture of effort/risk so we can argue about *order*, not whether each item is technically possible — they all are.
 
-| # | Capability | Already in codebase? | New work | Effort (eng-weeks) | Tier |
-|---|---|---|---|---|---|
-| 1 | Tag new notes with timestamp + category | **~80%** | Surface existing data | <0.5 | Quick win |
-| 5 | Void / delete an entry | **~30%** | Add `voided_*` columns, UI, render rules | 0.5–1 | Quick win |
-| 6 | Confirm before any write/update/delete | **UX pattern** | Integrate into 3/4/5 | (folded in) | Quick win |
-| 7 | Summarise a time window on demand | **~70%** | New `/today summary` UI + reuse existing summariser | 0.5 | Quick win |
-| 2 | Semantic search over notes | **0%** | New: embeddings pipeline + pgvector + retrieval API | 1.5–2 | Foundation |
-| 4 | Detect contradictions on ingest | **0%** (helpers exist) | Claude classifier on top of #2 | 0.5–1 | Phase 2 |
-| 3 | Update vague entries (agentic edit) | **persistence yes; reasoning no** | Retrieval + Claude proposal + diff UI | 1–1.5 | Phase 3 |
+> **How to keep this current**: when an item changes status, update its `Status` cell below and refresh the "Last updated" line. Statuses: 🟢 Done, 🟡 In progress, 🔵 Up next, ⚪ Not started.
+
+| # | Capability | Status | Already in codebase? | New work | Effort (eng-weeks) | Tier |
+|---|---|---|---|---|---|---|
+| 1 | Tag new notes with timestamp + category | ⚪ Not started | **~80%** | Surface existing data | <0.5 | Quick win |
+| 5 | Void / delete an entry | ⚪ Not started | **~30%** | Add `voided_*` columns, UI, render rules | 0.5–1 | Quick win |
+| 6 | Confirm before any write/update/delete | ⚪ Not started | **UX pattern** | Integrate into 3/4/5 | (folded in) | Quick win |
+| 7 | Summarise a time window on demand | 🟡 In progress | **~70%** | New `/today summary` UI + reuse existing summariser | 0.5 | Quick win |
+| 2 | Semantic search over notes | ⚪ Not started | **0%** | New: embeddings pipeline + pgvector + retrieval API | 1.5–2 | Foundation |
+| 4 | Detect contradictions on ingest | ⚪ Not started | **0%** (helpers exist) | Claude classifier on top of #2 | 0.5–1 | Phase 2 |
+| 3 | Update vague entries (agentic edit) | ⚪ Not started | **persistence yes; reasoning no** | Retrieval + Claude proposal + diff UI | 1–1.5 | Phase 3 |
+
+_Last updated: 2026-04-30 — Item 7 marked in progress (PR for caregiver on-demand summary in flight)._
 
 Total if we ship all seven: **~5–7 engineer-weeks**. The critical path is item 2 — the search foundation — because items 3 and 4 are weak without it.
 
