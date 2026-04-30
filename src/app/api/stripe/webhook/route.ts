@@ -35,6 +35,28 @@ export async function POST(request: NextRequest) {
 
   const supabase = getServiceClient();
 
+  // Idempotency: Stripe retries deliveries on non-2xx responses (and
+  // occasionally on transient successes). Without dedupe, a retry can
+  // re-flap subscription status or repeat side effects. We INSERT the
+  // event id into stripe_processed_events; a unique-violation means we
+  // already handled it.
+  const dedupe = await supabase
+    .from("stripe_processed_events")
+    .insert({ event_id: event.id });
+
+  if (dedupe.error) {
+    // 23505 = unique_violation -> already processed; ack so Stripe stops retrying.
+    if ((dedupe.error as { code?: string }).code === "23505") {
+      return NextResponse.json({ received: true, deduped: true });
+    }
+    // Any other error means we don't know if we processed it — surface a 500
+    // so Stripe will retry, rather than silently swallowing.
+    return NextResponse.json(
+      { error: "Failed to record event for dedupe" },
+      { status: 500 }
+    );
+  }
+
   switch (event.type) {
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session;

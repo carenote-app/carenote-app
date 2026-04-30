@@ -364,6 +364,7 @@ export type Database = {
       }
       organizations: {
         Row: {
+          bed_count: number | null
           created_at: string
           email_from_name: string | null
           email_reply_to: string | null
@@ -373,12 +374,14 @@ export type Database = {
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
           subscription_status: string
+          subscription_tier: string | null
           timezone: string
           trial_ends_at: string | null
           type: string
           updated_at: string
         }
         Insert: {
+          bed_count?: number | null
           created_at?: string
           email_from_name?: string | null
           email_reply_to?: string | null
@@ -388,12 +391,14 @@ export type Database = {
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
           subscription_status?: string
+          // subscription_tier is generated; not writable
           timezone?: string
           trial_ends_at?: string | null
           type: string
           updated_at?: string
         }
         Update: {
+          bed_count?: number | null
           created_at?: string
           email_from_name?: string | null
           email_reply_to?: string | null
@@ -403,10 +408,26 @@ export type Database = {
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
           subscription_status?: string
+          // subscription_tier is generated; not writable
           timezone?: string
           trial_ends_at?: string | null
           type?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      stripe_processed_events: {
+        Row: {
+          event_id: string
+          processed_at: string
+        }
+        Insert: {
+          event_id: string
+          processed_at?: string
+        }
+        Update: {
+          event_id?: string
+          processed_at?: string
         }
         Relationships: []
       }
