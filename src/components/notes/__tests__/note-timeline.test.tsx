@@ -64,8 +64,11 @@ describe("NoteTimeline", () => {
     const notes = [makeNoteWithRelations(mockIncidentNote)];
     render(<NoteTimeline notes={notes} />);
 
+    // Flag type is shown as a label with underscores replaced by spaces; the
+    // free-form reason wraps as body text underneath.
+    expect(screen.getByText("fall risk")).toBeInTheDocument();
     expect(
-      screen.getByText("fall_risk: Near-fall event getting out of bed")
+      screen.getByText("Near-fall event getting out of bed")
     ).toBeInTheDocument();
   });
 

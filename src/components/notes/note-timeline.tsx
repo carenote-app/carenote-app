@@ -214,11 +214,19 @@ function StructuredNoteDisplay({ output }: { output: string }) {
       )}
 
       {parsed.flags.length > 0 && (
-        <div className="flex flex-wrap gap-1 pt-1">
+        <div className="space-y-1.5 pt-1">
           {parsed.flags.map((flag, i) => (
-            <Badge key={i} variant="destructive" className="text-xs">
-              {flag.type}: {flag.reason}
-            </Badge>
+            <div
+              key={i}
+              className="rounded-md border border-destructive/40 bg-destructive/10 px-2.5 py-1.5 text-xs"
+            >
+              <p className="font-medium uppercase tracking-wide text-destructive">
+                {flag.type.replace(/_/g, " ")}
+              </p>
+              <p className="mt-0.5 break-words text-foreground">
+                {flag.reason}
+              </p>
+            </div>
           ))}
         </div>
       )}

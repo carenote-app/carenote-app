@@ -132,7 +132,7 @@ export default async function ResidentDetailPage({
   const residentDisplayName = `${resident.first_name} ${resident.last_name}`;
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-5">
+    <div className="mx-auto max-w-4xl px-4 py-5">
       {isAdmin && isDeletedPending && (
         <ResidentDeleteControls
           residentId={id}
