@@ -1,5 +1,3 @@
-"use client"
-
 import { Mic, Brain, FileText, Zap, Share2, Lock, Check } from "lucide-react"
 import { VoiceRecordingIllustration } from "./illustrations/voice-recording"
 import { AiProcessingIllustration } from "./illustrations/ai-processing"

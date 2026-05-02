@@ -1,13 +1,10 @@
-"use client"
+import { Sparkles, Shield, Clock, ScrollText } from "lucide-react";
+import { ConsultLauncher } from "./consult-launcher";
 
-import { Sparkles, ArrowRight, Shield, Clock, Mic, ScrollText } from "lucide-react"
-import { Button } from "@/components/ui/button"
-
-interface HeroSectionProps {
-  onStartConsult: () => void
-}
-
-export function HeroSection({ onStartConsult }: HeroSectionProps) {
+// Server-rendered: this is the LCP region for the landing page. The only
+// interactive element is the CTA button, which is owned by the
+// ConsultLauncher client island.
+export function HeroSection() {
   return (
     <section className="relative py-12 md:py-20">
       {/* Background decoration */}
@@ -32,20 +29,12 @@ export function HeroSection({ onStartConsult }: HeroSectionProps) {
 
         {/* Subheadline */}
         <p className="mx-auto mb-8 max-w-2xl text-pretty text-lg text-muted-foreground md:text-xl">
-          Transform how you document patient care. Kinroster uses AI to convert voice notes 
+          Transform how you document patient care. Kinroster uses AI to convert voice notes
           into structured clinical documentation, saving time and improving accuracy.
         </p>
 
-        {/* CTA Button */}
-        <Button 
-          size="lg" 
-          onClick={onStartConsult}
-          className="group h-14 gap-3 rounded-2xl bg-primary px-8 text-lg font-medium text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20"
-        >
-          <Mic className="h-5 w-5" />
-          Start AI Consult
-          <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-        </Button>
+        {/* CTA — client island */}
+        <ConsultLauncher variant="hero" />
 
         {/* Trust indicators */}
         <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground md:gap-10">
@@ -64,5 +53,5 @@ export function HeroSection({ onStartConsult }: HeroSectionProps) {
         </div>
       </div>
     </section>
-  )
+  );
 }

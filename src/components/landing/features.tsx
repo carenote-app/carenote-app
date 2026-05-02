@@ -1,5 +1,3 @@
-"use client"
-
 import { Mic, FileText, Share2, Lock, Zap, Brain, ArrowDown } from "lucide-react"
 
 const features = [
