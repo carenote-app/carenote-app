@@ -1,6 +1,13 @@
 export function TranscriptionIllustration() {
   return (
-    <svg viewBox="0 0 400 280" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
+    <svg
+      viewBox="0 0 400 280"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-full h-auto"
+      role="img"
+      aria-label="A chat conversation between a caregiver and an AI, illustrating real-time follow-up questions during a voice session"
+    >
       {/* Chat container */}
       <rect x="80" y="20" width="240" height="240" rx="12" stroke="currentColor" opacity="0.15" strokeWidth="1.5" />
 

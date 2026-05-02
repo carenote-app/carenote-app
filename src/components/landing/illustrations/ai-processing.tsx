@@ -1,6 +1,13 @@
 export function AiProcessingIllustration() {
   return (
-    <svg viewBox="0 0 400 280" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
+    <svg
+      viewBox="0 0 400 280"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-full h-auto"
+      role="img"
+      aria-label="A central AI brain with input and output streams, illustrating Claude structuring a caregiver's voice note"
+    >
       {/* Central brain/processor */}
       <circle cx="200" cy="140" r="45" stroke="currentColor" opacity="0.15" strokeWidth="2" />
       <circle cx="200" cy="140" r="30" stroke="currentColor" opacity="0.25" strokeWidth="1.5" />

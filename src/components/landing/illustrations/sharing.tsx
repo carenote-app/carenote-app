@@ -1,6 +1,13 @@
 export function SharingIllustration() {
   return (
-    <svg viewBox="0 0 400 280" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
+    <svg
+      viewBox="0 0 400 280"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-full h-auto"
+      role="img"
+      aria-label="A central note routed to family, clinician, and team recipients, illustrating role-aware sharing"
+    >
       {/* Central note node */}
       <circle cx="200" cy="140" r="28" stroke="currentColor" opacity="0.25" strokeWidth="2" fill="currentColor" fillOpacity="0.05" />
       <rect x="188" y="128" width="24" height="28" rx="3" stroke="currentColor" opacity="0.4" strokeWidth="1.5" fill="none" />

@@ -1,6 +1,13 @@
 export function SmartDocsIllustration() {
   return (
-    <svg viewBox="0 0 400 280" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
+    <svg
+      viewBox="0 0 400 280"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-full h-auto"
+      role="img"
+      aria-label="A structured document with section headers, illustrating an AI-generated shift note"
+    >
       {/* Document frame */}
       <rect x="100" y="20" width="200" height="240" rx="8" stroke="currentColor" opacity="0.2" strokeWidth="1.5" />
       <rect x="100" y="20" width="200" height="40" rx="8" fill="currentColor" opacity="0.05" />

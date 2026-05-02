@@ -1,8 +1,17 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Terms of Service - Kinroster",
-  description: "Kinroster Terms of Service. Review the terms governing your use of our platform.",
+  title: "Terms of Service",
+  description:
+    "Terms governing the use of Kinroster — voice-first documentation for residential care facilities.",
+  alternates: { canonical: "/terms" },
+  openGraph: {
+    title: "Terms of Service",
+    description:
+      "Terms governing the use of Kinroster — voice-first documentation for residential care facilities.",
+    url: "/terms",
+    type: "website",
+  },
 }
 
 export default function TermsOfServicePage() {

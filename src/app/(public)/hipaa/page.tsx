@@ -1,8 +1,27 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "HIPAA Readiness - Kinroster",
-  description: "Current state of Kinroster's HIPAA readiness program — what's built, what's pending, and how BAAs are handled at customer onboarding.",
+  title: "HIPAA Readiness",
+  description:
+    "Kinroster's HIPAA readiness program: BAA process, append-only audit ledger, 42 CFR Part 2 segregation, RLS-enforced PHI isolation, and what is built vs. pending.",
+  keywords: [
+    "HIPAA",
+    "BAA",
+    "Business Associate Agreement",
+    "42 CFR Part 2",
+    "PHI",
+    "residential care",
+    "audit log",
+    "compliance",
+  ],
+  alternates: { canonical: "/hipaa" },
+  openGraph: {
+    title: "HIPAA Readiness",
+    description:
+      "BAA process, append-only audit ledger, 42 CFR Part 2 segregation, RLS-enforced PHI isolation — what is built and what is pending.",
+    url: "/hipaa",
+    type: "website",
+  },
 }
 
 export default function HipaaCompliancePage() {

@@ -1,6 +1,13 @@
 export function SecurityIllustration() {
   return (
-    <svg viewBox="0 0 400 280" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
+    <svg
+      viewBox="0 0 400 280"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-full h-auto"
+      role="img"
+      aria-label="A shield with HIPAA, RLS, and audit-log badges, illustrating Kinroster's compliance primitives"
+    >
       {/* Shield */}
       <path
         d="M200 30 L260 55 C260 55, 265 140, 200 230 C135 140, 140 55, 140 55 Z"

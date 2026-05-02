@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
+import { OrganizationJsonLd } from "@/components/seo/json-ld";
 import "./globals.css";
 
 const inter = Inter({
@@ -83,6 +84,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} h-full`} suppressHydrationWarning>
+      <head>
+        <OrganizationJsonLd />
+      </head>
       <body className="h-full bg-background text-foreground antialiased">
         <ThemeProvider>
           {children}

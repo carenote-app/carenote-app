@@ -1,8 +1,17 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Privacy Policy - Kinroster",
-  description: "Kinroster Privacy Policy. Learn how we collect, use, and protect your data.",
+  title: "Privacy Policy",
+  description:
+    "How Kinroster collects, uses, and protects your data — including PHI handled on behalf of residential care facility customers.",
+  alternates: { canonical: "/privacy" },
+  openGraph: {
+    title: "Privacy Policy",
+    description:
+      "How Kinroster collects, uses, and protects your data — including PHI handled on behalf of residential care facility customers.",
+    url: "/privacy",
+    type: "website",
+  },
 }
 
 export default function PrivacyPolicyPage() {

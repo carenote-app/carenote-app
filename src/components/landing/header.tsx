@@ -18,15 +18,17 @@ export function LandingHeader() {
           aria-label="Primary"
           className="hidden items-center gap-6 md:flex"
         >
+          {/* py-3 brings the click target to ~44px tall — WCAG 2.5.5 /
+              Lighthouse minimum. The link itself is still text-sm. */}
           <a
             href="#features"
-            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+            className="py-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             Features
           </a>
           <a
             href="#how-it-works"
-            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+            className="py-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             How it Works
           </a>

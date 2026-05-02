@@ -1,6 +1,13 @@
 export function VoiceRecordingIllustration() {
   return (
-    <svg viewBox="0 0 400 280" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
+    <svg
+      viewBox="0 0 400 280"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-full h-auto"
+      role="img"
+      aria-label="A phone with a microphone icon, illustrating voice note capture"
+    >
       {/* Phone frame */}
       <rect x="120" y="10" width="160" height="260" rx="20" stroke="currentColor" opacity="0.2" strokeWidth="2" />
       <rect x="170" y="18" width="60" height="6" rx="3" fill="currentColor" opacity="0.1" />
