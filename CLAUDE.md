@@ -39,3 +39,6 @@ Full product spec is in the sibling `kinroster-docs/` repo. Key references:
 
 ## Implementation Roadmap
 - **HIPAA compliance roadmap:** `docs/HIPAA-ROADMAP.md` — 10-phase plan to make the app ready for real PHI. Phase 1 (clinician directory + secure sharing) is shipped. Read this before starting any phase, and before changing migrations, RLS, prompts, or sharing flows.
+
+## Prompt versioning
+Canonical specs for every LLM prompt live in `prompts/` at the repo root. Each `.md` file has YAML frontmatter (id, version, prior_version, runtime, model, languages, variables) and is the source of truth for the prompt body. Runtime files in `src/lib/prompts/*.ts` reference the spec; the Vapi assistant is paste-synced from `prompts/vapi-intake-assistant.md`. See `prompts/README.md` for the convention and `prompts/CHANGELOG.md` for cross-prompt release history.

@@ -24,6 +24,10 @@ export default function SettingsPage() {
   const [emailReplyTo, setEmailReplyTo] = useState("");
   const [familyAuthRequired, setFamilyAuthRequired] = useState(false);
   const [retainTranscripts, setRetainTranscripts] = useState(true);
+  const [country, setCountry] = useState("");
+  const [regulatoryRegion, setRegulatoryRegion] = useState("hipaa_us");
+  const [defaultOutputLanguage, setDefaultOutputLanguage] = useState("en");
+  const [defaultClinicalLanguage, setDefaultClinicalLanguage] = useState("en");
   const [settingsJson, setSettingsJson] = useState<Record<string, unknown>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -60,12 +64,20 @@ export default function SettingsPage() {
           timezone: string;
           email_from_name: string | null;
           email_reply_to: string | null;
+          country: string | null;
+          regulatory_region: string;
+          default_output_language: string;
+          default_clinical_language: string;
           settings: Record<string, unknown> | null;
         };
         setName(o.name);
         setTimezone(o.timezone || "America/Los_Angeles");
         setEmailFromName(o.email_from_name || "");
         setEmailReplyTo(o.email_reply_to || "");
+        setCountry(o.country || "");
+        setRegulatoryRegion(o.regulatory_region || "hipaa_us");
+        setDefaultOutputLanguage(o.default_output_language || "en");
+        setDefaultClinicalLanguage(o.default_clinical_language || "en");
         const current = o.settings ?? {};
         setSettingsJson(current);
         setFamilyAuthRequired(current.family_auth_required === true);
@@ -104,6 +116,10 @@ export default function SettingsPage() {
         timezone,
         email_from_name: emailFromName || null,
         email_reply_to: emailReplyTo || null,
+        country: country || null,
+        regulatory_region: regulatoryRegion,
+        default_output_language: defaultOutputLanguage,
+        default_clinical_language: defaultClinicalLanguage,
         settings: mergedSettings,
       })
       .eq("id", (appUser as { organization_id: string }).organization_id);
@@ -181,6 +197,79 @@ export default function SettingsPage() {
             onChange={(e) => setEmailReplyTo(e.target.value)}
             placeholder="care@youfacility.com"
           />
+        </div>
+
+        <Separator />
+
+        <div className="space-y-3">
+          <div>
+            <p className="text-sm font-medium">Regulatory & Languages</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Drives compliance behavior (HIPAA vs PDPA) and default output language for clinical and family-facing AI generation.
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="country">Country</Label>
+            <Input
+              id="country"
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+              placeholder="e.g. United States, Taiwan"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="regulatory-region">Regulatory region</Label>
+            <Select value={regulatoryRegion} onValueChange={setRegulatoryRegion}>
+              <SelectTrigger id="regulatory-region">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="hipaa_us">HIPAA (United States)</SelectItem>
+                <SelectItem value="pdpa_tw">PDPA (Taiwan)</SelectItem>
+                <SelectItem value="gdpr_eu">GDPR (European Union)</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              Switching to PDPA Taiwan enables phone-OTP login, the cross-border-transfer consent flow, and Long-term Care Services Act note fields.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <Label htmlFor="default-output-language">Default output language</Label>
+              <Select
+                value={defaultOutputLanguage}
+                onValueChange={setDefaultOutputLanguage}
+              >
+                <SelectTrigger id="default-output-language">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="en">English</SelectItem>
+                  <SelectItem value="zh-TW">繁體中文</SelectItem>
+                  <SelectItem value="vi">Tiếng Việt</SelectItem>
+                  <SelectItem value="id">Bahasa Indonesia</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="default-clinical-language">Clinical output language</Label>
+              <Select
+                value={defaultClinicalLanguage}
+                onValueChange={setDefaultClinicalLanguage}
+              >
+                <SelectTrigger id="default-clinical-language">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="en">English</SelectItem>
+                  <SelectItem value="zh-TW">繁體中文</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
         </div>
 
         <Separator />

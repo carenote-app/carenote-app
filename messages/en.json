@@ -1,0 +1,31 @@
+{
+  "voiceRecorder": {
+    "holdToSpeak": "Hold to speak",
+    "recording": "Recording...",
+    "transcribing": "Transcribing...",
+    "recordingTooShort": "Recording too short. Hold the button longer.",
+    "couldNotTranscribe": "Could not transcribe audio. Please type your note instead.",
+    "microphoneDenied": "Microphone access denied. Please allow microphone access in your browser settings."
+  },
+  "nav": {
+    "residents": "Residents",
+    "clinicians": "Clinicians",
+    "settings": "Settings",
+    "inbox": "Inbox"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "add": "Add",
+    "delete": "Delete",
+    "search": "Search"
+  },
+  "languageSwitcher": {
+    "label": "Language",
+    "english": "English",
+    "traditionalChinese": "繁體中文",
+    "vietnamese": "Tiếng Việt",
+    "indonesian": "Bahasa Indonesia"
+  }
+}

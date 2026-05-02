@@ -1,0 +1,31 @@
+{
+  "voiceRecorder": {
+    "holdToSpeak": "Tahan untuk berbicara",
+    "recording": "Merekam...",
+    "transcribing": "Mentranskrip...",
+    "recordingTooShort": "Rekaman terlalu pendek. Tahan tombol lebih lama.",
+    "couldNotTranscribe": "Gagal mentranskrip audio. Silakan ketik catatan Anda.",
+    "microphoneDenied": "Akses mikrofon ditolak. Izinkan akses mikrofon di pengaturan browser."
+  },
+  "nav": {
+    "residents": "Penghuni",
+    "clinicians": "Dokter",
+    "settings": "Pengaturan",
+    "inbox": "Kotak Masuk"
+  },
+  "common": {
+    "save": "Simpan",
+    "cancel": "Batal",
+    "edit": "Ubah",
+    "add": "Tambah",
+    "delete": "Hapus",
+    "search": "Cari"
+  },
+  "languageSwitcher": {
+    "label": "Bahasa",
+    "english": "English",
+    "traditionalChinese": "繁體中文",
+    "vietnamese": "Tiếng Việt",
+    "indonesian": "Bahasa Indonesia"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "voiceRecorder": {
+    "holdToSpeak": "Nhấn giữ để nói",
+    "recording": "Đang ghi âm...",
+    "transcribing": "Đang chuyển văn bản...",
+    "recordingTooShort": "Bản ghi quá ngắn. Nhấn giữ nút lâu hơn.",
+    "couldNotTranscribe": "Không thể chuyển âm thanh thành văn bản. Vui lòng nhập tay.",
+    "microphoneDenied": "Truy cập micro bị từ chối. Vui lòng cho phép trong cài đặt trình duyệt."
+  },
+  "nav": {
+    "residents": "Cư dân",
+    "clinicians": "Bác sĩ",
+    "settings": "Cài đặt",
+    "inbox": "Hộp thư"
+  },
+  "common": {
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "edit": "Sửa",
+    "add": "Thêm",
+    "delete": "Xóa",
+    "search": "Tìm kiếm"
+  },
+  "languageSwitcher": {
+    "label": "Ngôn ngữ",
+    "english": "English",
+    "traditionalChinese": "繁體中文",
+    "vietnamese": "Tiếng Việt",
+    "indonesian": "Bahasa Indonesia"
+  }
+}

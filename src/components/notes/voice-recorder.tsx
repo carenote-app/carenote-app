@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import { Mic, MicOff, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -12,6 +13,7 @@ export function VoiceRecorder({
 }: {
   onTranscript: (text: string) => void;
 }) {
+  const t = useTranslations("voiceRecorder");
   const [state, setState] = useState<RecordingState>("idle");
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -53,7 +55,7 @@ export function VoiceRecorder({
         const audioBlob = new Blob(chunksRef.current, { type: mediaRecorder.mimeType });
 
         if (audioBlob.size < 5000) {
-          toast.error("Recording too short. Hold the button longer.");
+          toast.error(t("recordingTooShort"));
           setState("idle");
           return;
         }
@@ -76,9 +78,7 @@ export function VoiceRecorder({
           const { transcript } = await response.json();
           onTranscript(transcript);
         } catch {
-          toast.error(
-            "Could not transcribe audio. Please type your note instead."
-          );
+          toast.error(t("couldNotTranscribe"));
         }
 
         setState("idle");
@@ -89,11 +89,9 @@ export function VoiceRecorder({
 
       timerRef.current = setTimeout(() => stopRecording(), 120000);
     } catch {
-      toast.error(
-        "Microphone access denied. Please allow microphone access in your browser settings."
-      );
+      toast.error(t("microphoneDenied"));
     }
-  }, [onTranscript, stopRecording]);
+  }, [onTranscript, stopRecording, t]);
 
   return (
     <Button
@@ -116,19 +114,19 @@ export function VoiceRecorder({
       {state === "idle" && (
         <>
           <Mic className="h-4 w-4" />
-          Hold to speak
+          {t("holdToSpeak")}
         </>
       )}
       {state === "recording" && (
         <>
           <MicOff className="h-4 w-4 animate-pulse" />
-          Recording...
+          {t("recording")}
         </>
       )}
       {state === "transcribing" && (
         <>
           <Loader2 className="h-4 w-4 animate-spin" />
-          Transcribing...
+          {t("transcribing")}
         </>
       )}
     </Button>

@@ -19,6 +19,10 @@ export const mockOrganization: Organization = {
   stripe_customer_id: null,
   stripe_subscription_id: null,
   settings: {},
+  country: null,
+  regulatory_region: "hipaa_us",
+  default_output_language: "en",
+  default_clinical_language: "en",
   created_at: "2026-04-01T00:00:00Z",
   updated_at: "2026-04-01T00:00:00Z",
 };
@@ -30,6 +34,8 @@ export const mockAdminUser: User = {
   full_name: "Maria Santos",
   role: "admin",
   is_active: true,
+  preferred_language: "en",
+  secondary_languages: [],
   created_at: "2026-04-01T00:00:00Z",
   updated_at: "2026-04-01T00:00:00Z",
 };
@@ -41,6 +47,8 @@ export const mockCaregiverUser: User = {
   full_name: "James Wilson",
   role: "caregiver",
   is_active: true,
+  preferred_language: "en",
+  secondary_languages: [],
   created_at: "2026-04-01T00:00:00Z",
   updated_at: "2026-04-01T00:00:00Z",
 };
@@ -58,6 +66,18 @@ export const mockResident: Resident = {
   care_notes_context:
     "Dorothy responds well to outdoor activities. Her daughter Sarah calls daily around 11 AM.",
   status: "active",
+  preferred_language: null,
+  secondary_languages: [],
+  country_of_origin: null,
+  years_in_taiwan: null,
+  religion: null,
+  dietary_restrictions: [],
+  family_name: null,
+  given_name: null,
+  name_pronunciation: null,
+  honorific_preference: null,
+  lunar_calendar_dob: null,
+  cultural_taboos: [],
   created_at: "2026-01-10T00:00:00Z",
   updated_at: "2026-01-10T00:00:00Z",
 };
@@ -81,6 +101,8 @@ export const mockFamilyContact: FamilyContact = {
   revoked_at: null,
   revocation_reason: null,
   confidential_communication_notes: null,
+  preferred_communication_language: null,
+  country_of_residence: null,
   created_at: "2026-01-10T00:00:00Z",
 };
 

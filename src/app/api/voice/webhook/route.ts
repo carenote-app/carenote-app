@@ -3,6 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { verifyVapiWebhook, type VapiWebhookEvent } from "@/lib/vapi";
 import { callClaude, parseJsonResponse } from "@/lib/claude";
 import { incrementUsage } from "@/lib/quota";
+import { getResidentContext } from "@/lib/i18n/locale";
 import type { Json } from "@/types/database";
 import {
   SHIFT_NOTE_SYSTEM_PROMPT,
@@ -217,6 +218,12 @@ export async function POST(request: NextRequest) {
       .update({ note_id: note.id })
       .eq("id", session.id);
 
+    // Locale context for multilingual structuring. Existing US/HIPAA orgs
+    // with no demographic fields populated still produce identical English
+    // output — buildCulturalRegisterBlock returns minimal/empty blocks when
+    // fields are unset.
+    const localeContext = await getResidentContext(session.resident_id);
+
     // Structuring and voice-sanity run in parallel. Sanity is informational
     // and never blocks — if it fails we just omit the warning.
     const [structureResult, sanityResult] = await Promise.allSettled([
@@ -236,6 +243,7 @@ export async function POST(request: NextRequest) {
             timestamp: note.created_at,
             caregiverName: (author as { full_name: string } | null)?.full_name || "Unknown",
             rawInput: transcript,
+            localeContext,
           }),
         });
         return parseJsonResponse<StructuredNoteOutput>(raw);

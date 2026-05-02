@@ -31,6 +31,14 @@ OUTPUT FORMAT:
   }
 }`;
 
+import type { ResidentLocaleContext } from "@/lib/i18n/locale";
+import {
+  buildCulturalRegisterBlock,
+  buildOutputLanguageInstruction,
+} from "@/lib/prompts/_shared";
+
+export const INCIDENT_REPORT_PROMPT_VERSION = "2026-05-02-multilingual-v1";
+
 export function buildIncidentReportUserPrompt(params: {
   residentFirstName: string;
   residentLastName: string;
@@ -38,11 +46,24 @@ export function buildIncidentReportUserPrompt(params: {
   timestamp: string;
   caregiverName: string;
   rawInput: string;
+  localeContext?: ResidentLocaleContext | null;
+  /** For Taiwan orgs (`pdpa_tw`) the report should be emitted in zh-TW so it
+   *  can be filed directly under 長照法. Defaults via locale context. */
+  outputLanguage?: string;
+  /** TODO(workstream-d): when regulatory_region='pdpa_tw', surface 長照法
+   *  required fields (currently the same as US RCFE; legal review pending). */
+  regulatoryRegion?: string;
 }): string {
+  const cultural = buildCulturalRegisterBlock(params.localeContext);
+  const outputLang =
+    params.outputLanguage ||
+    (params.localeContext ? params.localeContext.output_language : "");
+  const lang = outputLang ? buildOutputLanguageInstruction(outputLang) : "";
+
   return `Resident: ${params.residentFirstName} ${params.residentLastName}
 Known conditions: ${params.conditions || "None documented"}
 Date/Time of report: ${params.timestamp}
-Reporting caregiver: ${params.caregiverName}
+Reporting caregiver: ${params.caregiverName}${cultural}${lang}
 
 Caregiver's description of the incident:
 """

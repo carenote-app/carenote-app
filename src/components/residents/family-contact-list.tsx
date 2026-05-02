@@ -64,6 +64,9 @@ function formValuesFromContact(contact: FamilyContact): FamilyContactFormValues 
     authorizationEndDate: contact.authorization_end_date ?? "",
     confidentialCommunicationNotes:
       contact.confidential_communication_notes ?? "",
+    preferredCommunicationLanguage:
+      contact.preferred_communication_language ?? "",
+    countryOfResidence: contact.country_of_residence ?? "",
   };
 }
 
@@ -87,6 +90,9 @@ function insertPayloadFromValues(
     authorization_end_date: values.authorizationEndDate || null,
     confidential_communication_notes:
       values.confidentialCommunicationNotes || null,
+    preferred_communication_language:
+      values.preferredCommunicationLanguage || null,
+    country_of_residence: values.countryOfResidence || null,
   };
 }
 
@@ -106,6 +112,9 @@ function updatePayloadFromValues(values: FamilyContactFormValues) {
     authorization_end_date: values.authorizationEndDate || null,
     confidential_communication_notes:
       values.confidentialCommunicationNotes || null,
+    preferred_communication_language:
+      values.preferredCommunicationLanguage || null,
+    country_of_residence: values.countryOfResidence || null,
   };
 }
 

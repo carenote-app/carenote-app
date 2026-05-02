@@ -24,6 +24,14 @@ OUTPUT FORMAT:
   "body": "<The full email text, with paragraph breaks as \\n\\n>"
 }`;
 
+import type { ResidentLocaleContext } from "@/lib/i18n/locale";
+import {
+  buildCulturalRegisterBlock,
+  buildOutputLanguageInstruction,
+} from "@/lib/prompts/_shared";
+
+export const FAMILY_UPDATE_PROMPT_VERSION = "2026-05-02-multilingual-v1";
+
 export function buildFamilyUpdateUserPrompt(params: {
   facilityName: string;
   residentFirstName: string;
@@ -37,6 +45,12 @@ export function buildFamilyUpdateUserPrompt(params: {
     author_name: string;
     structured_output: string;
   }>;
+  /** Cultural + linguistic context for the resident. */
+  localeContext?: ResidentLocaleContext | null;
+  /** Override for the family contact's preferred communication language.
+   *  Each family contact gets their own update in their own language —
+   *  callers should invoke this builder once per contact. */
+  familyLanguage?: string;
 }): string {
   const notesText = params.notes
     .map(
@@ -44,10 +58,16 @@ export function buildFamilyUpdateUserPrompt(params: {
     )
     .join("\n---\n");
 
+  const cultural = buildCulturalRegisterBlock(params.localeContext);
+  const outputLang =
+    params.familyLanguage ||
+    (params.localeContext ? params.localeContext.output_language : "");
+  const lang = outputLang ? buildOutputLanguageInstruction(outputLang) : "";
+
   return `Facility: ${params.facilityName}
 Resident: ${params.residentFirstName} ${params.residentLastName}
 Family member: ${params.familyContactName} (${params.relationship})
-Date range: ${params.dateRangeStart} to ${params.dateRangeEnd}
+Date range: ${params.dateRangeStart} to ${params.dateRangeEnd}${cultural}${lang}
 
 Shift notes from this period:
 ---

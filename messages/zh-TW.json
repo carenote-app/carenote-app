@@ -1,0 +1,31 @@
+{
+  "voiceRecorder": {
+    "holdToSpeak": "按住說話",
+    "recording": "錄音中...",
+    "transcribing": "轉錄中...",
+    "recordingTooShort": "錄音太短,請按住按鈕久一點。",
+    "couldNotTranscribe": "無法轉錄音訊。請改為手動輸入。",
+    "microphoneDenied": "麥克風權限被拒絕。請在瀏覽器設定中允許麥克風存取。"
+  },
+  "nav": {
+    "residents": "住民",
+    "clinicians": "醫師",
+    "settings": "設定",
+    "inbox": "收件匣"
+  },
+  "common": {
+    "save": "儲存",
+    "cancel": "取消",
+    "edit": "編輯",
+    "add": "新增",
+    "delete": "刪除",
+    "search": "搜尋"
+  },
+  "languageSwitcher": {
+    "label": "語言",
+    "english": "English",
+    "traditionalChinese": "繁體中文",
+    "vietnamese": "Tiếng Việt",
+    "indonesian": "Bahasa Indonesia"
+  }
+}

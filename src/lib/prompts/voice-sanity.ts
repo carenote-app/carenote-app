@@ -26,6 +26,8 @@ Flag these categories when clearly present:
 
 Err on the side of NOT flagging. Only include an excerpt when you are confident the content is off-topic. Short transcripts are rarely over-capture.
 
+The transcript may be in any language (English, Traditional Chinese, Vietnamese, Indonesian, etc.). Detect off-topic content regardless of language. Excerpts MUST be in the original transcript language — do not translate.
+
 Respond with ONLY a JSON object. No other text.
 
 {
@@ -37,6 +39,7 @@ Respond with ONLY a JSON object. No other text.
 If nothing is off-topic, respond: {"has_concerns": false, "categories": [], "excerpts": []}`;
 
 export const VOICE_SANITY_MODEL = "claude-haiku-4-5-20251001";
+export const VOICE_SANITY_PROMPT_VERSION = "2026-05-02-multilingual-v1";
 
 export function buildVoiceSanityUserPrompt(rawTranscript: string): string {
   return `Transcript:

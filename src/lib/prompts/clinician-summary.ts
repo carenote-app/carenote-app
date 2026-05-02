@@ -33,6 +33,14 @@ OUTPUT FORMAT:
   "follow_up_recommended": ["<item flagged by care team>", ...]
 }`;
 
+import type { ResidentLocaleContext } from "@/lib/i18n/locale";
+import {
+  buildCulturalRegisterBlock,
+  buildOutputLanguageInstruction,
+} from "@/lib/prompts/_shared";
+
+export const CLINICIAN_SUMMARY_PROMPT_VERSION = "2026-05-02-multilingual-v1";
+
 export function buildClinicianSummaryUserPrompt(params: {
   facilityName: string;
   residentFirstName: string;
@@ -49,6 +57,15 @@ export function buildClinicianSummaryUserPrompt(params: {
     author_name: string;
     structured_output: string;
   }>;
+  /** Optional locale + cultural context. When provided, the clinical
+   *  narrative + key observations are emitted in the clinician's
+   *  clinical_language (typically zh-TW for Taiwan orgs). Source-language
+   *  caregiver words inside the structured notes input remain verbatim. */
+  localeContext?: ResidentLocaleContext | null;
+  /** Optional override for clinical output language. Falls back to the
+   *  locale context's output_language. Used when the clinician's
+   *  preferred clinical_language differs from the resident's. */
+  clinicalLanguage?: string;
 }): string {
   const notesText = params.notes
     .map(
@@ -56,13 +73,19 @@ export function buildClinicianSummaryUserPrompt(params: {
     )
     .join("\n---\n");
 
+  const cultural = buildCulturalRegisterBlock(params.localeContext);
+  const outputLang =
+    params.clinicalLanguage ||
+    (params.localeContext ? params.localeContext.output_language : "");
+  const lang = outputLang ? buildOutputLanguageInstruction(outputLang) : "";
+
   return `Facility: ${params.facilityName}
 Resident: ${params.residentFirstName} ${params.residentLastName}
 Date of birth: ${params.residentDob || "Not recorded"}
 Known conditions: ${params.conditions || "None documented"}
 Care context: ${params.careNotesContext || "None provided"}
 Treating clinician: ${params.clinicianName} (${params.relationship})
-Date range: ${params.dateRangeStart} to ${params.dateRangeEnd}
+Date range: ${params.dateRangeStart} to ${params.dateRangeEnd}${cultural}${lang}
 
 Structured shift notes from this period:
 ---

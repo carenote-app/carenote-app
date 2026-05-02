@@ -636,3 +636,57 @@ These are flagged-but-not-blocked items. A future session can proceed without th
 - The detailed Phase 1 implementation plan is at `/Users/pouyajavadi/.claude/plans/i-have-recently-talked-vast-clarke.md` (the user's personal plans folder, not in the repo).
 - The CLAUDE.md at the repo root describes Kinroster's architecture and conventions — read that first.
 - Each phase's migration is one file, numbered sequentially. Starting point for Phase 2: `supabase/migrations/00006_family_authorizations.sql`.
+
+---
+
+## Phase 11: Taiwan PDPA + Long-term Care Services Act readiness (in progress)
+
+**Status:** code-only portion shipped 2026-05-02 on `feature/taiwan-multilingual`. External dependencies still open.
+
+This phase makes Kinroster operable for residential care facilities in Taiwan working with multilingual caregivers (mostly Vietnamese / Indonesian migrant workers) and an elderly resident population that includes Taiwanese, Vietnamese, and Indonesian residents living in Taiwan. Compliance posture is "full belt-and-suspenders": Taiwan PDPA (個人資料保護法) + Long-term Care Services Act (長期照顧服務法) documentation requirements.
+
+### What shipped in code
+
+- **Schema** (`supabase/migrations/00015..00017`): regulatory_region on organizations (`hipaa_us | pdpa_tw | gdpr_eu`); language and cultural-context fields on residents/users/clinicians/family_contacts; `clinician_questions` async back-channel; `consent_records` append-only ledger.
+- **PHI redactor** (`src/lib/redaction.ts`): strips Taiwan ROC ID, Vietnamese CCCD, Indonesian NIK, full DOBs (replaced with year band), US-style street addresses, US SSNs. Wrap any string heading to a third-party LLM with `redactPhi()` BEFORE the API call.
+- **PDPA notice page** (`src/app/(public)/privacy/tw/page.tsx`): cross-border-transfer disclosure listing Anthropic, OpenAI, Vapi, ElevenLabs, Deepgram, Resend, Vercel, Stripe, Supabase Tokyo. Bilingual (zh-TW + English).
+- **i18n infrastructure** (`next-intl`, cookie-based, locales en/zh-TW/vi/id): see `prompts/README.md` and `src/i18n/request.ts`.
+- **Multilingual prompts**: every prompt under `src/lib/prompts/` accepts an optional `localeContext` and emits output in the resident's preferred language with a cultural-register block injected. Specs live in `prompts/*.md` with version frontmatter.
+- **Vapi assistant spec**: `prompts/vapi-intake-assistant.md` is the source of truth; paste into the Vapi dashboard system-prompt field. Variables include `caregiver_language`, `cultural_register`, `recent_notes_summary`, `recent_incidents`.
+
+### Breach notification runbook (PDPA)
+
+Required by Article 12 of Taiwan PDPA: notify the Ministry of Health and Welfare (衛生福利部) **within 72 hours** of a breach involving health-related personal data, and notify affected data subjects without delay.
+
+Discovery → triage:
+1. Confirm scope (which residents, which fields, what processor).
+2. Snapshot `audit_events` rows for the affected window.
+3. If a third-party processor is implicated, request their incident report.
+
+Notification:
+4. Email 衛生福利部 within 72h with a structured incident description (cause, data categories, number of subjects, mitigation).
+5. Notify each affected resident's primary family contact in their `preferred_communication_language`.
+6. Post a notice on the public privacy page if more than 100 subjects affected.
+
+Post-incident:
+7. File a written follow-up with the regulator within 30 days documenting root cause and remediation.
+8. Add a `consent_records` entry of type `pdpa_breach_notification` for each notified subject so future audits can confirm notification.
+
+### Long-term Care Services Act (長照法) note mapping
+
+`TODO(human-action)`: the existing shift-note structure already captures most fields the LTCS Act requires (mood, ADL trends, incidents, follow-up). A Taiwan-licensed practitioner should review `src/lib/prompts/shift-note.ts` and confirm whether the section list maps cleanly to 長照法 documentation requirements or needs `ltcs_act_fields` extension on `notes.metadata`. Open until reviewed.
+
+### External dependencies still open
+
+These are blockers for GA in Taiwan; they cannot be done in code:
+
+- `TODO(human-action)`: provision a separate Supabase project in `ap-northeast-1` (Tokyo) for Taiwan orgs. The app routes by `regulatory_region`; until the Tokyo project exists, pdpa_tw orgs are technically supported in code but data sits in the existing US region.
+- `TODO(human-action)`: enable Supabase Vault (CMEK) on the Tokyo project; document key rotation runbook.
+- `TODO(human-action)`: BAAs / DPAs with Vapi, ElevenLabs, Deepgram for Taiwan PHI handling. Anthropic and OpenAI BAAs already exist for US HIPAA; confirm they cover Taiwan too.
+- `TODO(human-action)`: Taiwan privacy-attorney review of `src/app/(public)/privacy/tw/page.tsx` and the LTCS Act mapping above.
+- `TODO(human-action)`: Phone-OTP login path for caregivers without email habits. Supabase Auth supports phone OTP via Twilio; we deferred the UI work until Twilio Taiwan delivery + pricing is verified. When wiring it, gate the UI on org.regulatory_region='pdpa_tw' so US orgs are unaffected.
+- `TODO(human-action)`: Vapi dashboard sync. Paste `prompts/vapi-intake-assistant.md` body into the Vapi assistant's system prompt field. Ensure the assistant uses Deepgram Nova 3 multilingual transcriber and ElevenLabs `eleven_multilingual_v2` voice (already configured per current dashboard).
+
+### Why this is "Phase 11" not "Phase 1 of v2"
+
+The ten existing HIPAA phases stand on their own. This is additive: existing US/HIPAA orgs see zero behavior change because every new column defaults to existing-behavior values (`regulatory_region='hipaa_us'`, `default_output_language='en'`, `localeContext` optional everywhere). Taiwan readiness is a parallel deployment posture, not a replacement.

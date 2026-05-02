@@ -7,6 +7,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const SCOPE_OPTIONS: Array<{ value: string; label: string }> = [
   { value: "visit_notifications", label: "Visit completion notifications" },
@@ -41,6 +48,8 @@ export type FamilyContactFormValues = {
   authorizationStartDate: string;
   authorizationEndDate: string;
   confidentialCommunicationNotes: string;
+  preferredCommunicationLanguage: string;
+  countryOfResidence: string;
 };
 
 export const EMPTY_FAMILY_CONTACT_VALUES: FamilyContactFormValues = {
@@ -57,6 +66,8 @@ export const EMPTY_FAMILY_CONTACT_VALUES: FamilyContactFormValues = {
   authorizationStartDate: "",
   authorizationEndDate: "",
   confidentialCommunicationNotes: "",
+  preferredCommunicationLanguage: "",
+  countryOfResidence: "",
 };
 
 export function FamilyContactForm({
@@ -280,6 +291,41 @@ export function FamilyContactForm({
               {opt.label}
             </label>
           ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-2">
+          <Label htmlFor="contact-language">Preferred language</Label>
+          <Select
+            value={values.preferredCommunicationLanguage || "none"}
+            onValueChange={(v) =>
+              update("preferredCommunicationLanguage", v === "none" ? "" : v)
+            }
+          >
+            <SelectTrigger id="contact-language">
+              <SelectValue placeholder="Select" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">Not specified</SelectItem>
+              <SelectItem value="en">English</SelectItem>
+              <SelectItem value="zh-TW">繁體中文</SelectItem>
+              <SelectItem value="vi">Tiếng Việt</SelectItem>
+              <SelectItem value="id">Bahasa Indonesia</SelectItem>
+            </SelectContent>
+          </Select>
+          <p className="text-xs text-muted-foreground">
+            Family update emails to this contact will be generated in this language.
+          </p>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="contact-country">Country of residence</Label>
+          <Input
+            id="contact-country"
+            placeholder="e.g. Taiwan, Vietnam"
+            value={values.countryOfResidence}
+            onChange={(e) => update("countryOfResidence", e.target.value)}
+          />
         </div>
       </div>
 

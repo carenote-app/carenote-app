@@ -6,6 +6,23 @@
 // Legacy v1 notes (sections as Record<string,string>) still exist in the
 // database; src/lib/structured-output.ts normalizes them to this shape at
 // read time.
+//
+// Multilingual (Phase 11, prompts/shift-note-structuring.md
+// version 2026-05-02-multilingual-v1): the system prompt itself remains in
+// English (Claude understands instructions in English regardless of source
+// language). When a localeContext is passed to buildShiftNoteUserPrompt, the
+// cultural-register block is prepended and the output-language instruction
+// is added so summary/sections are emitted in the right language for the
+// resident. Source-language caregiver words inside section text are
+// preserved verbatim — that's what protects clinical fidelity.
+
+import type { ResidentLocaleContext } from "@/lib/i18n/locale";
+import {
+  buildCulturalRegisterBlock,
+  buildOutputLanguageInstruction,
+} from "@/lib/prompts/_shared";
+
+export const SHIFT_NOTE_PROMPT_VERSION = "2026-05-02-multilingual-v1";
 
 export const DISCLOSURE_CLASSES = [
   "care_team_only",
@@ -114,13 +131,22 @@ export function buildShiftNoteUserPrompt(params: {
   timestamp: string;
   caregiverName: string;
   rawInput: string;
+  /** Optional cultural + linguistic context. When provided, the section text
+   *  and summary are emitted in the resident's output language and the
+   *  cultural register guides phrasing. */
+  localeContext?: ResidentLocaleContext | null;
 }): string {
+  const cultural = buildCulturalRegisterBlock(params.localeContext);
+  const lang = params.localeContext
+    ? buildOutputLanguageInstruction(params.localeContext.output_language)
+    : "";
+
   return `Resident: ${params.residentFirstName} ${params.residentLastName}
 Resident context: ${params.careNotesContext || "None provided"}
 Known conditions: ${params.conditions || "None documented"}
 Note type: Shift Note
 Date/Time: ${params.timestamp}
-Caregiver: ${params.caregiverName}
+Caregiver: ${params.caregiverName}${cultural}${lang}
 
 Caregiver's raw note:
 """
